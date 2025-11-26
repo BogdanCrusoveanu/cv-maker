@@ -36,7 +36,7 @@ public class AuthService
         return user;
     }
 
-    public async Task<(string AccessToken, string RefreshToken)?> LoginAsync(string email, string password)
+    public async Task<(string AccessToken, string RefreshToken, string Name)?> LoginAsync(string email, string password)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
@@ -49,7 +49,7 @@ public class AuthService
         user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
         await _context.SaveChangesAsync();
 
-        return (accessToken, refreshToken);
+        return (accessToken, refreshToken, user.Name);
     }
 
     public async Task<(string AccessToken, string RefreshToken)?> RefreshTokenAsync(string token, string refreshToken)

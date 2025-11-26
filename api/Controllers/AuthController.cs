@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
         if (result == null)
             return Unauthorized("Invalid credentials");
 
-        return Ok(new { token = result.Value.AccessToken, refreshToken = result.Value.RefreshToken });
+        return Ok(new { token = result.Value.AccessToken, refreshToken = result.Value.RefreshToken, name = result.Value.Name });
     }
 
     [HttpPost("refresh")]
