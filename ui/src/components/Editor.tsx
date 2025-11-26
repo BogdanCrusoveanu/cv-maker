@@ -1,8 +1,10 @@
-import { Upload, Plus, X, Eye, EyeOff, Trash2 } from 'lucide-react'
+import { Upload, Plus, X, Eye, EyeOff, Trash2, ArrowUp, ArrowDown } from 'lucide-react'
+import { useEffect } from 'react'
 import api from '../services/api'
 import { Button } from './ui/Button'
 import { Input } from './ui/Input'
 import { TextArea } from './ui/TextArea'
+import { Select } from './ui/Select'
 import { SectionHeader } from './ui/SectionHeader'
 import { CvData, Experience, Education, Skill, Language, CustomSectionItem, CustomField, PersonalInfo } from '../types/cv'
 
@@ -22,6 +24,57 @@ export default function Editor({ cvData, setCvData, currentTemplate }: EditorPro
             }
         })
     }
+
+    // Ensure visibility keys exist (migration for existing CVs)
+    useEffect(() => {
+        if (cvData.visibility && (cvData.visibility.personalInfo === undefined || cvData.visibility.summary === undefined)) {
+            setCvData({
+                ...cvData,
+                visibility: {
+                    ...cvData.visibility,
+                    personalInfo: cvData.visibility.personalInfo ?? true,
+                    summary: cvData.visibility.summary ?? true
+                }
+            });
+        }
+    }, [cvData.visibility]);
+
+    // Initialize section order if not present
+    if (!cvData.sectionOrder) {
+    }
+
+    // Ensure sectionOrder contains all visibility keys (migration for existing CVs)
+    useEffect(() => {
+        if (cvData.sectionOrder) {
+            const allKeys = Object.keys(cvData.visibility);
+            const missingKeys = allKeys.filter(key => !cvData.sectionOrder?.includes(key));
+            
+            if (missingKeys.length > 0) {
+                setCvData({
+                    ...cvData,
+                    sectionOrder: [...cvData.sectionOrder, ...missingKeys]
+                });
+            }
+        }
+    }, [cvData.visibility, cvData.sectionOrder]);
+    
+    // Ensure sectionOrder is initialized in the parent or on load. 
+    // For now, let's assume we handle it by checking if it exists in the render loop.
+
+    const moveSection = (index: number, direction: number) => {
+        const currentOrder = cvData.sectionOrder || Object.keys(cvData.visibility);
+        const newOrder = [...currentOrder];
+        
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= newOrder.length) return;
+
+        [newOrder[index], newOrder[newIndex]] = [newOrder[newIndex], newOrder[index]];
+
+        setCvData({
+            ...cvData,
+            sectionOrder: newOrder
+        });
+    };
 
     // Helper to check if template supports skill levels
     const supportsSkillLevels = ['midnight', 'slate', 'azure'].includes(currentTemplate);
@@ -241,7 +294,7 @@ export default function Editor({ cvData, setCvData, currentTemplate }: EditorPro
     const addLanguage = () => {
         setCvData({
             ...cvData,
-            languages: [...(cvData.languages || []), { id: Date.now(), name: '', proficiency: '' }]
+            languages: [...(cvData.languages || []), { id: Date.now(), name: '', proficiency: 'Novice/Beginner (A1)' }]
         })
     }
 
@@ -292,21 +345,44 @@ export default function Editor({ cvData, setCvData, currentTemplate }: EditorPro
 
     return (
         <div className="p-6 space-y-8">
-            {/* Section Visibility Control */}
+            {/* Section Visibility and Reordering Control */}
             <section className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-700 mb-3">Section Visibility</h3>
-                <div className="flex flex-wrap gap-4">
-                    {Object.entries(cvData.visibility || {}).map(([key, isVisible]) => (
-                        <Button
-                            key={key}
-                            onClick={() => toggleVisibility(key)}
-                            variant="toggle"
-                            isActive={isVisible}
-                            icon={isVisible ? Eye : EyeOff}
-                        >
-                            <span className="capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
-                        </Button>
-                    ))}
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Section Visibility & Order</h3>
+                <div className="space-y-2">
+                    {(cvData.sectionOrder || Object.keys(cvData.visibility)).map((key, index) => {
+                        // Ensure key exists in visibility (handle potential stale keys in order)
+                        if (cvData.visibility[key] === undefined) return null;
+                        
+                        return (
+                            <div key={key} className="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
+                                <div className="flex items-center gap-3">
+                                    <Button
+                                        onClick={() => toggleVisibility(key)}
+                                        variant="ghost"
+                                        icon={cvData.visibility[key] ? Eye : EyeOff}
+                                        className={cvData.visibility[key] ? "text-blue-600" : "text-gray-400"}
+                                    />
+                                    <span className="capitalize font-medium text-gray-700">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <Button
+                                        onClick={() => moveSection(index, -1)}
+                                        variant="ghost"
+                                        icon={ArrowUp}
+                                        disabled={index === 0}
+                                        className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                                    />
+                                    <Button
+                                        onClick={() => moveSection(index, 1)}
+                                        variant="ghost"
+                                        icon={ArrowDown}
+                                        disabled={index === (cvData.sectionOrder || Object.keys(cvData.visibility)).length - 1}
+                                        className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </section>
 
@@ -691,10 +767,17 @@ export default function Editor({ cvData, setCvData, currentTemplate }: EditorPro
                                     color="teal"
                                     className="flex-1"
                                 />
-                                <Input
-                                    placeholder="Proficiency (e.g. 90% or Fluent)"
+                                <Select
+                                    placeholder="Proficiency"
                                     value={lang.proficiency}
                                     onChange={(e) => updateLanguage(lang.id, 'proficiency', e.target.value)}
+                                    options={[
+                                        { value: 'Novice/Beginner (A1)', label: 'Novice/Beginner (A1)' },
+                                        { value: 'Intermediate (B1)', label: 'Intermediate (B1)' },
+                                        { value: 'Advanced (C1)', label: 'Advanced (C1)' },
+                                        { value: 'Fluent', label: 'Fluent' },
+                                        { value: 'Native', label: 'Native' }
+                                    ]}
                                     color="teal"
                                     className="w-1/3"
                                 />

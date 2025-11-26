@@ -75,6 +75,8 @@ export interface Visibility {
     interests: boolean;
     languages: boolean;
     customSections: boolean;
+    personalInfo: boolean;
+    summary: boolean;
     [key: string]: boolean;
 }
 
@@ -88,6 +90,7 @@ export interface CvData {
     interests?: Interest[];
     languages?: Language[];
     customSections?: CustomSection[];
+    sectionOrder?: string[];
     visibility: Visibility;
     data?: any; // For the backend wrapper structure
 }

@@ -47,7 +47,9 @@ export default function CvBuilder() {
             skills: true,
             interests: true,
             languages: true,
-            customSections: true
+            customSections: true,
+            personalInfo: true,
+            summary: true
         }
     };
 
