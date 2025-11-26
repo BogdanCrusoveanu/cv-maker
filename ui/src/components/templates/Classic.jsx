@@ -1,0 +1,246 @@
+import { MapPin, Phone, Mail, Globe } from 'lucide-react'
+
+export default function ClassicTemplate({ cvData }) {
+    const { personalInfo, experience, education, skills } = cvData
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return ''
+        if (dateStr.toLowerCase() === 'present') return 'Present'
+        const [year, month] = dateStr.split('-')
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        return `${months[parseInt(month) - 1]} ${year}`
+    }
+
+    // SVG wave patterns
+    const WavePattern = () => (
+        <div className="absolute bottom-0 left-0 right-0 h-40 overflow-hidden">
+            {/* Yellow wave */}
+            <svg className="absolute bottom-0" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ width: '100%', height: '80px' }}>
+                <path d="M0,60 C150,90 350,30 600,60 C850,90 1050,30 1200,60 L1200,120 L0,120 Z" fill="#F4D35E" />
+            </svg>
+            {/* Pink wave */}
+            <svg className="absolute bottom-0" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ width: '100%', height: '60px' }}>
+                <path d="M0,45 C200,75 400,15 600,45 C800,75 1000,15 1200,45 L1200,120 L0,120 Z" fill="#F4A6C8" />
+            </svg>
+            {/* Light purple wave */}
+            <svg className="absolute bottom-0" viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ width: '100%', height: '40px' }}>
+                <path d="M0,30 C250,60 450,0 600,30 C750,60 950,0 1200,30 L1200,120 L0,120 Z" fill="#E5D4ED" />
+            </svg>
+        </div>
+    )
+
+    return (
+        <div className="flex min-h-full relative">
+            {/* Sidebar - Purple & Navy */}
+            <div className="w-1/3 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom, #E5D4ED 0%, #E5D4ED 40%, #2C3E50 40%, #2C3E50 100%)' }}>
+                <div className="relative z-10 p-8">
+                    {/* Photo */}
+                    <div className="mb-8 flex justify-center">
+                        <div className="w-40 h-40 rounded-full border-4 border-white overflow-hidden bg-white">
+                            {personalInfo.photo ? (
+                                <img
+                                    src={personalInfo.photo}
+                                    alt={personalInfo.fullName}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                    <svg className="w-20 h-20 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    </svg>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Contact Info - in navy section */}
+                    <div className="text-white space-y-4 mt-8">
+                        {personalInfo.location && (
+                            <div className="flex items-start gap-3">
+                                <div className="bg-white/20 p-2 rounded">
+                                    <MapPin size={20} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm">{personalInfo.location}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {personalInfo.phone && (
+                            <div className="flex items-start gap-3">
+                                <div className="bg-white/20 p-2 rounded">
+                                    <Phone size={20} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm">{personalInfo.phone}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {personalInfo.email && (
+                            <div className="flex items-start gap-3">
+                                <div className="bg-white/20 p-2 rounded">
+                                    <Mail size={20} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm break-all">{personalInfo.email}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {personalInfo.website && (
+                            <div className="flex items-start gap-3">
+                                <div className="bg-white/20 p-2 rounded">
+                                    <Globe size={20} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm">{personalInfo.website}</p>
+                                </div>
+                            </div>
+                        )}
+                        {/* Custom Fields */}
+                        {(personalInfo.customFields || []).map(field => (
+                            <div key={field.id} className="flex items-start gap-3">
+                                <div className="bg-white/20 p-2 rounded">
+                                    <Globe size={20} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-xs font-bold opacity-75">{field.label}</p>
+                                    <p className="text-sm">{field.value}</p>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Languages - Sidebar */}
+                        {(cvData.visibility.languages && cvData.languages && cvData.languages.length > 0) && (
+                            <div className="mt-6 pt-6 border-t border-white/20">
+                                <h3 className="font-bold text-lg mb-3">LANGUAGES</h3>
+                                <ul className="space-y-2">
+                                    {cvData.languages.map(lang => (
+                                        <li key={lang.id} className="text-sm">
+                                            <span className="font-semibold">{lang.name}</span>
+                                            {lang.proficiency && <span className="opacity-75"> - {lang.proficiency}</span>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* Interests - Sidebar */}
+                        {(cvData.visibility.interests && cvData.interests && cvData.interests.length > 0) && (
+                            <div className="mt-6 pt-6 border-t border-white/20">
+                                <h3 className="font-bold text-lg mb-3">INTERESTS</h3>
+                                <ul className="space-y-2">
+                                    {cvData.interests.map(interest => (
+                                        <li key={interest.id} className="text-sm">{interest.name}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Objective */}
+                    {personalInfo.summary && (
+                        <div className="mt-8 text-white">
+                            <h3 className="font-bold text-lg mb-3">OBJECTIVE</h3>
+                            <p className="text-sm leading-relaxed">{personalInfo.summary}</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Decorative waves at bottom */}
+                <WavePattern />
+            </div>
+
+            {/* Main Content */}
+            <div className="w-2/3 p-10 bg-white">
+                {/* Header */}
+                <div className="mb-10">
+                    <h1 className="text-5xl font-bold text-gray-900 mb-2 uppercase tracking-wide">
+                        {personalInfo.fullName || 'Your Name'}
+                    </h1>
+                </div>
+
+                {/* Experience */}
+                {(cvData.visibility.experience && experience.length > 0) && (
+                    <div className="mb-8">
+                        <h3 className="text-xl font-bold mb-4" style={{ color: '#9B59B6' }}>EXPERIENCE</h3>
+                        <div className="space-y-4">
+                            {experience.map((exp) => (
+                                <div key={exp.id}>
+                                    <div className="font-semibold text-sm text-gray-900">
+                                        {formatDate(exp.startDate) || 'Dec 20XX'} – {formatDate(exp.endDate) || 'Jan 20XX'}
+                                    </div>
+                                    <div className="text-sm">
+                                        <span className="font-semibold text-gray-900">{exp.title}</span>
+                                        {exp.company && <span className="text-gray-700"> • {exp.company}</span>}
+                                    </div>
+                                    {exp.description && (
+                                        <p className="text-sm text-gray-700 mt-1 leading-relaxed">{exp.description}</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Education */}
+                {(cvData.visibility.education && education.length > 0) && (
+                    <div className="mb-8">
+                        <h3 className="text-xl font-bold mb-4" style={{ color: '#9B59B6' }}>EDUCATION</h3>
+                        <div className="space-y-3">
+                            {education.map((edu) => (
+                                <div key={edu.id}>
+                                    <div className="text-sm">
+                                        <span className="font-semibold text-gray-900">{edu.school}</span>
+                                        {edu.location && <span className="text-gray-700">, {edu.location}</span>}
+                                    </div>
+                                    <div className="text-sm text-gray-700">
+                                        • {edu.degree}, {formatDate(edu.endDate) || '20XX'}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Custom Sections */}
+                {(cvData.visibility.customSections && cvData.customSections && cvData.customSections.length > 0) && cvData.customSections.map(section => (
+                    <div key={section.id} className="mb-8">
+                        <h3 className="text-xl font-bold mb-4" style={{ color: '#9B59B6' }}>{section.title.toUpperCase()}</h3>
+                        <div className="space-y-4">
+                            {section.items.map(item => (
+                                <div key={item.id}>
+                                    <div className="font-semibold text-sm text-gray-900">
+                                        {item.date}
+                                    </div>
+                                    <div className="text-sm">
+                                        <span className="font-semibold text-gray-900">{item.title}</span>
+                                        {item.subtitle && <span className="text-gray-700"> • {item.subtitle}</span>}
+                                    </div>
+                                    {item.description && (
+                                        <p className="text-sm text-gray-700 mt-1 leading-relaxed">{item.description}</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+
+                {/* Skills */}
+                {(cvData.visibility.skills && skills.length > 0) && (
+                    <div className="mb-8">
+                        <h3 className="text-xl font-bold mb-4" style={{ color: '#9B59B6' }}>SKILLS</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {skills.map(skill => (
+                                <span key={skill.id} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                                    {skill.name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
+}

@@ -1,0 +1,6 @@
+@CvMaker.Api_HostAddress = http://localhost:5140
+
+GET {{CvMaker.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
