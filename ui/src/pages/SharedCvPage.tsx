@@ -11,6 +11,7 @@ export default function SharedCvPage() {
     const [cv, setCv] = useState<CvData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     useEffect(() => {
         const fetchSharedCv = async () => {
@@ -38,6 +39,7 @@ export default function SharedCvPage() {
     const handleDownload = async () => {
         if (!cv) return;
         
+        setIsGeneratingPdf(true);
         try {
             const response = await fetch(`http://localhost:5140/api/cv/shared/${token}/pdf`);
             
@@ -57,6 +59,8 @@ export default function SharedCvPage() {
         } catch (error) {
             console.error('Error downloading PDF:', error);
             alert('Failed to download PDF');
+        } finally {
+            setIsGeneratingPdf(false);
         }
     };
 
@@ -132,6 +136,22 @@ export default function SharedCvPage() {
                     </button>
                 </div>
             </div>
+
+            {/* PDF Generation Loading Overlay */}
+            {isGeneratingPdf && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-8 flex flex-col items-center gap-4 shadow-2xl">
+                        <div className="relative">
+                            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+                            <Download className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-blue-600" size={24} />
+                        </div>
+                        <div className="text-center">
+                            <h3 className="text-lg font-bold text-gray-900 mb-1">Generating PDF...</h3>
+                            <p className="text-sm text-gray-600">This may take a few seconds</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
