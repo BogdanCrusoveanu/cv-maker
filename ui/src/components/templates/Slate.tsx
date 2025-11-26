@@ -88,7 +88,7 @@ export default function Slate({ cvData }: { cvData: CvData }) {
                             <span className="w-6 h-6 bg-slate-700 text-white flex items-center justify-center rounded-full text-xs">A</span>
                             About Me
                         </h2>
-                        <p className="text-sm leading-relaxed text-gray-600 text-justify">{personalInfo.summary}</p>
+                        <p className="text-sm leading-relaxed text-gray-600">{personalInfo.summary}</p>
                     </section>
                 );
             case 'skills':

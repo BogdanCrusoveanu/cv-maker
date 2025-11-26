@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const api = axios.create({
+const axiosInstance = axios.create({
     baseURL: 'http://localhost:5140/api', // Default .NET API port, might need adjustment
 });
 
-api.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -12,7 +12,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-api.interceptors.response.use(
+axiosInstance.interceptors.response.use(
     (response) => response,
     async (error: any) => {
         const originalRequest = error.config;
@@ -36,10 +36,10 @@ api.interceptors.response.use(
                 localStorage.setItem('token', newToken);
                 localStorage.setItem('refreshToken', newRefreshToken);
 
-                api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
                 originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
 
-                return api(originalRequest);
+                return axiosInstance(originalRequest);
             } catch (refreshError) {
                 console.error("Token refresh failed", refreshError);
                 localStorage.removeItem('token');
@@ -51,5 +51,18 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+const api = {
+    get: axiosInstance.get,
+    post: axiosInstance.post,
+    put: axiosInstance.put,
+    delete: axiosInstance.delete,
+    defaults: axiosInstance.defaults,
+    interceptors: axiosInstance.interceptors,
+    deleteCv: (id: number) => axiosInstance.delete(`/cv/${id}`),
+    shareCv: (id: number) => axiosInstance.post(`/cv/${id}/share`),
+    unshareCv: (id: number) => axiosInstance.post(`/cv/${id}/unshare`),
+    getSharedCv: (token: string) => axiosInstance.get(`/cv/shared/${token}`),
+};
 
 export default api;

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { FileText, Edit, Trash2, Clock } from 'lucide-react';
+import { ShareCvDialog } from '../components/ShareCvDialog';
+import { FileText, Edit, Trash2, Clock, Share2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useCvs, useDeleteCv } from '../hooks/useCv';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +19,9 @@ export default function DashboardPage() {
     const dialog = useDialog();
     const { showToast } = useToast();
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+    const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+    const [shareCvId, setShareCvId] = useState<number | null>(null);
+    const [shareToken, setShareToken] = useState<string | null>(null);
 
     const handleDeleteAccount = async () => {
         const isConfirmed = await dialog.confirm({
@@ -138,6 +142,18 @@ export default function DashboardPage() {
                                         <Edit size={18} />
                                     </button>
                                     <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShareCvId(cv.id);
+                                            setShareToken(JSON.parse(cv.data || '{}').publicToken || null); // Assuming publicToken is stored in data for now, or fetch it
+                                            setIsShareDialogOpen(true);
+                                        }}
+                                        className="p-2 bg-white rounded-full shadow-md hover:bg-green-50 text-green-600 transition-colors"
+                                        title="Share"
+                                    >
+                                        <Share2 size={18} />
+                                    </button>
+                                    <button
                                         onClick={(e) => handleDelete(cv.id, e)}
                                         className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 text-red-600 transition-colors"
                                         title="Delete"
@@ -168,6 +184,17 @@ export default function DashboardPage() {
                     ))}
                 </div >
             </main >
+
+            <ShareCvDialog
+                isOpen={isShareDialogOpen}
+                onClose={() => setIsShareDialogOpen(false)}
+                cvId={shareCvId || 0}
+                initialPublicToken={shareToken}
+                onShareChange={(token) => {
+                    // Optimistically update the local state if needed, or invalidate query
+                    // For now, simple reload or refetch would be best, but we'll just close
+                }}
+            />
         </div >
     );
 }

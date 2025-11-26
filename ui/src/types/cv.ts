@@ -93,6 +93,7 @@ export interface CvData {
     sectionOrder?: string[];
     visibility: Visibility;
     template?: string;
+    publicToken?: string;
     data?: any; // For the backend wrapper structure
 }
 
@@ -103,4 +104,5 @@ export interface CvBackendResponse {
     userId: number;
     createdAt: string;
     updatedAt: string;
+    publicToken?: string;
 }
