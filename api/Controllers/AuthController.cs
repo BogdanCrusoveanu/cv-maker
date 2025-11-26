@@ -89,9 +89,44 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Password changed successfully" });
     }
+
+    [HttpDelete("delete-account")]
+    [Authorize]
+    public async Task<IActionResult> DeleteAccount()
+    {
+        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
+            return Unauthorized();
+
+        var success = await _authService.DeleteAccountAsync(userId);
+        if (!success) return NotFound("User not found");
+
+        return Ok(new { message = "Account deleted successfully" });
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        var token = await _authService.ForgotPasswordAsync(dto.Email);
+        if (token == null) return NotFound("Email not found");
+
+        // In a real app, send email. Here we return the token for testing.
+        return Ok(new { message = "Reset token generated", token });
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        var success = await _authService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
+        if (!success) return BadRequest("Invalid or expired token");
+
+        return Ok(new { message = "Password reset successfully" });
+    }
 }
 
 public record ChangePasswordDto(string CurrentPassword, string NewPassword);
+public record ForgotPasswordDto(string Email);
+public record ResetPasswordDto(string Email, string Token, string NewPassword);
 
 public record RegisterDto(string Email, string Password, string Name);
 

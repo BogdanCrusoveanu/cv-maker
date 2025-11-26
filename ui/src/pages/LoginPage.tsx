@@ -47,9 +47,8 @@ export default function LoginPage() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         placeholder="you@example.com"
-                        className="h-12"
                     />
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                         <Input
                             label="Password"
                             type="password"
@@ -57,12 +56,11 @@ export default function LoginPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             placeholder="••••••••"
-                            className="h-12"
                         />
                         <div className="flex justify-end">
-                            <a href="#" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
                                 Forgot password?
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>

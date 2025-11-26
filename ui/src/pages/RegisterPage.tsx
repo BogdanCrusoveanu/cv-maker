@@ -71,7 +71,6 @@ export default function RegisterPage() {
                         onChange={(e) => setName(e.target.value)}
                         required
                         placeholder="John Doe"
-                        className="h-12"
                     />
                     <Input
                         label="Email Address"
@@ -80,9 +79,8 @@ export default function RegisterPage() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         placeholder="you@example.com"
-                        className="h-12"
                     />
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                         <Input
                             label="Password"
                             type="password"
@@ -90,7 +88,6 @@ export default function RegisterPage() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             placeholder="Create a strong password"
-                            className="h-12"
                         />
                         <p className="text-xs text-gray-500">
                             Must be at least 8 characters with uppercase, lowercase, number & special char.

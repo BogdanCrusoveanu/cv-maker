@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace CvMaker.Api.Services;
 
@@ -132,6 +133,48 @@ public class AuthService
         using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
+    }
+
+    public async Task<bool> DeleteAccountAsync(int userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return false;
+
+        var cvs = _context.Cvs.Where(c => c.UserId == userId);
+        _context.Cvs.RemoveRange(cvs);
+
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<string?> ForgotPasswordAsync(string email)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null) return null;
+
+        var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+        user.ResetToken = token;
+        user.ResetTokenExpiry = DateTime.UtcNow.AddDays(1); // Valid for 1 day as requested
+        await _context.SaveChangesAsync();
+
+        return token;
+    }
+
+    public async Task<bool> ResetPasswordAsync(string email, string token, string newPassword)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null) return false;
+
+        if (user.ResetToken != token || user.ResetTokenExpiry < DateTime.UtcNow)
+            return false;
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.ResetToken = null;
+        user.ResetTokenExpiry = null;
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)

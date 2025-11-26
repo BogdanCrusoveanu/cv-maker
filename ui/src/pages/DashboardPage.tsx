@@ -11,12 +11,30 @@ import { Navbar } from '../components/layout/Navbar';
 
 export default function DashboardPage() {
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout, deleteAccount } = useAuth();
     const { data: cvs, isLoading, isError } = useCvs();
     const deleteCvMutation = useDeleteCv();
     const dialog = useDialog();
     const { showToast } = useToast();
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+
+    const handleDeleteAccount = async () => {
+        const isConfirmed = await dialog.confirm({
+            title: 'Delete Account',
+            message: 'Are you sure you want to delete your account? All your CVs and data will be permanently lost. This action cannot be undone.'
+        });
+
+        if (isConfirmed) {
+            try {
+                await deleteAccount();
+                showToast('Account deleted successfully', 'success');
+                navigate('/login');
+            } catch (error) {
+                console.error("Failed to delete account", error);
+                showToast('Failed to delete account', 'error');
+            }
+        }
+    };
 
     const handleDelete = async (id: number, e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent card click
@@ -64,6 +82,7 @@ export default function DashboardPage() {
                 onLogout={logout}
                 onChangePassword={() => setIsPasswordDialogOpen(true)}
                 onCreateCv={handleCreate}
+                onDeleteAccount={handleDeleteAccount}
             />
 
             <ChangePasswordDialog

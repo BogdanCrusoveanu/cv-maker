@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Plus, LogOut, Lock, Menu, X, ChevronDown } from 'lucide-react';
+import { Plus, LogOut, Lock, Menu, X, ChevronDown, Trash2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Dropdown, DropdownItem } from '../ui/Dropdown';
 import { useState } from 'react';
@@ -10,9 +10,10 @@ interface NavbarProps {
     onLogout: () => void;
     onChangePassword: () => void;
     onCreateCv: () => void;
+    onDeleteAccount: () => void;
 }
 
-export const Navbar = ({ onLogout, onChangePassword, onCreateCv }: NavbarProps) => {
+export const Navbar = ({ onLogout, onChangePassword, onCreateCv, onDeleteAccount }: NavbarProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user } = useAuth();
 
@@ -70,8 +71,12 @@ export const Navbar = ({ onLogout, onChangePassword, onCreateCv }: NavbarProps) 
                                 <DropdownItem onClick={onChangePassword} icon={Lock}>
                                     Change Password
                                 </DropdownItem>
-                                <DropdownItem onClick={onLogout} icon={LogOut} variant="danger">
+                                <DropdownItem onClick={onLogout} icon={LogOut}>
                                     Logout
+                                </DropdownItem>
+                                <div className="h-px bg-gray-100 my-1"></div>
+                                <DropdownItem onClick={onDeleteAccount} icon={Trash2} variant="danger">
+                                    Delete Account
                                 </DropdownItem>
                             </Dropdown>
                         )}
@@ -118,10 +123,18 @@ export const Navbar = ({ onLogout, onChangePassword, onCreateCv }: NavbarProps) 
                         <Button
                             onClick={() => { onLogout(); setIsMenuOpen(false); }}
                             variant="ghost"
-                            className="w-full justify-start text-red-600 hover:bg-red-50"
+                            className="w-full justify-start text-gray-600 hover:bg-gray-50"
                             icon={LogOut}
                         >
                             Logout
+                        </Button>
+                        <Button
+                            onClick={() => { onDeleteAccount(); setIsMenuOpen(false); }}
+                            variant="ghost"
+                            className="w-full justify-start text-red-600 hover:bg-red-50"
+                            icon={Trash2}
+                        >
+                            Delete Account
                         </Button>
                     </div>
                 </div>
