@@ -8,6 +8,7 @@ import { useToast } from '../context/ToastContext';
 import { useState } from 'react';
 import { ChangePasswordDialog } from '../components/auth/ChangePasswordDialog';
 import { Navbar } from '../components/layout/Navbar';
+import { CvPreview } from '../components/CvPreview';
 
 export default function DashboardPage() {
     const navigate = useNavigate();
@@ -124,12 +125,8 @@ export default function DashboardPage() {
                         >
                             {/* Card Header / Preview Area */}
                             <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 relative p-6 flex items-center justify-center group-hover:from-blue-50 group-hover:to-indigo-50 transition-colors">
-                                <div className="bg-white shadow-md p-4 w-32 h-40 transform rotate-3 group-hover:rotate-0 group-hover:scale-105 transition-all duration-300 border border-gray-200 flex flex-col gap-2">
-                                    <div className="h-2 w-16 bg-gray-200 rounded"></div>
-                                    <div className="h-2 w-24 bg-gray-200 rounded"></div>
-                                    <div className="h-1 w-full bg-gray-100 rounded mt-2"></div>
-                                    <div className="h-1 w-full bg-gray-100 rounded"></div>
-                                    <div className="h-1 w-20 bg-gray-100 rounded"></div>
+                                <div className="bg-white shadow-md w-32 h-40 transform rotate-3 group-hover:rotate-0 group-hover:scale-105 transition-all duration-300 flex flex-col">
+                                    <CvPreview template={JSON.parse(cv.data || '{}').template || 'modern'} />
                                 </div>
 
                                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex gap-2">

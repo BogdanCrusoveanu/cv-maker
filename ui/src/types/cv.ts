@@ -92,6 +92,7 @@ export interface CvData {
     customSections?: CustomSection[];
     sectionOrder?: string[];
     visibility: Visibility;
+    template?: string;
     data?: any; // For the backend wrapper structure
 }
 

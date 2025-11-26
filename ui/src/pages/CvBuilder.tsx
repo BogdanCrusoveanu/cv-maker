@@ -63,6 +63,9 @@ export default function CvBuilder() {
                 try {
                     const parsedData = JSON.parse(cvDataFromApi.data);
                     setCvData(parsedData);
+                    if (parsedData.template) {
+                        setCurrentTemplate(parsedData.template);
+                    }
                 } catch (e) {
                     console.error("Error parsing CV data", e);
                 }
@@ -71,6 +74,7 @@ export default function CvBuilder() {
             // Reset if creating new
             setCvData(emptyCv);
             setCvId(undefined);
+            setCurrentTemplate('modern');
         }
     }, [cvDataFromApi, id]);
 
@@ -78,7 +82,8 @@ export default function CvBuilder() {
         const cvToSave: CvData = {
             ...cvData,
             id: cvId,
-            title: cvData.personalInfo.fullName + "'s CV"
+            title: cvData.personalInfo.fullName + "'s CV",
+            template: currentTemplate
         };
 
         saveCvMutation.mutate(cvToSave, {
