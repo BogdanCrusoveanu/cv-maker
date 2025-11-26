@@ -50,7 +50,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { token, refreshToken, name } = response.data;
         localStorage.setItem('token', token);
         localStorage.setItem('refreshToken', refreshToken);
-        setUser({ token, name });
+        
+        let userName = name;
+        if (!userName) {
+            const decoded = parseJwt(token);
+            userName = decoded?.name || decoded?.unique_name || 'User';
+        }
+        
+        setUser({ token, name: userName });
     };
 
     const register = async (email: string, password: string, name: string) => {

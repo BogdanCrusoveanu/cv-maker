@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
 import { useToast } from '../../context/ToastContext';
 import api from '../../services/api';
 
@@ -55,33 +56,26 @@ export const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ isOp
             <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">Change Password</h3>
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-                        <input
+                    <div className="space-y-4 mb-6">
+                        <Input
+                            label="Current Password"
                             type="password"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required
                         />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                        <input
+                        <Input
+                            label="New Password"
                             type="password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required
                         />
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                        <input
+                        <Input
+                            label="Confirm New Password"
                             type="password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             required
                         />
                     </div>
