@@ -23,6 +23,7 @@ export default function CvBuilder() {
     const [currentTemplate, setCurrentTemplate] = useState('modern')
     const [cvId, setCvId] = useState<number | undefined>(id ? parseInt(id) : undefined);
     const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     // Initial empty state
     const emptyCv: CvData = {
@@ -103,8 +104,61 @@ export default function CvBuilder() {
     if (isLoading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
     if (isError) return <div className="flex justify-center items-center h-screen text-red-500">Error loading CV</div>;
 
-    const handlePrint = () => {
-        window.print()
+
+    const handlePrint = async () => {
+        if (!cvId) {
+            showToast('Please save your CV first', 'error');
+            return;
+        }
+
+        setIsGeneratingPdf(true);
+        try {
+            const token = localStorage.getItem('token');
+            const url = `http://localhost:5140/api/cv/${cvId}/pdf`;
+            
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate PDF');
+            }
+
+            // Get the blob with explicit PDF MIME type
+            const blob = await response.blob();
+            const pdfBlob = new Blob([blob], { type: 'application/pdf' });
+            const blobUrl = URL.createObjectURL(pdfBlob);
+            
+            // Ensure filename ends with .pdf
+            let filename = (cvData.personalInfo.fullName || 'CV').trim();
+            filename = filename.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+            if (!filename.toLowerCase().endsWith('.pdf')) {
+                filename += '.pdf';
+            }
+            
+            // Create and trigger download link
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            
+            // Cleanup after download starts
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(blobUrl);
+            }, 250);
+            
+            showToast('PDF downloaded successfully!', 'success');
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            showToast('Failed to generate PDF', 'error');
+        } finally {
+            setIsGeneratingPdf(false);
+        }
     }
 
     return (
@@ -270,6 +324,22 @@ export default function CvBuilder() {
                      // Let's just leave it simple for now.
                 }}
             />
+
+            {/* PDF Generation Loading Overlay */}
+            {isGeneratingPdf && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-8 flex flex-col items-center gap-4 shadow-2xl">
+                        <div className="relative">
+                            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+                            <Download className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-blue-600" size={24} />
+                        </div>
+                        <div className="text-center">
+                            <h3 className="text-lg font-bold text-gray-900 mb-1">Generating PDF...</h3>
+                            <p className="text-sm text-gray-600">This may take a few seconds</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

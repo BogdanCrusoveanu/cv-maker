@@ -15,13 +15,13 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
                             {personalInfo.email && (
                                 <div className="flex items-center gap-2 text-sm">
                                     <Mail size={16} className="flex-shrink-0" />
-                                    <span className="break-all">{personalInfo.email}</span>
+                                    <span className="break-all"><a href={`mailto:${personalInfo.email}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.email}</a></span>
                                 </div>
                             )}
                             {personalInfo.phone && (
                                 <div className="flex items-center gap-2 text-sm">
                                     <Phone size={16} className="flex-shrink-0" />
-                                    <span>{personalInfo.phone}</span>
+                                    <span><a href={`tel:${personalInfo.phone}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.phone}</a></span>
                                 </div>
                             )}
                             {personalInfo.location && (
@@ -33,14 +33,20 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
                             {personalInfo.website && (
                                 <div className="flex items-center gap-2 text-sm">
                                     <Globe size={16} className="flex-shrink-0" />
-                                    <span className="break-all">{personalInfo.website}</span>
+                                    <span className="break-all"><a href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.website}</a></span>
                                 </div>
                             )}
                             {/* Custom Fields */}
                             {(personalInfo.customFields || []).map(field => (
                                 <div key={field.id} className="flex items-center gap-2 text-sm">
                                     <span className="font-bold w-4">{field.label[0]}</span>
-                                    <span>{field.value}</span>
+                                    <span>
+                                        {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                                            <a href={field.value.startsWith('http') ? field.value : `https://${field.value}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{field.value}</a>
+                                        ) : (
+                                            field.value
+                                        )}
+                                    </span>
                                 </div>
                             ))}
                         </div>
@@ -187,7 +193,7 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
     }
 
     return (
-        <div className="flex min-h-full">
+        <div className="flex min-h-screen">
             {/* Black stripe */}
             <div className="w-4 bg-black flex-shrink-0"></div>
 

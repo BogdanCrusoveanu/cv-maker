@@ -132,7 +132,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
     const mainSections = ['experience', 'education', 'customSections'];
     const order = cvData.sectionOrder || Object.keys(cvData.visibility);
     return (
-        <div className="min-h-full bg-gray-50 font-sans">
+        <div className="min-h-screen bg-gray-50 font-sans">
             {/* Header */}
             <div className="bg-blue-400 text-white p-8 relative overflow-hidden">
                 <div className="flex justify-between items-start relative z-10">
@@ -153,13 +153,18 @@ export default function Azure({ cvData }: { cvData: CvData }) {
                 </div>
 
                 <div className="mt-8 flex flex-wrap gap-6 text-sm font-medium text-blue-50 border-t border-blue-300 pt-6">
-                    {personalInfo.email && <div className="flex items-center gap-2"><Mail size={16} /> {personalInfo.email}</div>}
-                    {personalInfo.phone && <div className="flex items-center gap-2"><Phone size={16} /> {personalInfo.phone}</div>}
+                    {personalInfo.email && <div className="flex items-center gap-2"><Mail size={16} /> <a href={`mailto:${personalInfo.email}`} className="hover:underline">{personalInfo.email}</a></div>}
+                    {personalInfo.phone && <div className="flex items-center gap-2"><Phone size={16} /> <a href={`tel:${personalInfo.phone}`} className="hover:underline">{personalInfo.phone}</a></div>}
                     {personalInfo.location && <div className="flex items-center gap-2"><MapPin size={16} /> {personalInfo.location}</div>}
-                    {personalInfo.website && <div className="flex items-center gap-2"><Globe size={16} /> {personalInfo.website}</div>}
+                    {personalInfo.website && <div className="flex items-center gap-2"><Globe size={16} /> <a href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.website}</a></div>}
                     {(personalInfo.customFields || []).map(field => (
                         <div key={field.id} className="flex items-center gap-2">
-                            <span className="opacity-75">{field.label}:</span> {field.value}
+                            <span className="opacity-75">{field.label}:</span> 
+                            {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                                <a href={field.value.startsWith('http') ? field.value : `https://${field.value}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{field.value}</a>
+                            ) : (
+                                field.value
+                            )}
                         </div>
                     ))}
                 </div>

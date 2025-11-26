@@ -21,7 +21,7 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                         {personalInfo.phone && (
                             <div>
                                 <h3 className="font-bold text-lg mb-2">Phone</h3>
-                                <p className="text-sm">{personalInfo.phone}</p>
+                                <p className="text-sm"><a href={`tel:${personalInfo.phone}`} className="hover:underline">{personalInfo.phone}</a></p>
                                 <div className="h-px bg-white/30 mt-3"></div>
                             </div>
                         )}
@@ -29,7 +29,7 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                         {personalInfo.email && (
                             <div>
                                 <h3 className="font-bold text-lg mb-2">Email</h3>
-                                <p className="text-sm break-all">{personalInfo.email}</p>
+                                <p className="text-sm break-all"><a href={`mailto:${personalInfo.email}`} className="hover:underline">{personalInfo.email}</a></p>
                                 <div className="h-px bg-white/30 mt-3"></div>
                             </div>
                         )}
@@ -37,7 +37,7 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                         {personalInfo.website && (
                             <div>
                                 <h3 className="font-bold text-lg mb-2">Website</h3>
-                                <p className="text-sm">{personalInfo.website}</p>
+                                <p className="text-sm"><a href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.website}</a></p>
                                 <div className="h-px bg-white/30 mt-3"></div>
                             </div>
                         )}
@@ -46,7 +46,13 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                         {(personalInfo.customFields || []).map(field => (
                             <div key={field.id}>
                                 <h3 className="font-bold text-lg mb-2">{field.label}</h3>
-                                <p className="text-sm">{field.value}</p>
+                                <p className="text-sm">
+                                    {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                                        <a href={field.value.startsWith('http') ? field.value : `https://${field.value}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{field.value}</a>
+                                    ) : (
+                                        field.value
+                                    )}
+                                </p>
                                 <div className="h-px bg-white/30 mt-3"></div>
                             </div>
                         ))}
@@ -215,7 +221,7 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
     }
 
     return (
-        <div className="flex min-h-full font-serif">
+        <div className="flex min-h-screen font-serif">
             {/* Sidebar - Terracotta Red */}
             <div className="w-1/3 bg-[#C85A54] text-white p-8 flex flex-col gap-6">
                 {/* Photo or Initials Box */}

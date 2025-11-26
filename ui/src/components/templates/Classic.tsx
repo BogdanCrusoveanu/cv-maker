@@ -27,7 +27,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                                     <Phone size={20} />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm">{personalInfo.phone}</p>
+                                    <p className="text-sm"><a href={`tel:${personalInfo.phone}`} className="hover:underline">{personalInfo.phone}</a></p>
                                 </div>
                             </div>
                         )}
@@ -38,7 +38,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                                     <Mail size={20} />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm break-all">{personalInfo.email}</p>
+                                    <p className="text-sm break-all"><a href={`mailto:${personalInfo.email}`} className="hover:underline">{personalInfo.email}</a></p>
                                 </div>
                             </div>
                         )}
@@ -49,7 +49,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                                     <Globe size={20} />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm">{personalInfo.website}</p>
+                                    <p className="text-sm"><a href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.website}</a></p>
                                 </div>
                             </div>
                         )}
@@ -61,7 +61,13 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-xs font-bold opacity-75">{field.label}</p>
-                                    <p className="text-sm">{field.value}</p>
+                                    <p className="text-sm">
+                                        {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                                            <a href={field.value.startsWith('http') ? field.value : `https://${field.value}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{field.value}</a>
+                                        ) : (
+                                            field.value
+                                        )}
+                                    </p>
                                 </div>
                             </div>
                         ))}
@@ -223,7 +229,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
     )
 
     return (
-        <div className="flex min-h-full relative">
+        <div className="flex min-h-screen relative">
             {/* Sidebar - Purple & Navy */}
             <div className="w-1/3 relative overflow-hidden" style={{ background: 'linear-gradient(to bottom, #E5D4ED 0%, #E5D4ED 40%, #2C3E50 40%, #2C3E50 100%)' }}>
                 <div className="relative z-10 p-8">

@@ -14,12 +14,18 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                             <span className="bg-yellow-400 text-gray-900 rounded-full p-1"><Phone size={12} /></span> Contact
                         </h3>
                         <div className="space-y-2 text-sm text-gray-300 pl-2 border-l border-gray-600">
-                            {personalInfo.email && <p>{personalInfo.email}</p>}
-                            {personalInfo.phone && <p>{personalInfo.phone}</p>}
-                            {personalInfo.website && <p>{personalInfo.website}</p>}
+                            {personalInfo.email && <p><a href={`mailto:${personalInfo.email}`} className="hover:underline text-yellow-400">{personalInfo.email}</a></p>}
+                            {personalInfo.phone && <p><a href={`tel:${personalInfo.phone}`} className="hover:underline text-yellow-400">{personalInfo.phone}</a></p>}
+                            {personalInfo.website && <p><a href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline text-yellow-400">{personalInfo.website}</a></p>}
                             {personalInfo.location && <p>{personalInfo.location}</p>}
                             {(personalInfo.customFields || []).map(field => (
-                                <p key={field.id}>{field.value}</p>
+                                <p key={field.id}>
+                                    {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                                        <a href={field.value.startsWith('http') ? field.value : `https://${field.value}`} target="_blank" rel="noopener noreferrer" className="hover:underline text-yellow-400">{field.value}</a>
+                                    ) : (
+                                        field.value
+                                    )}
+                                </p>
                             ))}
                         </div>
                     </div>
@@ -167,7 +173,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
     const order = cvData.sectionOrder || Object.keys(cvData.visibility);
 
     return (
-        <div className="min-h-full flex font-sans bg-gray-900 text-gray-100">
+        <div className="min-h-screen flex font-sans bg-gray-900 text-gray-100">
             {/* Sidebar - Dark Blue/Gray */}
             <div className="w-1/3 bg-gray-800 p-8 flex flex-col items-center text-center border-r border-gray-700">
                 <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-400 mb-6 shadow-2xl">

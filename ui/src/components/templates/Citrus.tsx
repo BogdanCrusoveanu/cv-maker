@@ -14,12 +14,18 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
                         </h2>
                         <div className="space-y-3 text-sm font-medium">
                             {personalInfo.location && <p>{personalInfo.location}</p>}
-                            {personalInfo.phone && <p>{personalInfo.phone}</p>}
-                            {personalInfo.email && <p>{personalInfo.email}</p>}
-                            {personalInfo.website && <p>{personalInfo.website}</p>}
+                            {personalInfo.phone && <p><a href={`tel:${personalInfo.phone}`} className="hover:underline">{personalInfo.phone}</a></p>}
+                            {personalInfo.email && <p><a href={`mailto:${personalInfo.email}`} className="hover:underline">{personalInfo.email}</a></p>}
+                            {personalInfo.website && <p><a href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.website}</a></p>}
                             <p className="text-xs mt-2 opacity-75">@{personalInfo.fullName.replace(/\s+/g, '')}</p>
                             {(personalInfo.customFields || []).map(field => (
-                                <p key={field.id}>{field.value}</p>
+                                <p key={field.id}>
+                                    {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                                        <a href={field.value.startsWith('http') ? field.value : `https://${field.value}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{field.value}</a>
+                                    ) : (
+                                        field.value
+                                    )}
+                                </p>
                             ))}
                         </div>
                     </div>
@@ -161,9 +167,9 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
     const mainSections = ['summary', 'experience', 'education', 'customSections'];
     const order = cvData.sectionOrder || Object.keys(cvData.visibility);
     return (
-        <div className="min-h-full bg-white flex font-sans">
+        <div className="min-h-screen bg-white flex font-sans">
             {/* Left Sidebar - Yellow */}
-            <div className="w-1/3 bg-yellow-400 p-8 text-gray-800 flex flex-col gap-10 min-h-full">
+            <div className="w-1/3 bg-yellow-400 p-8 text-gray-800 flex flex-col gap-10 min-h-screen">
                 {/* Render sidebar sections based on order */}
                 {order.filter(key => sidebarSections.includes(key)).map(key => renderSidebarSection(key))}
             </div>

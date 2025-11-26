@@ -37,9 +37,10 @@ export interface Language {
 }
 
 export interface CustomField {
-    id: number;
+    id: string;
     label: string;
     value: string;
+    isUrl?: boolean;
 }
 
 export interface CustomSectionItem {

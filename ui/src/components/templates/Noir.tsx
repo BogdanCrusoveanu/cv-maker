@@ -12,13 +12,18 @@ export default function Noir({ cvData }: { cvData: CvData }) {
                     <div key="contact">
                         <h2 className="text-xl uppercase tracking-widest mb-4 border-b border-gray-700 pb-2">Contact</h2>
                         <div className="space-y-3 text-sm text-gray-400">
-                            {personalInfo.email && <div className="flex items-center gap-2"><Mail size={14} /> {personalInfo.email}</div>}
-                            {personalInfo.phone && <div className="flex items-center gap-2"><Phone size={14} /> {personalInfo.phone}</div>}
+                            {personalInfo.email && <div className="flex items-center gap-2"><Mail size={14} /> <a href={`mailto:${personalInfo.email}`} className="hover:underline">{personalInfo.email}</a></div>}
+                            {personalInfo.phone && <div className="flex items-center gap-2"><Phone size={14} /> <a href={`tel:${personalInfo.phone}`} className="hover:underline">{personalInfo.phone}</a></div>}
                             {personalInfo.location && <div className="flex items-center gap-2"><MapPin size={14} /> {personalInfo.location}</div>}
-                            {personalInfo.website && <div className="flex items-center gap-2"><MapPin size={14} /> {personalInfo.website}</div>}
+                            {personalInfo.website && <div className="flex items-center gap-2"><MapPin size={14} /> <a href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{personalInfo.website}</a></div>}
                             {(personalInfo.customFields || []).map(field => (
                                 <div key={field.id} className="flex items-center gap-2">
-                                    <span className="font-bold text-xs">{field.label}:</span> {field.value}
+                                    <span className="font-bold text-xs">{field.label}:</span> 
+                                    {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                                        <a href={field.value.startsWith('http') ? field.value : `https://${field.value}`} target="_blank" rel="noopener noreferrer" className="hover:underline">{field.value}</a>
+                                    ) : (
+                                        field.value
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -143,7 +148,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
     const mainSections = ['experience', 'education', 'customSections'];
     const order = cvData.sectionOrder || Object.keys(cvData.visibility);
     return (
-        <div className="flex min-h-full bg-white font-sans">
+        <div className="flex min-h-screen bg-white font-sans">
             {/* Sidebar */}
             <div className="w-1/3 bg-gray-900 text-white p-8 flex flex-col gap-8">
                 <div className="flex justify-center">

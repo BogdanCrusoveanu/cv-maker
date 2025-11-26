@@ -10,6 +10,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import ResetLinkExpiredPage from './pages/ResetLinkExpiredPage';
 import SharedCvPage from './pages/SharedCvPage';
+import PdfPage from './pages/PdfPage';
 import './index.css';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -55,6 +56,7 @@ function App() {
               } />
               <Route path="/reset-link-expired" element={<ResetLinkExpiredPage />} />
               <Route path="/shared/:token" element={<SharedCvPage />} />
+              <Route path="/pdf/:id" element={<PdfPage />} />
               
               <Route path="/dashboard" element={
                 <ProtectedRoute>

@@ -190,7 +190,7 @@ export default function DashboardPage() {
                 onClose={() => setIsShareDialogOpen(false)}
                 cvId={shareCvId || 0}
                 initialPublicToken={shareToken}
-                onShareChange={(token) => {
+                onShareChange={() => {
                     // Optimistically update the local state if needed, or invalidate query
                     // For now, simple reload or refetch would be best, but we'll just close
                 }}

@@ -1,4 +1,4 @@
-import { Upload, Plus, X, Eye, EyeOff, Trash2, ArrowUp, ArrowDown } from 'lucide-react'
+import { Upload, Plus, X, Eye, EyeOff, Trash2, ArrowUp, ArrowDown, Link } from 'lucide-react'
 import { useEffect } from 'react'
 import api from '../services/api'
 import { Button } from './ui/Button'
@@ -318,12 +318,12 @@ export default function Editor({ cvData, setCvData, currentTemplate }: EditorPro
             ...cvData,
             personalInfo: {
                 ...cvData.personalInfo,
-                customFields: [...(cvData.personalInfo.customFields || []), { id: Date.now(), label: '', value: '' }]
+                customFields: [...(cvData.personalInfo.customFields || []), { id: Date.now().toString(), label: '', value: '', isUrl: false }]
             }
         })
     }
 
-    const updateCustomField = (id: number, field: keyof CustomField, value: string) => {
+    const updateCustomField = (id: string, field: keyof CustomField, value: string | boolean) => {
         setCvData({
             ...cvData,
             personalInfo: {
@@ -333,7 +333,7 @@ export default function Editor({ cvData, setCvData, currentTemplate }: EditorPro
         })
     }
 
-    const removeCustomField = (id: number) => {
+    const removeCustomField = (id: string) => {
         setCvData({
             ...cvData,
             personalInfo: {
@@ -516,6 +516,13 @@ export default function Editor({ cvData, setCvData, currentTemplate }: EditorPro
                                     onChange={(e) => updateCustomField(field.id, 'value', e.target.value)}
                                     color="blue"
                                     className="flex-1"
+                                />
+                                <Button
+                                    onClick={() => updateCustomField(field.id, 'isUrl', !field.isUrl)}
+                                    variant="ghost"
+                                    icon={Link}
+                                    title={field.isUrl ? "Unlink" : "Make URL"}
+                                    className={field.isUrl ? "text-blue-500" : "text-gray-400"}
                                 />
                                 <Button
                                     onClick={() => removeCustomField(field.id)}
