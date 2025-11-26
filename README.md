@@ -51,9 +51,15 @@ Navigate to the API directory and run the application:
 
 ```bash
 cd api
-# Restore dependencies (optional, dotnet run usually does this)
-dotnet restore
-# Run the application
+# 1. Configure Database
+# Open appsettings.json and update the "DefaultConnection" string with your database credentials.
+# Ensure you have a database server running (e.g., MySQL, SQL Server) that matches the connection string format.
+
+# 2. Apply Migrations & Create Database
+# This command will create the database (if it doesn't exist) and apply all pending migrations.
+dotnet ef database update
+
+# 3. Run the application
 dotnet run
 ```
 
