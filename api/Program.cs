@@ -14,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<CvService>();
 builder.Services.AddSingleton<PdfService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();

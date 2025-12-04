@@ -1,9 +1,7 @@
-using CvMaker.Api.Data;
-using CvMaker.Api.Models;
+using CvMaker.Api.DTOs;
 using CvMaker.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CvMaker.Api.Controllers;
@@ -13,14 +11,12 @@ namespace CvMaker.Api.Controllers;
 [Route("api/[controller]")]
 public class CvController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    private readonly PdfService _pdfService;
+    private readonly CvService _cvService;
     private readonly IConfiguration _configuration;
 
-    public CvController(AppDbContext context, PdfService pdfService, IConfiguration configuration)
+    public CvController(CvService cvService, IConfiguration configuration)
     {
-        _context = context;
-        _pdfService = pdfService;
+        _cvService = cvService;
         _configuration = configuration;
     }
 
@@ -28,7 +24,7 @@ public class CvController : ControllerBase
     public async Task<IActionResult> GetCvs()
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var cvs = await _context.Cvs.Where(c => c.UserId == userId).ToListAsync();
+        var cvs = await _cvService.GetAllCvsAsync(userId);
         return Ok(cvs);
     }
 
@@ -36,7 +32,7 @@ public class CvController : ControllerBase
     public async Task<IActionResult> GetCv(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        var cv = await _cvService.GetCvAsync(id, userId);
         if (cv == null) return NotFound();
         return Ok(cv);
     }
@@ -46,33 +42,9 @@ public class CvController : ControllerBase
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         
-        Cv? cv = null;
-        if (dto.Id > 0)
-        {
-            cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == dto.Id && c.UserId == userId);
-        }
-
-        if (cv == null)
-        {
-            cv = new Cv
-            {
-                UserId = userId,
-                Title = dto.Title,
-                Data = dto.Data,
-                CreatedAt = DateTime.UtcNow
-            };
-            _context.Cvs.Add(cv);
-        }
-        else
-        {
-            cv.Title = dto.Title;
-            cv.Data = dto.Data;
-            cv.UpdatedAt = DateTime.UtcNow;
-        }
-
         try
         {
-            await _context.SaveChangesAsync();
+            var cv = await _cvService.SaveCvAsync(dto, userId);
             return Ok(cv);
         }
         catch (Exception ex)
@@ -86,50 +58,37 @@ public class CvController : ControllerBase
     public async Task<IActionResult> DeleteCv(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        var success = await _cvService.DeleteCvAsync(id, userId);
         
-        if (cv == null) return NotFound();
-
-        _context.Cvs.Remove(cv);
-        await _context.SaveChangesAsync();
+        if (!success) return NotFound();
 
         return NoContent();
     }
+
     [HttpPost("{id}/share")]
     public async Task<IActionResult> ShareCv(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
-        
-        if (cv == null) return NotFound();
-
-        if (string.IsNullOrEmpty(cv.PublicToken))
+        try
         {
-            cv.PublicToken = Guid.NewGuid().ToString("N");
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error sharing CV: {ex}");
-                return StatusCode(500, ex.Message);
-            }
+            var token = await _cvService.ShareCvAsync(id, userId);
+            if (token == null) return NotFound();
+            return Ok(new { Token = token });
         }
-
-        return Ok(new { Token = cv.PublicToken });
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sharing CV: {ex}");
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpPost("{id}/unshare")]
     public async Task<IActionResult> UnshareCv(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        var success = await _cvService.UnshareCvAsync(id, userId);
         
-        if (cv == null) return NotFound();
-
-        cv.PublicToken = null;
-        await _context.SaveChangesAsync();
+        if (!success) return NotFound();
 
         return Ok();
     }
@@ -138,7 +97,7 @@ public class CvController : ControllerBase
     [HttpGet("shared/{token}")]
     public async Task<IActionResult> GetSharedCv(string token)
     {
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.PublicToken == token);
+        var cv = await _cvService.GetSharedCvAsync(token);
         if (cv == null) return NotFound();
         
         // Return only necessary data for viewing
@@ -151,7 +110,7 @@ public class CvController : ControllerBase
     {
         // This endpoint is for PDF generation only - allows unauthenticated access
         // Security: Only works for localhost requests (Puppeteer)
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id);
+        var cv = await _cvService.GetCvForPdfAsync(id);
         if (cv == null) return NotFound();
         
         return Ok(new { cv.Id, cv.Title, cv.Data, cv.UpdatedAt });
@@ -161,7 +120,7 @@ public class CvController : ControllerBase
     public async Task<IActionResult> DownloadPdf(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        var cv = await _cvService.GetCvAsync(id, userId);
         
         if (cv == null) return NotFound();
 
@@ -171,7 +130,7 @@ public class CvController : ControllerBase
 
         try
         {
-            var pdfBytes = await _pdfService.GeneratePdfFromUrlAsync(pdfUrl);
+            var pdfBytes = await _cvService.GeneratePdfAsync(pdfUrl);
             
             // Sanitize filename - remove special characters
             var sanitizedTitle = new string(cv.Title
@@ -199,7 +158,7 @@ public class CvController : ControllerBase
     [HttpGet("shared/{token}/pdf")]
     public async Task<IActionResult> DownloadSharedPdf(string token)
     {
-        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.PublicToken == token);
+        var cv = await _cvService.GetSharedCvAsync(token);
         if (cv == null) return NotFound();
 
         // Get frontend URL for PDF rendering
@@ -208,7 +167,7 @@ public class CvController : ControllerBase
 
         try
         {
-            var pdfBytes = await _pdfService.GeneratePdfFromUrlAsync(pdfUrl);
+            var pdfBytes = await _cvService.GeneratePdfAsync(pdfUrl);
             
             // Sanitize filename - remove special characters
             var sanitizedTitle = new string(cv.Title
@@ -232,5 +191,3 @@ public class CvController : ControllerBase
         }
     }
 }
-
-public record CvDto(int Id, string Title, string Data);

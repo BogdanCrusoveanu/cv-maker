@@ -1,4 +1,5 @@
 using CvMaker.Api.Services;
+using CvMaker.Api.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -122,22 +123,4 @@ public class AuthController : ControllerBase
 
         return Ok(new { message = "Password reset successfully" });
     }
-}
-
-public record ChangePasswordDto(string CurrentPassword, string NewPassword);
-public record ForgotPasswordDto(string Email);
-public record ResetPasswordDto(string Email, string Token, string NewPassword);
-
-public record RegisterDto(string Email, string Password, string Name);
-
-public class LoginDto
-{
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}
-
-public class RefreshTokenDto
-{
-    public string Token { get; set; } = string.Empty;
-    public string RefreshToken { get; set; } = string.Empty;
 }
