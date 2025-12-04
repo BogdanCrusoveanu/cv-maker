@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { ToastProvider } from './context/ToastContext';
+import { ToastProvider, useToast } from './context/ToastContext';
+import { setupInterceptors } from './services/api';
 import { DialogProvider } from './context/DialogContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -12,6 +13,15 @@ import ResetLinkExpiredPage from './pages/ResetLinkExpiredPage';
 import SharedCvPage from './pages/SharedCvPage';
 import PdfPage from './pages/PdfPage';
 import './index.css';
+import { useEffect } from 'react';
+
+const AxiosInterceptorSetup = () => {
+  const { showToast } = useToast();
+  useEffect(() => {
+    setupInterceptors(showToast);
+  }, [showToast]);
+  return null;
+};
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -30,6 +40,7 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <ToastProvider>
+      <AxiosInterceptorSetup />
       <DialogProvider>
         <AuthProvider>
           <Router>

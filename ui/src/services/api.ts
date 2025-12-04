@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+let showToast: (message: string, type: 'success' | 'error' | 'info') => void;
+
+export const setupInterceptors = (toastFn: typeof showToast) => {
+    showToast = toastFn;
+};
+
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:5140/api', // Default .NET API port, might need adjustment
 });
@@ -48,6 +54,11 @@ axiosInstance.interceptors.response.use(
                 return Promise.reject(refreshError);
             }
         }
+        if (showToast) {
+            const message = error.response?.data?.detail || error.message || "An unexpected error occurred";
+            showToast(message, 'error');
+        }
+
         return Promise.reject(error);
     }
 );

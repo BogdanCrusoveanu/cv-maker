@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { ChangePasswordDialog } from '../components/auth/ChangePasswordDialog';
 import { Navbar } from '../components/layout/Navbar';
 import { CvPreview } from '../components/CvPreview';
+import api from '../services/api';
 
 export default function DashboardPage() {
     const navigate = useNavigate();
@@ -104,6 +105,13 @@ export default function DashboardPage() {
                     <div className="text-sm text-gray-500 hidden sm:block">
                         {cvs?.length || 0} {cvs?.length === 1 ? 'Resume' : 'Resumes'}
                     </div>
+                    <Button 
+                        variant="custom" 
+                        className="ml-4 text-red-600 border border-red-200 hover:bg-red-50 px-4 py-2"
+                        onClick={() => api.get('/cv/test-error')}
+                    >
+                        Test Error
+                    </Button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
