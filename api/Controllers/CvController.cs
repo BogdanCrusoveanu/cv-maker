@@ -186,7 +186,7 @@ public class CvController : ControllerBase
             var filename = $"{sanitizedTitle}.pdf";
             
             // Explicitly set headers
-            Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{filename}\"");
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{filename}\"");
             return File(pdfBytes, "application/pdf", filename);
         }
         catch (Exception ex)
@@ -223,7 +223,7 @@ public class CvController : ControllerBase
             var filename = $"{sanitizedTitle}.pdf";
             
             // Explicitly set headers
-            Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{filename}\"");
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{filename}\"");
             return File(pdfBytes, "application/pdf", filename);
         }
         catch (Exception ex)
