@@ -1,92 +1,133 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../services/api';
+import React, { createContext, useContext } from "react";
+import api from "../services/api";
+import JSEncrypt from "jsencrypt";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface User {
-    token: string;
-    name?: string;
+  token: string;
+  name?: string;
 }
 
 interface AuthContextType {
-    user: User | null;
-    login: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string, name: string) => Promise<void>;
-    logout: () => void;
-    deleteAccount: () => Promise<void>;
-    loading: boolean;
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, name: string) => Promise<void>;
+  logout: () => void;
+  deleteAccount: () => Promise<void>;
+  loading: boolean;
+  encryptPassword: (password: string) => string | false;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const queryClient = useQueryClient();
 
-    const parseJwt = (token: string) => {
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        } catch (e) {
-            return null;
-        }
-    };
+  // Fetch Public Key
+  const { data: publicKey, isLoading: publicKeyLoading } = useQuery({
+    queryKey: ["publicKey"],
+    queryFn: async () => {
+      const response = await api.getPublicKey();
+      return response.data.publicKey;
+    },
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const decoded = parseJwt(token);
-            setUser({ 
-                token,
-                name: decoded?.name || decoded?.unique_name || 'User'
-            });
-        }
-        setLoading(false);
-    }, []);
+  // Check Auth Session (Refresh Token)
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      try {
+        const response = await api.post("/auth/refresh");
+        const { name } = response.data;
+        return { token: "cookie", name: name || "User" };
+      } catch (error) {
+        return null;
+      }
+    },
+    retry: false,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    // Only run if the logged_in cookie exists
+    enabled: document.cookie.includes("logged_in=true"),
+  });
 
-    const login = async (email: string, password: string) => {
-        const response = await api.post('/auth/login', { email, password });
-        const { token, refreshToken, name } = response.data;
-        localStorage.setItem('token', token);
-        localStorage.setItem('refreshToken', refreshToken);
-        
-        let userName = name;
-        if (!userName) {
-            const decoded = parseJwt(token);
-            userName = decoded?.name || decoded?.unique_name || 'User';
-        }
-        
-        setUser({ token, name: userName });
-    };
+  const loading = publicKeyLoading || userLoading;
 
-    const register = async (email: string, password: string, name: string) => {
-        await api.post('/auth/register', { email, password, name });
-    };
+  const encryptPassword = (password: string) => {
+    if (!publicKey) {
+      console.error("Public key not available");
+      throw new Error("Encryption service unavailable");
+    }
+    const encryptor = new JSEncrypt();
+    encryptor.setPublicKey(publicKey);
+    const encrypted = encryptor.encrypt(password);
+    if (!encrypted) {
+      throw new Error("Encryption failed");
+    }
+    return encrypted;
+  };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        setUser(null);
-    };
+  const login = async (email: string, password: string) => {
+    const encryptedPassword = encryptPassword(password);
+    const response = await api.post("/auth/login", {
+      email,
+      password: encryptedPassword,
+    });
+    const { name } = response.data;
+    queryClient.setQueryData(["user"], {
+      token: "cookie",
+      name: name || "User",
+    });
+  };
 
-    const deleteAccount = async () => {
-        await api.delete('/auth/delete-account');
-        logout();
-    };
+  const register = async (email: string, password: string, name: string) => {
+    const encryptedPassword = encryptPassword(password);
+    await api.post("/auth/register", {
+      email,
+      password: encryptedPassword,
+      name,
+    });
+  };
 
-    return (
-        <AuthContext.Provider value={{ user, login, register, logout, deleteAccount, loading }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  const logout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (e) {
+      console.error("Logout failed", e);
+    }
+    queryClient.setQueryData(["user"], null);
+  };
+
+  const deleteAccount = async () => {
+    await api.delete("/auth/delete-account");
+    logout();
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user: user || null,
+        login,
+        register,
+        logout,
+        deleteAccount,
+        loading,
+        encryptPassword,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

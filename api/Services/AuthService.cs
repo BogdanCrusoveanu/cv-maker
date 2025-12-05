@@ -29,7 +29,7 @@ public class AuthService
         {
             Email = email,
             Name = name,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+            PasswordHash = HashPassword(password)
         };
 
         _context.Users.Add(user);
@@ -40,8 +40,24 @@ public class AuthService
     public async Task<(string AccessToken, string RefreshToken, string Name)?> LoginAsync(string email, string password)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-            return null;
+        if (user == null) return null;
+
+        var pepper = _configuration["Security:Pepper"];
+        bool isValid = BCrypt.Net.BCrypt.Verify(password + pepper, user.PasswordHash);
+        
+        // Migration: If peppered verification fails, try legacy (unpeppered)
+        if (!isValid)
+        {
+            isValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+            if (isValid)
+            {
+                // Re-hash with pepper
+                user.PasswordHash = HashPassword(password);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        if (!isValid) return null;
 
         var accessToken = GenerateJwtToken(user);
         var refreshToken = GenerateRefreshToken();
@@ -96,10 +112,10 @@ public class AuthService
         var user = await _context.Users.FindAsync(userId);
         if (user == null) return false;
 
-        if (!BCrypt.Net.BCrypt.Verify(currentPassword, user.PasswordHash))
+        if (!VerifyPassword(currentPassword, user.PasswordHash))
             return false;
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.PasswordHash = HashPassword(newPassword);
         await _context.SaveChangesAsync();
         return true;
     }
@@ -169,7 +185,7 @@ public class AuthService
         if (user.ResetToken != token || user.ResetTokenExpiry < DateTime.UtcNow)
             return false;
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.PasswordHash = HashPassword(newPassword);
         user.ResetToken = null;
         user.ResetTokenExpiry = null;
         await _context.SaveChangesAsync();
@@ -194,5 +210,22 @@ public class AuthService
             throw new SecurityTokenException("Invalid token");
 
         return principal;
+    }
+
+
+    private string HashPassword(string password)
+    {
+        var pepper = _configuration["Security:Pepper"];
+        return BCrypt.Net.BCrypt.HashPassword(password + pepper);
+    }
+
+    private bool VerifyPassword(string password, string hash)
+    {
+        var pepper = _configuration["Security:Pepper"];
+        // Try peppered first
+        if (BCrypt.Net.BCrypt.Verify(password + pepper, hash)) return true;
+        // Try legacy
+        if (BCrypt.Net.BCrypt.Verify(password, hash)) return true;
+        return false;
     }
 }
