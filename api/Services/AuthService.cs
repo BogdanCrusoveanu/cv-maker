@@ -37,7 +37,7 @@ public class AuthService
         return user;
     }
 
-    public async Task<(string AccessToken, string RefreshToken, string Name)?> LoginAsync(string email, string password)
+    public async Task<(string AccessToken, string RefreshToken, string Name, string Email)?> LoginAsync(string email, string password)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) return null;
@@ -66,10 +66,10 @@ public class AuthService
         user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
         await _context.SaveChangesAsync();
 
-        return (accessToken, refreshToken, user.Name);
+        return (accessToken, refreshToken, user.Name, user.Email);
     }
 
-    public async Task<(string AccessToken, string RefreshToken)?> RefreshTokenAsync(string token, string refreshToken)
+    public async Task<(string AccessToken, string RefreshToken, string Name, string Email)?> RefreshTokenAsync(string token, string refreshToken)
     {
         var principal = GetPrincipalFromExpiredToken(token);
         if (principal == null) return null;
@@ -88,7 +88,7 @@ public class AuthService
         user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
         await _context.SaveChangesAsync();
 
-        return (newAccessToken, newRefreshToken);
+        return (newAccessToken, newRefreshToken, user.Name, user.Email);
     }
 
 

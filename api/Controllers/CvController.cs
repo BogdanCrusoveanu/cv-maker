@@ -77,6 +77,24 @@ public class CvController : ControllerBase
     }
 
     /// <summary>
+    /// Generates a public share token for a CV.
+    /// </summary>
+    /// <param name="id">The ID of the CV to share.</param>
+    /// <returns>The public token.</returns>
+    [HttpPost("{id}/share")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ShareCv(int id)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var token = await _cvService.ShareCvAsync(id, userId);
+        
+        if (token == null) return NotFound();
+
+        return Ok(new { token });
+    }
+
+    /// <summary>
     /// Revokes the public share token for a CV.
     /// </summary>
     /// <param name="id">The ID of the CV to unshare.</param>
@@ -144,33 +162,15 @@ public class CvController : ControllerBase
     public async Task<IActionResult> DownloadPdf(int id)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var cv = await _cvService.GetCvAsync(id, userId);
-        
-        if (cv == null) return NotFound();
-
-        // Get frontend URL for PDF rendering
         var frontendUrl = _configuration["AppSettings:FrontendUrl"] ?? "http://localhost:5173";
-        var pdfUrl = $"{frontendUrl}/pdf/{id}";
-
+        
         try
         {
-            var pdfBytes = await _cvService.GeneratePdfAsync(pdfUrl);
-            
-            // Sanitize filename - remove special characters
-            var sanitizedTitle = new string(cv.Title
-                .Where(c => char.IsLetterOrDigit(c) || c == ' ' || c == '-' || c == '_')
-                .ToArray())
-                .Trim()
-                .Replace(" ", "_");
-            
-            if (string.IsNullOrWhiteSpace(sanitizedTitle))
-                sanitizedTitle = "CV";
-                
-            var filename = $"{sanitizedTitle}.pdf";
-            
-            // Explicitly set headers
-            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{filename}\"");
-            return File(pdfBytes, "application/pdf", filename);
+            var result = await _cvService.GeneratePdfForDownloadAsync(id, userId, frontendUrl);
+            if (result == null) return NotFound();
+
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{result.Value.FileName}\"");
+            return File(result.Value.FileBytes, "application/pdf", result.Value.FileName);
         }
         catch (Exception ex)
         {
@@ -190,38 +190,22 @@ public class CvController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DownloadSharedPdf(string token)
     {
-        var cv = await _cvService.GetSharedCvAsync(token);
-        if (cv == null) return NotFound();
-
-        // Get frontend URL for PDF rendering
         var frontendUrl = _configuration["AppSettings:FrontendUrl"] ?? "http://localhost:5173";
-        var pdfUrl = $"{frontendUrl}/shared/{token}";
 
         try
         {
-            var pdfBytes = await _cvService.GeneratePdfAsync(pdfUrl);
-            
-            // Sanitize filename - remove special characters
-            var sanitizedTitle = new string(cv.Title
-                .Where(c => char.IsLetterOrDigit(c) || c == ' ' || c == '-' || c == '_')
-                .ToArray())
-                .Trim()
-                .Replace(" ", "_");
-            
-            if (string.IsNullOrWhiteSpace(sanitizedTitle))
-                sanitizedTitle = "CV";
-                
-            var filename = $"{sanitizedTitle}.pdf";
-            
-            // Explicitly set headers
-            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{filename}\"");
-            return File(pdfBytes, "application/pdf", filename);
+            var result = await _cvService.GenerateSharedPdfForDownloadAsync(token, frontendUrl);
+            if (result == null) return NotFound();
+
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{result.Value.FileName}\"");
+            return File(result.Value.FileBytes, "application/pdf", result.Value.FileName);
         }
         catch (Exception ex)
         {
             return StatusCode(500, new { error = "Failed to generate PDF", details = ex.Message });
         }
     }
+
     /// <summary>
     /// Uploads a profile picture for a CV.
     /// </summary>
@@ -239,11 +223,9 @@ public class CvController : ControllerBase
         if (file == null || file.Length == 0)
             return BadRequest("No file uploaded.");
 
-        using var memoryStream = new MemoryStream();
-        await file.CopyToAsync(memoryStream);
-        var photoData = memoryStream.ToArray();
-
-        var success = await _cvService.UploadProfilePictureAsync(id, userId, photoData);
+        using var stream = file.OpenReadStream();
+        var success = await _cvService.UploadProfilePictureAsync(id, userId, stream);
+        
         if (!success) return NotFound();
 
         return Ok();

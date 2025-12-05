@@ -99,18 +99,15 @@ public class CvService
     {
         return await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id);
     }
-
-    public async Task<byte[]> GeneratePdfAsync(string pdfUrl)
-    {
-        return await _pdfService.GeneratePdfFromUrlAsync(pdfUrl);
-    }
-
-    public async Task<bool> UploadProfilePictureAsync(int cvId, int userId, byte[] pictureData)
+    public async Task<bool> UploadProfilePictureAsync(int cvId, int userId, Stream fileStream)
     {
         var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == cvId && c.UserId == userId);
         if (cv == null) return false;
 
-        cv.Photo = pictureData;
+        using var memoryStream = new MemoryStream();
+        await fileStream.CopyToAsync(memoryStream);
+        cv.Photo = memoryStream.ToArray();
+        
         await _context.SaveChangesAsync();
         return true;
     }
@@ -121,4 +118,38 @@ public class CvService
         return cv?.Photo;
     }
 
+    public async Task<(byte[] FileBytes, string FileName)?> GeneratePdfForDownloadAsync(int id, int userId, string baseUrl)
+    {
+        var cv = await GetCvAsync(id, userId);
+        if (cv == null) return null;
+
+        var pdfUrl = $"{baseUrl}/pdf/{id}";
+        var pdfBytes = await _pdfService.GeneratePdfFromUrlAsync(pdfUrl);
+        var filename = SanitizeFilename(cv.Title);
+
+        return (pdfBytes, filename);
+    }
+
+    public async Task<(byte[] FileBytes, string FileName)?> GenerateSharedPdfForDownloadAsync(string token, string baseUrl)
+    {
+        var cv = await GetSharedCvAsync(token);
+        if (cv == null) return null;
+
+        var pdfUrl = $"{baseUrl}/shared/{token}";
+        var pdfBytes = await _pdfService.GeneratePdfFromUrlAsync(pdfUrl);
+        var filename = SanitizeFilename(cv.Title);
+
+        return (pdfBytes, filename);
+    }
+
+    private string SanitizeFilename(string title)
+    {
+        var sanitized = new string(title
+            .Where(c => char.IsLetterOrDigit(c) || c == ' ' || c == '-' || c == '_')
+            .ToArray())
+            .Trim()
+            .Replace(" ", "_");
+        
+        return string.IsNullOrWhiteSpace(sanitized) ? "CV.pdf" : $"{sanitized}.pdf";
+    }
 }

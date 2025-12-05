@@ -73,7 +73,7 @@ public class AuthController : ControllerBase
 
         SetTokenCookies(result.Value.AccessToken, result.Value.RefreshToken);
 
-        return Ok(new { name = result.Value.Name, email = model.Email });
+        return Ok(new { name = result.Value.Name, email = result.Value.Email });
     }
 
     /// <summary>
@@ -105,14 +105,9 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid token");
         }
 
-        var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(result.Value.AccessToken);
-        var name = jwtToken.Claims.First(claim => claim.Type == "name").Value;
-        var email = jwtToken.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
-
         SetTokenCookies(result.Value.AccessToken, result.Value.RefreshToken);
 
-        return Ok(new { message = "Token refreshed", name, email });
+        return Ok(new { message = "Token refreshed", name = result.Value.Name, email = result.Value.Email });
     }
 
     private void SetTokenCookies(string accessToken, string refreshToken)
