@@ -15,6 +15,8 @@ public class Cv
     [Column(TypeName = "json")]
     public string Data { get; set; } = "{}"; 
     
+    public byte[]? Photo { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

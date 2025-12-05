@@ -104,4 +104,21 @@ public class CvService
     {
         return await _pdfService.GeneratePdfFromUrlAsync(pdfUrl);
     }
+
+    public async Task<bool> UploadProfilePictureAsync(int cvId, int userId, byte[] pictureData)
+    {
+        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == cvId && c.UserId == userId);
+        if (cv == null) return false;
+
+        cv.Photo = pictureData;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<byte[]?> GetProfilePictureAsync(int cvId)
+    {
+        var cv = await _context.Cvs.FindAsync(cvId);
+        return cv?.Photo;
+    }
+
 }

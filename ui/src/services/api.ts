@@ -70,6 +70,12 @@ const api = {
   getSharedCv: (token: string) => axiosInstance.get(`/cv/shared/${token}`),
   getPublicKey: () =>
     axiosInstance.get<{ publicKey: string }>("/auth/public-key"),
+  uploadPhoto: (id: number, formData: FormData) =>
+    axiosInstance.post(`/cv/${id}/photo`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  getPhoto: (id: number) =>
+    axiosInstance.get(`/cv/${id}/photo`, { responseType: "blob" }),
 };
 
 export default api;

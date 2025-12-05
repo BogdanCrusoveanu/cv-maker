@@ -77,49 +77,6 @@ public class CvController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes a CV.
-    /// </summary>
-    /// <param name="id">The ID of the CV to delete.</param>
-    /// <returns>No content if successful.</returns>
-    [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteCv(int id)
-    {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        var success = await _cvService.DeleteCvAsync(id, userId);
-        
-        if (!success) return NotFound();
-
-        return NoContent();
-    }
-
-    /// <summary>
-    /// Generates a public share token for a CV.
-    /// </summary>
-    /// <param name="id">The ID of the CV to share.</param>
-    /// <returns>The public token.</returns>
-    [HttpPost("{id}/share")]
-    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ShareCv(int id)
-    {
-        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        try
-        {
-            var token = await _cvService.ShareCvAsync(id, userId);
-            if (token == null) return NotFound();
-            return Ok(new { Token = token });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error sharing CV: {ex}");
-            return StatusCode(500, ex.Message);
-        }
-    }
-
-    /// <summary>
     /// Revokes the public share token for a CV.
     /// </summary>
     /// <param name="id">The ID of the CV to unshare.</param>
@@ -264,5 +221,49 @@ public class CvController : ControllerBase
         {
             return StatusCode(500, new { error = "Failed to generate PDF", details = ex.Message });
         }
+    }
+    /// <summary>
+    /// Uploads a profile picture for a CV.
+    /// </summary>
+    /// <param name="id">The ID of the CV.</param>
+    /// <param name="file">The photo file.</param>
+    /// <returns>Success status.</returns>
+    [HttpPost("{id}/photo")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UploadProfilePicture(int id, IFormFile file)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        
+        if (file == null || file.Length == 0)
+            return BadRequest("No file uploaded.");
+
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream);
+        var photoData = memoryStream.ToArray();
+
+        var success = await _cvService.UploadProfilePictureAsync(id, userId, photoData);
+        if (!success) return NotFound();
+
+        return Ok();
+    }
+
+    /// <summary>
+    /// Retrieves the profile picture for a CV.
+    /// </summary>
+    /// <param name="id">The ID of the CV.</param>
+    /// <returns>The photo file.</returns>
+    [AllowAnonymous]
+    [HttpGet("{id}/photo")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetProfilePicture(int id)
+    {
+        var photoData = await _cvService.GetProfilePictureAsync(id);
+        if (photoData == null || photoData.Length == 0) return NotFound();
+
+        // Default to image/png as we don't store the content type yet
+        return File(photoData, "image/png");
     }
 }

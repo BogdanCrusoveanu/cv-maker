@@ -91,21 +91,7 @@ public class AuthService
         return (newAccessToken, newRefreshToken);
     }
 
-    public async Task<bool> UploadProfilePictureAsync(int userId, byte[] pictureData)
-    {
-        var user = await _context.Users.FindAsync(userId);
-        if (user == null) return false;
 
-        user.ProfilePicture = pictureData;
-        await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public async Task<byte[]?> GetProfilePictureAsync(int userId)
-    {
-        var user = await _context.Users.FindAsync(userId);
-        return user?.ProfilePicture;
-    }
 
     public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
     {

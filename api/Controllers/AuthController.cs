@@ -153,53 +153,7 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Logged out" });
     }
 
-    /// <summary>
-    /// Uploads a profile picture for the authenticated user.
-    /// </summary>
-    /// <param name="file">The image file to upload.</param>
-    /// <returns>Status of the upload.</returns>
-    [HttpPost("upload-photo")]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> UploadPhoto(IFormFile file)
-    {
-        if (file == null || file.Length == 0)
-            return BadRequest("No file uploaded");
 
-        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
-            return Unauthorized();
-
-        using var memoryStream = new MemoryStream();
-        await file.CopyToAsync(memoryStream);
-        var success = await _authService.UploadProfilePictureAsync(userId, memoryStream.ToArray());
-
-        if (!success) return BadRequest("Failed to upload photo");
-        return Ok();
-    }
-
-    /// <summary>
-    /// Retrieves the profile picture of the authenticated user.
-    /// </summary>
-    /// <returns>The profile picture as an image file.</returns>
-    [HttpGet("photo")]
-    [Authorize]
-    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetPhoto()
-    {
-        var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userIdStr == null || !int.TryParse(userIdStr, out int userId))
-            return Unauthorized();
-
-        var photo = await _authService.GetProfilePictureAsync(userId);
-        if (photo == null) return NotFound();
-
-        return File(photo, "image/jpeg");
-    }
 
     /// <summary>
     /// Changes the password for the authenticated user.
