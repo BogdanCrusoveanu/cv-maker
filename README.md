@@ -4,37 +4,42 @@ A modern, interactive CV builder application that allows users to create, custom
 
 ## 🚀 Features
 
-*   **Real-time Editing:** See changes instantly as you type.
-*   **Multiple Templates:** Choose from a variety of professionally designed templates (Midnight, Slate, Azure, Citrus, Classic, Minimal, Modern, Noir).
-*   **Customizable Layout:** Reorder sections globally to fit your needs.
-*   **Rich Text Support:** Add details to your experience and education.
-*   **PDF Export:** Download your CV as a high-quality PDF.
-*   **Photo Upload:** Add a personal touch with a profile photo.
-*   **Responsive Design:** Works on various screen sizes.
+- **Real-time Editing:** See changes instantly as you type.
+- **Multiple Templates:** Choose from a variety of professionally designed templates (Midnight, Slate, Azure, Citrus, Classic, Minimal, Modern, Noir).
+- **Drag-and-Drop:** Easily reorder sections and individual items (Experience, Education, Skills, etc.) via drag-and-drop.
+- **Rich Text Support:** Add details to your experience and education.
+- **Public Sharing:** Share your CV with a unique public link, or view it as a read-only page.
+- **PDF Export:** Download your CV as a high-quality PDF (generated server-side for pixel-perfect rendering).
+- **Photo Upload:** Add a personal touch with a profile photo.
+- **Responsive Design:** Works on various screen sizes.
 
 ## 🛠️ Technologies Used
 
 ### Frontend (`/ui`)
-*   **Framework:** [React 19](https://react.dev/)
-*   **Build Tool:** [Vite](https://vitejs.dev/)
-*   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-*   **Routing:** [React Router DOM](https://reactrouter.com/)
-*   **State Management/Data Fetching:** [TanStack Query](https://tanstack.com/query/latest)
-*   **HTTP Client:** [Axios](https://axios-http.com/)
-*   **Icons:** [Lucide React](https://lucide.dev/)
-*   **PDF Generation:** [jspdf](https://github.com/parallax/jsPDF) & [html2canvas](https://html2canvas.hertzen.com/)
+
+- **Framework:** [React 19](https://react.dev/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Routing:** [React Router DOM](https://reactrouter.com/)
+- **State Management/Data Fetching:** [TanStack Query](https://tanstack.com/query/latest)
+- **HTTP Client:** [Axios](https://axios-http.com/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Icons:** [Lucide React](https://lucide.dev/)
 
 ### Backend (`/api`)
-*   **Framework:** ASP.NET Core Web API
-*   **Language:** C#
-*   **Database ORM:** Entity Framework Core (implied by Migrations/Data folders)
+
+- **Framework:** ASP.NET Core Web API
+- **Language:** C#
+- **Database ORM:** Entity Framework Core (implied by Migrations/Data folders)
+- **PDF Generation:** [PuppeteerSharp](https://www.puppeteersharp.com/) (Headless Chrome)
 
 ## 📋 Prerequisites
 
 Before you begin, ensure you have the following installed on your machine:
-*   [Node.js](https://nodejs.org/) (Latest LTS recommended)
-*   [.NET SDK](https://dotnet.microsoft.com/download) (Compatible with the project's target framework)
+
+- [Node.js](https://nodejs.org/) (Latest LTS recommended)
+- [.NET SDK](https://dotnet.microsoft.com/download) (Compatible with the project's target framework)
 
 ## 🏃‍♂️ Getting Started
 
@@ -60,6 +65,7 @@ cd api
 dotnet ef database update
 
 # 3. Run the application
+# Note: On first run, Puppeteer will automatically download a local Chromium instance.
 dotnet run
 ```
 
@@ -81,8 +87,8 @@ The frontend application will be available at `http://localhost:5173` (or the po
 
 ## 🔧 Configuration
 
-*   **API URL:** The frontend is configured to communicate with the backend. Ensure the backend URL matches the configuration in the frontend (usually in `.env` or hardcoded in `api.ts` or similar).
-*   **Database:** The backend likely uses a local database (e.g., SQL Server LocalDB or SQLite) configured in `appsettings.json`. Ensure your environment supports the configured database provider.
+- **API URL:** The frontend is configured to communicate with the backend. Ensure the backend URL matches the configuration in the frontend (usually in `.env` or hardcoded in `api.ts` or similar).
+- **Database:** The backend likely uses a local database (e.g., SQL Server LocalDB or SQLite) configured in `appsettings.json`. Ensure your environment supports the configured database provider.
 
 ## 🤝 Contributing
 

@@ -25,15 +25,14 @@ body {
 }
 
 /* Ensure flex containers fill height properly */
-.cv-template>div {
+.cv-template > div {
   min-height: 297mm;
 }
 
 /* Print Styles for PDF Export */
 @media print {
-
   /* Reset root container */
-  body>div {
+  body > div {
     display: block !important;
     height: auto !important;
     width: 100% !important;
@@ -75,7 +74,7 @@ body {
   }
 
   /* Ensure flex containers in print have proper height */
-  .cv-template>div {
+  .cv-template > div {
     min-height: 297mm !important;
     height: 100% !important;
   }
@@ -117,4 +116,23 @@ body {
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+/* Discrete styled scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5); /* gray-400/50 */
+    border-radius: 20px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(107, 114, 128, 0.8); /* gray-500/80 */
 }

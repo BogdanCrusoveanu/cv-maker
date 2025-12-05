@@ -27,6 +27,7 @@ export default function CvBuilder() {
   );
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [mobileTab, setMobileTab] = useState<"editor" | "preview">("editor");
 
   // Initial empty state
   const emptyCv: CvData = {
@@ -165,37 +166,42 @@ export default function CvBuilder() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Editor Side - Hidden on Print */}
-      <div className="w-1/2 overflow-y-auto bg-white shadow-lg no-print">
-        <div className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-100 overflow-hidden">
+      {/* Editor Side */}
+      <div
+        className={`w-full lg:w-1/2 flex flex-col h-full bg-white shadow-lg no-print ${
+          mobileTab === "preview" ? "hidden lg:flex" : "flex"
+        }`}
+      >
+        {/* Header */}
+        <div className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 lg:p-6 shadow-md shrink-0">
           <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 lg:gap-4">
               <Button
                 onClick={() => navigate("/dashboard")}
                 variant="ghost"
-                className="text-white hover:text-gray-200 hover:bg-white/10"
+                className="text-white hover:text-gray-200 hover:bg-white/10 p-2"
                 icon={ArrowLeft}
               >
-                Back
+                <span className="hidden sm:inline">Back</span>
               </Button>
-              <h1 className="text-3xl font-bold">CV Builder</h1>
+              <h1 className="text-xl lg:text-3xl font-bold">CV Builder</h1>
             </div>
             <div className="flex gap-2 items-center">
               {cvId && (
                 <Button
                   onClick={() => setIsShareDialogOpen(true)}
                   variant="custom"
-                  className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-sm rounded flex items-center gap-2"
+                  className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 lg:px-3 text-xs lg:text-sm rounded flex items-center gap-1 lg:gap-2"
                   icon={Share2}
                 >
-                  Share
+                  <span className="hidden sm:inline">Share</span>
                 </Button>
               )}
               <Button
                 onClick={logout}
                 variant="custom"
-                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded"
+                className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 lg:px-3 text-xs lg:text-sm rounded"
               >
                 Logout
               </Button>
@@ -203,11 +209,11 @@ export default function CvBuilder() {
           </div>
 
           {/* Template Switcher */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex overflow-x-auto gap-2 mb-4 pb-2 scrollbar-thin">
             <Button
               onClick={() => setCurrentTemplate("modern")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "modern"
                   ? "bg-white text-red-600 shadow-lg"
                   : "bg-red-500 text-white hover:bg-red-400"
@@ -219,7 +225,7 @@ export default function CvBuilder() {
             <Button
               onClick={() => setCurrentTemplate("classic")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "classic"
                   ? "bg-white text-purple-600 shadow-lg"
                   : "bg-purple-500 text-white hover:bg-purple-400"
@@ -231,7 +237,7 @@ export default function CvBuilder() {
             <Button
               onClick={() => setCurrentTemplate("minimal")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "minimal"
                   ? "bg-white text-yellow-600 shadow-lg"
                   : "bg-yellow-500 text-white hover:bg-yellow-400"
@@ -243,7 +249,7 @@ export default function CvBuilder() {
             <Button
               onClick={() => setCurrentTemplate("noir")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "noir"
                   ? "bg-white text-gray-900 shadow-lg"
                   : "bg-gray-800 text-white hover:bg-gray-700"
@@ -255,7 +261,7 @@ export default function CvBuilder() {
             <Button
               onClick={() => setCurrentTemplate("azure")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "azure"
                   ? "bg-white text-blue-600 shadow-lg"
                   : "bg-blue-500 text-white hover:bg-blue-400"
@@ -267,7 +273,7 @@ export default function CvBuilder() {
             <Button
               onClick={() => setCurrentTemplate("slate")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "slate"
                   ? "bg-white text-slate-700 shadow-lg"
                   : "bg-slate-600 text-white hover:bg-slate-500"
@@ -279,7 +285,7 @@ export default function CvBuilder() {
             <Button
               onClick={() => setCurrentTemplate("citrus")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "citrus"
                   ? "bg-white text-yellow-600 shadow-lg"
                   : "bg-yellow-400 text-white hover:bg-yellow-300"
@@ -291,7 +297,7 @@ export default function CvBuilder() {
             <Button
               onClick={() => setCurrentTemplate("midnight")}
               variant="custom"
-              className={`flex-1 py-2 px-4 transition-all font-semibold ${
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
                 currentTemplate === "midnight"
                   ? "bg-white text-indigo-900 shadow-lg"
                   : "bg-indigo-800 text-white hover:bg-indigo-700"
@@ -302,11 +308,11 @@ export default function CvBuilder() {
             </Button>
           </div>
 
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2">
             <Button
               onClick={handleSave}
               variant="custom"
-              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 font-semibold transition-all shadow-lg hover:shadow-xl"
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 lg:py-3 px-4 lg:px-6 font-semibold transition-all shadow-lg hover:shadow-xl text-sm lg:text-base"
               icon={Save}
               iconSize={20}
             >
@@ -315,25 +321,58 @@ export default function CvBuilder() {
             <Button
               onClick={handlePrint}
               variant="custom"
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-6 font-semibold transition-all shadow-lg hover:shadow-xl"
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 lg:py-3 px-4 lg:px-6 font-semibold transition-all shadow-lg hover:shadow-xl text-sm lg:text-base"
               icon={Download}
               iconSize={20}
             >
-              Export to PDF
+              Export
             </Button>
           </div>
         </div>
 
-        <Editor
-          cvData={cvData}
-          setCvData={setCvData}
-          currentTemplate={currentTemplate}
-        />
+        <div className="flex-1 overflow-y-auto pb-20 lg:pb-0">
+          <Editor
+            cvData={cvData}
+            setCvData={setCvData}
+            currentTemplate={currentTemplate}
+          />
+        </div>
       </div>
 
       {/* Preview Side - Full Width on Print */}
-      <div className="w-1/2 overflow-y-auto bg-gray-200 p-8 print-full">
-        <Preview cvData={cvData} template={currentTemplate} />
+      <div
+        className={`w-full lg:w-1/2 bg-gray-200 h-full overflow-hidden flex flex-col print-full ${
+          mobileTab === "editor" ? "hidden lg:flex" : "flex"
+        }`}
+      >
+        <div className="flex-1 overflow-y-auto p-0 lg:p-8 pb-20 lg:pb-8">
+          <Preview cvData={cvData} template={currentTemplate} />
+        </div>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 flex shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+        <button
+          onClick={() => setMobileTab("editor")}
+          className={`flex-1 py-4 font-bold text-center transition-colors ${
+            mobileTab === "editor"
+              ? "text-blue-600 bg-blue-50 border-t-2 border-blue-600"
+              : "text-gray-500 hover:bg-gray-50"
+          }`}
+        >
+          Editor
+        </button>
+        <div className="w-px bg-gray-200"></div>
+        <button
+          onClick={() => setMobileTab("preview")}
+          className={`flex-1 py-4 font-bold text-center transition-colors ${
+            mobileTab === "preview"
+              ? "text-blue-600 bg-blue-50 border-t-2 border-blue-600"
+              : "text-gray-500 hover:bg-gray-50"
+          }`}
+        >
+          Preview
+        </button>
       </div>
 
       <ShareCvDialog
@@ -341,17 +380,7 @@ export default function CvBuilder() {
         onClose={() => setIsShareDialogOpen(false)}
         cvId={cvId || 0}
         initialPublicToken={cvDataFromApi?.publicToken}
-        onShareChange={() => {
-          // Invalidate queries to refresh data (and public token)
-          // We can use queryClient from useQueryClient hook if we import it,
-          // or just rely on the dialog's internal state for the immediate session.
-          // Ideally, we should refetch.
-          // For now, let's just let the dialog handle its own state and maybe reload page or refetch if needed.
-          // Actually, useSaveCv invalidates 'cv' query, so we can do similar here if we had access to queryClient.
-          // But ShareCvDialog updates its own state, so it's fine for the UI.
-          // If we want to persist the token in the parent component's view of data, we might need to refetch.
-          // Let's just leave it simple for now.
-        }}
+        onShareChange={() => {}}
       />
 
       {/* PDF Generation Loading Overlay */}

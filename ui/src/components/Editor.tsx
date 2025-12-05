@@ -651,7 +651,7 @@ export default function Editor({
   };
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-4 lg:p-6 space-y-6 lg:space-y-8">
       {/* Section Visibility and Reordering Control */}
       <section className="bg-gray-50 p-4 rounded-lg border border-gray-200">
         <h3 className="text-lg font-semibold text-gray-700 mb-3">
