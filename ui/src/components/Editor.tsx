@@ -316,9 +316,15 @@ export default function Editor({
   };
 
   // Helper to check if template supports skill levels
-  const supportsSkillLevels = ["midnight", "slate", "azure"].includes(
-    currentTemplate
-  );
+  const supportsSkillLevels = [
+    "midnight",
+    "slate",
+    "azure",
+    "aurora",
+    "polygonal",
+    "verde",
+    "orbit",
+  ].includes(currentTemplate);
 
   // Custom Sections Logic
   const addCustomSection = () => {
@@ -968,14 +974,44 @@ export default function Editor({
                           }
                           color="green"
                         />
-                        <Input
-                          placeholder="End Date (or 'Present')"
-                          value={exp.endDate}
-                          onChange={(e) =>
-                            updateExperience(exp.id, "endDate", e.target.value)
-                          }
-                          color="green"
-                        />
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="End Date"
+                            value={exp.endDate === "Ongoing" ? "" : exp.endDate}
+                            onChange={(e) =>
+                              updateExperience(
+                                exp.id,
+                                "endDate",
+                                e.target.value
+                              )
+                            }
+                            color="green"
+                            type={exp.endDate === "Ongoing" ? "text" : "month"}
+                            disabled={exp.endDate === "Ongoing"}
+                            className="flex-1"
+                          />
+                          <div className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={exp.endDate === "Ongoing"}
+                              onChange={(e) => {
+                                updateExperience(
+                                  exp.id,
+                                  "endDate",
+                                  e.target.checked ? "Ongoing" : ""
+                                );
+                              }}
+                              className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                              id={`ongoing-exp-${exp.id}`}
+                            />
+                            <label
+                              htmlFor={`ongoing-exp-${exp.id}`}
+                              className="ml-2 text-sm font-medium text-gray-900"
+                            >
+                              Ongoing
+                            </label>
+                          </div>
+                        </div>
                       </div>
                       <TextArea
                         placeholder="Job Description"
@@ -1062,15 +1098,40 @@ export default function Editor({
                           }
                           color="purple"
                         />
-                        <Input
-                          type="month"
-                          placeholder="End Date"
-                          value={edu.endDate}
-                          onChange={(e) =>
-                            updateEducation(edu.id, "endDate", e.target.value)
-                          }
-                          color="purple"
-                        />
+                        <div className="flex gap-2">
+                          <Input
+                            type={edu.endDate === "Ongoing" ? "text" : "month"}
+                            placeholder="End Date"
+                            value={edu.endDate === "Ongoing" ? "" : edu.endDate}
+                            onChange={(e) =>
+                              updateEducation(edu.id, "endDate", e.target.value)
+                            }
+                            color="purple"
+                            disabled={edu.endDate === "Ongoing"}
+                            className="flex-1"
+                          />
+                          <div className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={edu.endDate === "Ongoing"}
+                              onChange={(e) => {
+                                updateEducation(
+                                  edu.id,
+                                  "endDate",
+                                  e.target.checked ? "Ongoing" : ""
+                                );
+                              }}
+                              className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
+                              id={`ongoing-edu-${edu.id}`}
+                            />
+                            <label
+                              htmlFor={`ongoing-edu-${edu.id}`}
+                              className="ml-2 text-sm font-medium text-gray-900"
+                            >
+                              Ongoing
+                            </label>
+                          </div>
+                        </div>
                       </div>
                       <Input
                         placeholder="GPA (optional)"

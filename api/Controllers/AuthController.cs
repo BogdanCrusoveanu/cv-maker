@@ -117,7 +117,7 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Secure = true, 
             SameSite = SameSiteMode.Strict,
-            Expires = DateTime.UtcNow.AddDays(7) // Match refresh token expiry
+            Expires = DateTime.UtcNow.AddDays(1) // Match refresh token expiry
         };
 
         Response.Cookies.Append("accessToken", accessToken, cookieOptions);
@@ -130,7 +130,7 @@ public class AuthController : ControllerBase
             Secure = false, // Allow on http://localhost
             SameSite = SameSiteMode.Lax, // Allow on top-level navigation
             Path = "/", // Global path
-            Expires = DateTime.UtcNow.AddDays(7)
+            Expires = DateTime.UtcNow.AddDays(1)
         });
     }
 

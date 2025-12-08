@@ -6,6 +6,11 @@ import AzureTemplate from "./templates/Azure";
 import SlateTemplate from "./templates/Slate";
 import CitrusTemplate from "./templates/Citrus";
 import MidnightTemplate from "./templates/Midnight";
+import AuroraTemplate from "./templates/Aurora";
+import AcademicTemplate from "./templates/Academic";
+import PolygonalTemplate from "./templates/Polygonal";
+import VerdeTemplate from "./templates/Verde";
+import OrbitTemplate from "./templates/Orbit";
 import { CvData } from "../types/cv";
 import { useEffect, useRef, useState } from "react";
 
@@ -24,6 +29,11 @@ export default function Preview({ cvData, template }: PreviewProps) {
     slate: SlateTemplate,
     citrus: CitrusTemplate,
     midnight: MidnightTemplate,
+    aurora: AuroraTemplate,
+    academic: AcademicTemplate,
+    polygonal: PolygonalTemplate,
+    verde: VerdeTemplate,
+    orbit: OrbitTemplate,
   };
 
   const TemplateComponent =

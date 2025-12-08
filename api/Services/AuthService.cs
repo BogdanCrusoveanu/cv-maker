@@ -63,7 +63,7 @@ public class AuthService
         var refreshToken = GenerateRefreshToken();
 
         user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
         await _context.SaveChangesAsync();
 
         return (accessToken, refreshToken, user.Name, user.Email);
@@ -85,7 +85,7 @@ public class AuthService
         var newRefreshToken = GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
         await _context.SaveChangesAsync();
 
         return (newAccessToken, newRefreshToken, user.Name, user.Email);

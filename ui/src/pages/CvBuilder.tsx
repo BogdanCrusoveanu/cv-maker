@@ -118,51 +118,33 @@ export default function CvBuilder() {
       </div>
     );
 
-  const handlePrint = async () => {
+  const handlePrint = () => {
     if (!cvId) {
       showToast("Please save your CV first", "error");
       return;
     }
 
     setIsGeneratingPdf(true);
-    try {
-      // Use api.get (axios) to handle auth/cookies/refresh automatically
-      const response = await api.get(`/cv/${cvId}/pdf`, {
-        responseType: "blob",
-      });
+    showToast("Starting download...", "info");
 
-      const blob = response.data;
-      const pdfBlob = new Blob([blob], { type: "application/pdf" });
-      const blobUrl = URL.createObjectURL(pdfBlob);
+    // Direct download approach: let the browser handle it via navigation.
+    // This allows the browser to respect the server's Content-Disposition header perfectly.
+    // Cookies are automatically sent for authentication.
+    const baseURL = api.defaults.baseURL || "http://localhost:5140/api";
+    const downloadUrl = `${baseURL}/cv/${cvId}/pdf`;
 
-      // Ensure filename ends with .pdf
-      let filename = (cvData.personalInfo.fullName || "CV").trim();
-      filename = filename.replace(/[^a-zA-Z0-9\s]/g, "").replace(/\s+/g, "_");
-      if (!filename.toLowerCase().endsWith(".pdf")) {
-        filename += ".pdf";
-      }
+    // Create a temporary link and click it
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.target = "_self"; // Explicitly download in same tab context
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-      // Create and trigger download link
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = filename;
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-
-      // Cleanup after download starts
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      }, 250);
-
-      showToast("PDF downloaded successfully!", "success");
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      showToast("Failed to generate PDF", "error");
-    } finally {
+    // We can't know exactly when download finishes, but we can reset the spinner
+    setTimeout(() => {
       setIsGeneratingPdf(false);
-    }
+    }, 2500);
   };
 
   return (
@@ -305,6 +287,67 @@ export default function CvBuilder() {
               icon={Palette}
             >
               Midnight
+            </Button>
+
+            <Button
+              onClick={() => setCurrentTemplate("aurora")}
+              variant="custom"
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
+                currentTemplate === "aurora"
+                  ? "bg-white text-teal-700 shadow-lg"
+                  : "bg-teal-600 text-white hover:bg-teal-500"
+              }`}
+              icon={Palette}
+            >
+              Aurora
+            </Button>
+            <Button
+              onClick={() => setCurrentTemplate("academic")}
+              variant="custom"
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
+                currentTemplate === "academic"
+                  ? "bg-white text-black shadow-lg"
+                  : "bg-black text-white hover:bg-gray-800"
+              }`}
+              icon={Palette}
+            >
+              Academic
+            </Button>
+            <Button
+              onClick={() => setCurrentTemplate("polygonal")}
+              variant="custom"
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
+                currentTemplate === "polygonal"
+                  ? "bg-white text-indigo-600 shadow-lg"
+                  : "bg-indigo-500 text-white hover:bg-indigo-400"
+              }`}
+              icon={Palette}
+            >
+              Polygonal
+            </Button>
+            <Button
+              onClick={() => setCurrentTemplate("verde")}
+              variant="custom"
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
+                currentTemplate === "verde"
+                  ? "bg-white text-emerald-600 shadow-lg"
+                  : "bg-emerald-500 text-white hover:bg-emerald-400"
+              }`}
+              icon={Palette}
+            >
+              Verde
+            </Button>
+            <Button
+              onClick={() => setCurrentTemplate("orbit")}
+              variant="custom"
+              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
+                currentTemplate === "orbit"
+                  ? "bg-white text-orange-600 shadow-lg"
+                  : "bg-orange-500 text-white hover:bg-orange-400"
+              }`}
+              icon={Palette}
+            >
+              Orbit
             </Button>
           </div>
 
