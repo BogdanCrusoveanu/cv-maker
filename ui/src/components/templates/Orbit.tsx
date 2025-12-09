@@ -29,7 +29,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
   };
 
   return (
-    <div className="w-full min-h-[90vh] pb-10 bg-white font-sans text-gray-800 relative">
+    <div className="w-full min-h-full pb-10 bg-white font-sans text-gray-800 relative">
       {/* Header Curve */}
       <div className="absolute top-0 left-0 right-0 h-48 overflow-hidden z-0">
         <svg
@@ -53,10 +53,10 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
       <div className="relative z-10 pt-10 px-10">
         <div className="flex justify-between items-start mb-16">
           <div className="text-gray-900 mt-4 relative z-20">
-            <h1 className="text-5xl font-bold mb-2 text-shadow-sm text-blue-900">
+            <h1 className="text-5xl font-bold mb-2 text-shadow-sm text-[#eb9747]">
               {personalInfo.fullName}
             </h1>
-            <p className="text-2xl font-light text-blue-800">
+            <p className="text-2xl font-light text-[#eb9747]">
               {personalInfo.title}
             </p>
           </div>
@@ -143,14 +143,21 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
                   <h2 className="text-lg font-bold text-blue-900 border-b-2 border-orange-200 mb-3 uppercase tracking-wider">
                     Languages
                   </h2>
-                  <ul className="space-y-2 text-sm">
+                  <div className="space-y-2 text-sm flex flex-col !pl-0 !ml-0">
                     {cvData.languages.map((l) => (
-                      <li key={l.id} className="flex justify-between">
-                        <span className="font-semibold">{l.name}</span>
-                        <span className="text-gray-500">{l.proficiency}</span>
-                      </li>
+                      <div
+                        key={l.id}
+                        className="flex flex-col items-start mb-1"
+                      >
+                        <span className="font-semibold text-gray-900">
+                          {l.name}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {l.proficiency}
+                        </span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </section>
               )}
 
@@ -233,7 +240,11 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
                 </h2>
                 <div className="grid grid-cols-1 gap-6">
                   {education.map((edu) => (
-                    <div key={edu.id} className="bg-gray-50 p-4 rounded-lg">
+                    <div
+                      key={edu.id}
+                      className="relative pl-8 border-l border-gray-200 break-inside-avoid-page"
+                    >
+                      <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-white"></div>
                       <h3 className="font-bold text-lg text-gray-900">
                         {edu.school}
                       </h3>
@@ -268,8 +279,11 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
                   </h2>
                   <div className="space-y-6">
                     {section.items.map((item) => (
-                      <div key={item.id}>
-                        <div className="flex justify-between items-baseline mb-1">
+                      <div
+                        key={item.id}
+                        className="bg-gray-50 p-4 rounded-lg break-inside-avoid-page"
+                      >
+                        <div className="flex justify-between items-start mb-2">
                           <h3 className="font-bold text-lg text-gray-800">
                             {item.title}
                           </h3>

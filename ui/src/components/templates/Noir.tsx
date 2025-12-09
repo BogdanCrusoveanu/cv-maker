@@ -83,19 +83,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
           </div>
         );
       case "summary":
-        return (
-          cvData.visibility.summary &&
-          personalInfo.summary && (
-            <div key="summary">
-              <h2 className="text-xl uppercase tracking-widest mb-4 border-b border-gray-700 pb-2">
-                About Me
-              </h2>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                {personalInfo.summary}
-              </p>
-            </div>
-          )
-        );
+        return null; // Moved to main content
       case "skills":
         return (
           cvData.visibility.skills &&
@@ -123,14 +111,16 @@ export default function Noir({ cvData }: { cvData: CvData }) {
               <h2 className="text-xl uppercase tracking-widest mb-4 border-b border-gray-700 pb-2">
                 Languages
               </h2>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <div className="space-y-2 text-sm text-gray-400 flex flex-col !pl-0 !ml-0">
                 {cvData.languages.map((lang) => (
-                  <li key={lang.id} className="flex justify-between">
-                    <span>{lang.name}</span>
-                    <span className="text-gray-500">{lang.proficiency}</span>
-                  </li>
+                  <div key={lang.id} className="flex flex-col items-start mb-1">
+                    <span className="text-gray-300">{lang.name}</span>
+                    <span className="text-xs text-gray-500">
+                      {lang.proficiency}
+                    </span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           )
         );
@@ -167,9 +157,13 @@ export default function Noir({ cvData }: { cvData: CvData }) {
               <h2 className="text-2xl font-light uppercase tracking-widest mb-6 text-gray-800">
                 Experience
               </h2>
-              <div className="space-y-6">
+              <div className="border-l border-gray-300 ml-3 space-y-6">
                 {experience.map((exp) => (
-                  <div key={exp.id}>
+                  <div
+                    key={exp.id}
+                    className="relative pl-6 break-inside-avoid-page"
+                  >
+                    <div className="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-900"></div>
                     <div className="flex justify-between items-baseline mb-1">
                       <h3 className="text-lg font-bold text-gray-900 uppercase">
                         {exp.title}
@@ -198,9 +192,13 @@ export default function Noir({ cvData }: { cvData: CvData }) {
               <h2 className="text-2xl font-light uppercase tracking-widest mb-6 text-gray-800">
                 Education
               </h2>
-              <div className="space-y-6">
+              <div className="border-l border-gray-300 ml-3 space-y-6">
                 {education.map((edu) => (
-                  <div key={edu.id}>
+                  <div
+                    key={edu.id}
+                    className="relative pl-6 break-inside-avoid-page"
+                  >
+                    <div className="absolute -left-[29px] top-1.5 w-2.5 h-2.5 rounded-full bg-white border-2 border-gray-900"></div>
                     <div className="flex justify-between items-baseline mb-1">
                       <h3 className="text-lg font-bold text-gray-900 uppercase">
                         {edu.school}
@@ -229,7 +227,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
                 </h2>
                 <div className="space-y-6">
                   {section.items.map((item) => (
-                    <div key={item.id}>
+                    <div key={item.id} className="mb-6 break-inside-avoid-page">
                       <div className="flex justify-between items-baseline mb-1">
                         <h3 className="text-lg font-bold text-gray-900 uppercase">
                           {item.title}
@@ -265,47 +263,67 @@ export default function Noir({ cvData }: { cvData: CvData }) {
   const mainSections = ["experience", "education", "customSections"];
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
   return (
-    <div className="flex min-h-[90vh] bg-white font-sans">
-      {/* Sidebar */}
-      <div className="w-1/3 bg-gray-900 text-white p-8 flex flex-col gap-8 pb-10">
-        <div className="flex justify-center">
-          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-700">
-            {personalInfo.photo ? (
-              <img
-                src={personalInfo.photo}
-                alt={personalInfo.fullName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500">
-                No Photo
+    <div className="relative min-h-full font-sans">
+      {/* Absolute Background Layer for Sidebar */}
+      <div
+        className="absolute top-0 bottom-0 left-0 w-1/3 bg-[#111827] print:bg-[#111827] z-0 print:fixed print:top-0 print:left-0 print:h-screen"
+        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+      />
+      {/* Content Container */}
+      <div className="relative z-10 flex min-h-full">
+        {/* Sidebar */}
+        <div className="w-1/3 text-white p-8 flex flex-col gap-8 pb-10 min-h-full flex-grow">
+          <div className="flex justify-center">
+            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-700">
+              {personalInfo.photo ? (
+                <img
+                  src={personalInfo.photo}
+                  alt={personalInfo.fullName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500">
+                  No Photo
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Render sidebar sections based on order */}
+          {order
+            .filter((key) => sidebarSections.includes(key))
+            .map((key) => renderSidebarSection(key))}
+        </div>
+
+        {/* Main Content */}
+        <div className="w-2/3 p-10">
+          <div className="mb-12">
+            <h1 className="text-5xl font-bold text-gray-900 uppercase tracking-tighter mb-2">
+              {personalInfo.fullName}
+            </h1>
+            <div className="h-1 w-20 bg-yellow-400 mb-2"></div>
+            <p className="text-xl text-gray-600 tracking-wide uppercase mb-8">
+              {personalInfo.title}
+            </p>
+
+            {/* Summary (Moved here) */}
+            {cvData.visibility.summary && personalInfo.summary && (
+              <div className="mb-10">
+                <h2 className="text-2xl font-light uppercase tracking-widest mb-6 text-gray-800">
+                  About Me
+                </h2>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  {personalInfo.summary}
+                </p>
               </div>
             )}
           </div>
+
+          {/* Render main sections based on order */}
+          {order
+            .filter((key) => mainSections.includes(key))
+            .map((key) => renderMainSection(key))}
         </div>
-
-        {/* Render sidebar sections based on order */}
-        {order
-          .filter((key) => sidebarSections.includes(key))
-          .map((key) => renderSidebarSection(key))}
-      </div>
-
-      {/* Main Content */}
-      <div className="w-2/3 p-10">
-        <div className="mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 uppercase tracking-tighter mb-2">
-            {personalInfo.fullName}
-          </h1>
-          <div className="h-1 w-20 bg-yellow-400 mb-2"></div>
-          <p className="text-xl text-gray-600 tracking-wide uppercase">
-            {personalInfo.title}
-          </p>
-        </div>
-
-        {/* Render main sections based on order */}
-        {order
-          .filter((key) => mainSections.includes(key))
-          .map((key) => renderMainSection(key))}
       </div>
     </div>
   );

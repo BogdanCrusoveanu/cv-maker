@@ -29,17 +29,25 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
   };
 
   return (
-    <div className="w-full min-h-[90vh] pb-10 bg-slate-50 relative overflow-hidden font-sans">
-      {/* Background Polygon */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/4 z-0 pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-pink-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/4 z-0 pointer-events-none"></div>
+    <div className="w-full min-h-full h-full pb-10 bg-slate-50 relative font-sans">
+      {/* Background Polygon Container */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none print:hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-100 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/4 z-0"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-pink-100 rounded-full blur-3xl opacity-50 translate-y-1/2 -translate-x-1/4 z-0"></div>
+      </div>
+
+      {/* Absolute Sidebar Background - Fixed for Print */}
+      <div
+        className="hidden print:block absolute top-0 bottom-0 left-0 w-[35%] bg-slate-900 z-0 print:fixed print:top-0 print:left-0 print:h-screen"
+        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+      />
 
       {/* Sidebar / Main Content Split */}
-      <div className="flex relative z-10 min-h-[1123px]">
+      <div className="flex relative z-10 min-h-full h-full">
         {" "}
         {/* Ensure full height for sidebar bg */}
         {/* Sidebar */}
-        <div className="w-[35%] bg-slate-900 text-white p-8 flex flex-col gap-8 min-h-full">
+        <div className="w-[35%] bg-slate-900 text-white p-8 flex flex-col gap-8 min-h-full h-full relative z-10 print:bg-transparent">
           <div className="text-center mb-4">
             {personalInfo.photo ? (
               <img

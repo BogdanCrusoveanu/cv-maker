@@ -1,6 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Download, Palette, Save, ArrowLeft, Share2 } from "lucide-react";
+import {
+  Download,
+  Palette,
+  Save,
+  ArrowLeft,
+  Share2,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "../components/ui/Button";
 import Editor from "../components/Editor";
 import Preview from "../components/Preview";
@@ -28,6 +36,16 @@ export default function CvBuilder() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [mobileTab, setMobileTab] = useState<"editor" | "preview">("editor");
+  const [templateCategory, setTemplateCategory] = useState<
+    "standard" | "custom"
+  >("standard");
+  // Remember last selected template for each category
+  const [lastStandard, setLastStandard] = useState("modern");
+
+  const [lastCustom, setLastCustom] = useState("custom-modern");
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const userInitiatedTemplateChange = useRef(false);
 
   // Initial empty state
   const emptyCv: CvData = {
@@ -62,6 +80,199 @@ export default function CvBuilder() {
 
   const [cvData, setCvData] = useState<CvData>(emptyCv);
 
+  const cvDataRef = useRef(cvData);
+  const prevTemplateRef = useRef(currentTemplate);
+
+  // Keep ref in sync
+  useEffect(() => {
+    cvDataRef.current = cvData;
+  }, [cvData]);
+
+  const TEMPLATES = [
+    {
+      id: "modern",
+      name: "Red Accent",
+      color: "text-red-600",
+      bg: "bg-red-500",
+    },
+    {
+      id: "classic",
+      name: "Purple Wave",
+      color: "text-purple-600",
+      bg: "bg-purple-500",
+    },
+    {
+      id: "minimal",
+      name: "Yellow Bold",
+      color: "text-yellow-600",
+      bg: "bg-yellow-500",
+    },
+    { id: "noir", name: "Noir", color: "text-gray-900", bg: "bg-gray-800" },
+    { id: "azure", name: "Azure", color: "text-blue-600", bg: "bg-blue-500" },
+    { id: "slate", name: "Slate", color: "text-slate-700", bg: "bg-slate-600" },
+    {
+      id: "citrus",
+      name: "Citrus",
+      color: "text-yellow-600",
+      bg: "bg-yellow-400",
+    },
+    {
+      id: "midnight",
+      name: "Midnight",
+      color: "text-indigo-900",
+      bg: "bg-indigo-800",
+    },
+    { id: "aurora", name: "Aurora", color: "text-teal-700", bg: "bg-teal-600" },
+    { id: "academic", name: "Academic", color: "text-black", bg: "bg-black" },
+    {
+      id: "polygonal",
+      name: "Polygonal",
+      color: "text-indigo-600",
+      bg: "bg-indigo-500",
+    },
+    {
+      id: "verde",
+      name: "Verde",
+      color: "text-emerald-600",
+      bg: "bg-emerald-500",
+    },
+    {
+      id: "orbit",
+      name: "Orbit",
+      color: "text-orange-600",
+      bg: "bg-orange-500",
+    },
+    {
+      id: "custom-modern",
+      name: "Ruby",
+      color: "text-red-600",
+      bg: "bg-red-500",
+      defaultColor: "#EF4444", // Red-500
+    },
+    {
+      id: "custom-minimal",
+      name: "Amber",
+      color: "text-amber-700",
+      bg: "bg-amber-500",
+      defaultColor: "#F59E0B", // Amber-500
+    },
+    {
+      id: "custom-slate",
+      name: "Iron",
+      color: "text-slate-700",
+      bg: "bg-slate-600",
+      defaultColor: "#64748B", // Slate-500
+    },
+    {
+      id: "custom-aurora",
+      name: "Lagoon",
+      color: "text-teal-700",
+      bg: "bg-teal-600",
+      defaultColor: "#0D9488", // Teal-600
+    },
+    {
+      id: "custom-citrus",
+      name: "Lime",
+      color: "text-lime-700",
+      bg: "bg-lime-500",
+      defaultColor: "#84cc16", // Lime-500
+    },
+  ];
+
+  const navigateTemplate = (direction: "prev" | "next") => {
+    const currentList = TEMPLATES.filter((t) =>
+      templateCategory === "custom"
+        ? t.id.startsWith("custom-")
+        : !t.id.startsWith("custom-")
+    );
+    const currentIndex = currentList.findIndex((t) => t.id === currentTemplate);
+    let newIndex;
+    if (direction === "prev") {
+      newIndex = currentIndex > 0 ? currentIndex - 1 : currentList.length - 1;
+    } else {
+      newIndex = currentIndex < currentList.length - 1 ? currentIndex + 1 : 0;
+    }
+    const nextTemplateId = currentList[newIndex].id;
+    userInitiatedTemplateChange.current = true;
+    setCurrentTemplate(nextTemplateId);
+  };
+
+  // Update history and apply default color logic
+  useEffect(() => {
+    if (currentTemplate) {
+      if (currentTemplate.startsWith("custom-")) {
+        setLastCustom(currentTemplate);
+
+        // Logic for preserving custom color
+        if (userInitiatedTemplateChange.current) {
+          const newTemplateObj = TEMPLATES.find(
+            (t) => t.id === currentTemplate
+          ) as any;
+          const prevTemplateObj = TEMPLATES.find(
+            (t) => t.id === prevTemplateRef.current
+          ) as any;
+
+          // Check if we should switch to default or keep existing
+          let shouldSwitchToDefault = true;
+
+          // If coming from another CUSTOM template
+          if (
+            prevTemplateObj &&
+            prevTemplateObj.id.startsWith("custom-") &&
+            prevTemplateObj.defaultColor
+          ) {
+            // If current color is DIFFERENT from the previous default, user customized it -> Keep it.
+            // CAUTION: Comparison must be robust (case insensitive usually, but HTML colors are #HEX).
+            const currentColor = cvDataRef.current.theme?.primaryColor;
+
+            if (
+              currentColor &&
+              currentColor.toLowerCase() !==
+                prevTemplateObj.defaultColor.toLowerCase()
+            ) {
+              shouldSwitchToDefault = false; // User has customized, so DON'T switch
+            }
+          }
+          // If coming from STANDARD template -> Always switch to default (shouldSwitchToDefault = true)
+
+          if (
+            shouldSwitchToDefault &&
+            newTemplateObj &&
+            newTemplateObj.defaultColor
+          ) {
+            setCvData((prevResult) => ({
+              ...prevResult,
+              theme: {
+                ...prevResult.theme,
+                primaryColor: newTemplateObj.defaultColor,
+              },
+            }));
+          }
+        }
+      } else {
+        setLastStandard(currentTemplate);
+      }
+
+      // Reset the flag after processing
+      userInitiatedTemplateChange.current = false;
+      prevTemplateRef.current = currentTemplate;
+
+      // Auto-scroll logic (existing)
+      if (scrollContainerRef.current) {
+        const activeBtn = scrollContainerRef.current.querySelector(
+          `[data-template-id="${currentTemplate}"]`
+        );
+        if (activeBtn) {
+          activeBtn.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
+        }
+      }
+    }
+  }, [currentTemplate]);
+
   // Update state when data is fetched
   useEffect(() => {
     if (cvDataFromApi) {
@@ -82,8 +293,17 @@ export default function CvBuilder() {
       setCvData(emptyCv);
       setCvId(undefined);
       setCurrentTemplate("modern");
+      setTemplateCategory("standard");
     }
   }, [cvDataFromApi, id]);
+
+  // Update category when template changes (if loaded from saved CV)
+  useEffect(() => {
+    if (currentTemplate) {
+      const isCustom = currentTemplate.startsWith("custom-");
+      setTemplateCategory(isCustom ? "custom" : "standard");
+    }
+  }, [currentTemplate]);
 
   const handleSave = () => {
     const cvToSave: CvData = {
@@ -190,165 +410,66 @@ export default function CvBuilder() {
             </div>
           </div>
 
-          {/* Template Switcher */}
-          <div className="flex overflow-x-auto gap-2 mb-4 pb-2 scrollbar-thin">
-            <Button
-              onClick={() => setCurrentTemplate("modern")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "modern"
-                  ? "bg-white text-red-600 shadow-lg"
-                  : "bg-red-500 text-white hover:bg-red-400"
+          {/* Template Category Tabs */}
+          <div className="flex gap-4 mb-4 border-b border-white/20 pb-0">
+            <button
+              onClick={() => {
+                setTemplateCategory("standard");
+                userInitiatedTemplateChange.current = true;
+                setCurrentTemplate(lastStandard);
+              }}
+              className={`pb-2 text-sm font-semibold transition-colors ${
+                templateCategory === "standard"
+                  ? "text-white border-b-2 border-white"
+                  : "text-blue-100 hover:text-white"
               }`}
-              icon={Palette}
             >
-              Red Accent
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("classic")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "classic"
-                  ? "bg-white text-purple-600 shadow-lg"
-                  : "bg-purple-500 text-white hover:bg-purple-400"
+              Standard Templates
+            </button>
+            <button
+              onClick={() => {
+                setTemplateCategory("custom");
+                userInitiatedTemplateChange.current = true; // User clicked category, so next template set is user-driven
+                setCurrentTemplate(lastCustom);
+              }}
+              className={`pb-2 text-sm font-semibold transition-colors ${
+                templateCategory === "custom"
+                  ? "text-white border-b-2 border-white" // Keep active style
+                  : "text-blue-100 hover:text-white"
               }`}
-              icon={Palette}
             >
-              Purple Wave
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("minimal")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "minimal"
-                  ? "bg-white text-yellow-600 shadow-lg"
-                  : "bg-yellow-500 text-white hover:bg-yellow-400"
-              }`}
-              icon={Palette}
-            >
-              Yellow Bold
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("noir")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "noir"
-                  ? "bg-white text-gray-900 shadow-lg"
-                  : "bg-gray-800 text-white hover:bg-gray-700"
-              }`}
-              icon={Palette}
-            >
-              Noir
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("azure")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "azure"
-                  ? "bg-white text-blue-600 shadow-lg"
-                  : "bg-blue-500 text-white hover:bg-blue-400"
-              }`}
-              icon={Palette}
-            >
-              Azure
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("slate")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "slate"
-                  ? "bg-white text-slate-700 shadow-lg"
-                  : "bg-slate-600 text-white hover:bg-slate-500"
-              }`}
-              icon={Palette}
-            >
-              Slate
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("citrus")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "citrus"
-                  ? "bg-white text-yellow-600 shadow-lg"
-                  : "bg-yellow-400 text-white hover:bg-yellow-300"
-              }`}
-              icon={Palette}
-            >
-              Citrus
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("midnight")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "midnight"
-                  ? "bg-white text-indigo-900 shadow-lg"
-                  : "bg-indigo-800 text-white hover:bg-indigo-700"
-              }`}
-              icon={Palette}
-            >
-              Midnight
-            </Button>
+              Customizable Templates
+            </button>
+          </div>
 
-            <Button
-              onClick={() => setCurrentTemplate("aurora")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "aurora"
-                  ? "bg-white text-teal-700 shadow-lg"
-                  : "bg-teal-600 text-white hover:bg-teal-500"
-              }`}
-              icon={Palette}
-            >
-              Aurora
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("academic")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "academic"
-                  ? "bg-white text-black shadow-lg"
-                  : "bg-black text-white hover:bg-gray-800"
-              }`}
-              icon={Palette}
-            >
-              Academic
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("polygonal")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "polygonal"
-                  ? "bg-white text-indigo-600 shadow-lg"
-                  : "bg-indigo-500 text-white hover:bg-indigo-400"
-              }`}
-              icon={Palette}
-            >
-              Polygonal
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("verde")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "verde"
-                  ? "bg-white text-emerald-600 shadow-lg"
-                  : "bg-emerald-500 text-white hover:bg-emerald-400"
-              }`}
-              icon={Palette}
-            >
-              Verde
-            </Button>
-            <Button
-              onClick={() => setCurrentTemplate("orbit")}
-              variant="custom"
-              className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
-                currentTemplate === "orbit"
-                  ? "bg-white text-orange-600 shadow-lg"
-                  : "bg-orange-500 text-white hover:bg-orange-400"
-              }`}
-              icon={Palette}
-            >
-              Orbit
-            </Button>
+          {/* Template Switcher */}
+          <div
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto gap-2 mb-4 pb-2 scrollbar-thin"
+          >
+            {TEMPLATES.filter((t) =>
+              templateCategory === "custom"
+                ? t.id.startsWith("custom-")
+                : !t.id.startsWith("custom-")
+            ).map((t) => (
+              <Button
+                key={t.id}
+                data-template-id={t.id}
+                onClick={() => {
+                  userInitiatedTemplateChange.current = true;
+                  setCurrentTemplate(t.id);
+                }}
+                variant="custom"
+                className={`whitespace-nowrap px-3 py-1 lg:py-2 lg:px-4 transition-all font-semibold rounded-full text-sm ${
+                  currentTemplate === t.id
+                    ? `bg-white ${t.color} shadow-lg`
+                    : `${t.bg} text-white hover:opacity-90`
+                }`}
+                icon={Palette}
+              >
+                {t.name}
+              </Button>
+            ))}
           </div>
 
           <div className="flex gap-2">
@@ -388,7 +509,25 @@ export default function CvBuilder() {
           mobileTab === "editor" ? "hidden lg:flex" : "flex"
         }`}
       >
-        <div className="flex-1 overflow-y-auto p-0 lg:p-8 pb-20 lg:pb-8">
+        <div className="flex-1 overflow-y-auto p-0 lg:p-8 pb-20 lg:pb-8 relative group">
+          <Button
+            onClick={() => navigateTemplate("prev")}
+            variant="ghost"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow-md rounded-full p-2 hidden lg:flex opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label="Previous Template"
+          >
+            <ChevronLeft size={24} className="text-gray-700" />
+          </Button>
+
+          <Button
+            onClick={() => navigateTemplate("next")}
+            variant="ghost"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white shadow-md rounded-full p-2 hidden lg:flex opacity-0 group-hover:opacity-100 transition-opacity"
+            aria-label="Next Template"
+          >
+            <ChevronRight size={24} className="text-gray-700" />
+          </Button>
+
           <Preview cvData={cvData} template={currentTemplate} />
         </div>
       </div>

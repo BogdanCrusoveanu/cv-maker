@@ -25,7 +25,7 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
   };
 
   return (
-    <div className="w-full min-h-[90vh] pb-10 bg-white text-black font-serif p-10 leading-relaxed">
+    <div className="w-full min-h-full h-full pb-10 bg-white text-black font-serif p-10 leading-relaxed">
       {/* Header */}
       <div className="text-center border-b-2 border-black pb-6 mb-6">
         <h1 className="text-3xl font-bold uppercase tracking-wider mb-2">

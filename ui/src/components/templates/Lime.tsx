@@ -1,6 +1,6 @@
 import { CvData } from "../../types/cv";
 
-export default function Citrus({ cvData }: { cvData: CvData }) {
+export default function Lime({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
 
   // Sidebar sections
@@ -106,16 +106,17 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
                 <span className="w-2 h-2 bg-gray-800 rounded-full"></span>{" "}
                 Languages
               </h2>
-              <div className="space-y-3 pl-0 ml-0">
+              <div className="space-y-3">
                 {cvData.languages.map((lang) => (
                   <div
                     key={lang.id}
-                    className="flex flex-col items-start text-sm font-medium mb-1"
+                    className="flex items-center gap-2 text-sm font-medium"
                   >
+                    <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
                     <span>{lang.name}</span>
-                    <span className="text-xs opacity-75">
+                    <div className="w-auto px-2 py-0.5 min-h-[1.5rem] border-2 border-gray-800 rounded-full flex items-center justify-center text-[10px] text-center leading-tight">
                       {lang.proficiency}
-                    </span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -157,7 +158,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
           personalInfo.summary && (
             <div key="summary">
               <h2 className="text-lg font-bold uppercase mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>{" "}
+                <span className="w-2 h-2 bg-[var(--primary-color)] rounded-full"></span>{" "}
                 Profile
               </h2>
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -172,7 +173,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
           education.length > 0 && (
             <div key="education">
               <h2 className="text-lg font-bold uppercase mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>{" "}
+                <span className="w-2 h-2 bg-[var(--primary-color)] rounded-full"></span>{" "}
                 Education
               </h2>
               <div className="space-y-4">
@@ -197,7 +198,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
           experience.length > 0 && (
             <div key="experience">
               <h2 className="text-lg font-bold uppercase mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>{" "}
+                <span className="w-2 h-2 bg-[var(--primary-color)] rounded-full"></span>{" "}
                 Work Experience
               </h2>
               <div className="space-y-6">
@@ -228,10 +229,10 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
             return cvData.customSections.map((section) => (
               <div key={section.id}>
                 <h2 className="text-lg font-bold uppercase mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>{" "}
+                  <span className="w-2 h-2 bg-[var(--primary-color)] rounded-full"></span>{" "}
                   {section.title}
                 </h2>
-                <div className="space-y-6">
+                <div className="space-y-[calc(1.5rem*var(--density,1))]">
                   {section.items.map((item) => (
                     <div key={item.id} className="grid grid-cols-4 gap-4">
                       <div className="col-span-1 text-xs font-bold text-gray-400 pt-1">
@@ -263,16 +264,23 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
   const mainSections = ["summary", "experience", "education", "customSections"];
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
   return (
-    <div className="relative min-h-full h-full font-sans bg-white">
+    <div
+      className="relative min-h-full flex bg-white"
+      style={{ fontFamily: "var(--font-family)" }}
+    >
       {/* Absolute Background Layer for Sidebar */}
       <div
-        className="absolute top-0 bottom-0 left-0 w-1/3 bg-yellow-400 print:bg-yellow-400 z-0 print:fixed print:top-0 print:left-0 print:h-screen"
-        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+        className="absolute top-0 bottom-0 left-0 w-1/3 bg-[var(--primary-color)] print:bg-[var(--primary-color)] z-0 print:fixed print:top-0 print:left-0 print:h-screen"
+        style={{
+          WebkitPrintColorAdjust: "exact",
+          printColorAdjust: "exact",
+          backgroundColor: "var(--primary-color)",
+        }}
       />
       {/* Content Container */}
-      <div className="relative z-10 flex min-h-full h-full">
-        {/* Left Sidebar - Yellow */}
-        <div className="w-1/3 p-8 text-gray-800 flex flex-col gap-10 min-h-full h-full pb-10 bg-yellow-400 print:bg-transparent">
+      <div className="relative z-10 flex min-h-full w-full">
+        {/* Left Sidebar - Terracotta Red */}
+        <div className="w-1/3 text-white p-[calc(2rem*var(--density,1))] flex flex-col gap-[calc(2.5rem*var(--density,1))] min-h-full pb-10 flex-grow">
           {/* Render sidebar sections based on order */}
           {order
             .filter((key) => sidebarSections.includes(key))
@@ -280,7 +288,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
         </div>
 
         {/* Main Content */}
-        <div className="w-2/3 p-10 pt-16 flex flex-col gap-10 pb-10">
+        <div className="w-2/3 p-[calc(2.5rem*var(--density,1))] pt-16 flex flex-col gap-[calc(2.5rem*var(--density,1))] pb-10">
           <div className="flex justify-between items-start mb-12">
             <div>
               <h1 className="text-5xl font-bold text-gray-800 mb-2">
@@ -290,7 +298,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
                 {personalInfo.fullName.split(" ").slice(1).join(" ")}
               </h1>
             </div>
-            <div className="w-32 h-32 bg-gray-200 overflow-hidden border-4 border-yellow-400">
+            <div className="w-32 h-32 bg-gray-200 overflow-hidden border-4 border-[var(--primary-color)]">
               {personalInfo.photo ? (
                 <img
                   src={personalInfo.photo}

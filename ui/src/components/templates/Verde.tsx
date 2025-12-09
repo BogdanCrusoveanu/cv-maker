@@ -29,7 +29,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
   };
 
   return (
-    <div className="w-full min-h-[90vh] pb-10 bg-white font-sans text-gray-800">
+    <div className="w-full min-h-full pb-10 bg-white font-sans text-gray-800">
       {/* Header */}
       <header className="bg-emerald-600 text-white p-10 flex flex-col items-center text-center">
         {personalInfo.photo && (
@@ -97,7 +97,34 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
               </section>
             )}
 
-            {/* Custom Sections */}
+            {/* Education (Moved to Left) */}
+            {cvData.visibility.education && education.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold text-emerald-800 mb-6 flex items-center gap-2">
+                  <span className="w-2 h-8 bg-emerald-500 rounded-sm"></span>
+                  Education
+                </h2>
+                <div className="space-y-8 border-l border-emerald-100 ml-1 pl-6">
+                  {education.map((edu) => (
+                    <div key={edu.id} className="relative">
+                      <div className="absolute -left-[29px] top-1.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white box-content"></div>
+                      <h3 className="font-bold text-lg text-gray-900">
+                        {edu.school}
+                      </h3>
+                      <div className="text-emerald-600 font-medium mb-2">
+                        {edu.degree} | {formatDate(edu.startDate)} -{" "}
+                        {formatDate(edu.endDate)}
+                      </div>
+                      {edu.gpa && (
+                        <p className="text-sm text-gray-600">GPA: {edu.gpa}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Experience */}
             {cvData.visibility.customSections &&
               cvData.customSections &&
               cvData.customSections.map((section) => (
@@ -130,33 +157,6 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
 
           {/* Right Column (Sidebar type) */}
           <div className="w-1/3 flex flex-col gap-8">
-            {/* Education */}
-            {cvData.visibility.education && education.length > 0 && (
-              <section>
-                <h2 className="text-xl font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2">
-                  Education
-                </h2>
-                <div className="space-y-4">
-                  {education.map((edu) => (
-                    <div key={edu.id}>
-                      <h3 className="font-bold text-gray-900">{edu.school}</h3>
-                      <div className="text-emerald-600 text-sm mb-1">
-                        {edu.degree}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
-                      </div>
-                      {edu.gpa && (
-                        <div className="text-xs text-gray-500">
-                          GPA: {edu.gpa}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
             {/* Skills */}
             {cvData.visibility.skills && skills.length > 0 && (
               <section>

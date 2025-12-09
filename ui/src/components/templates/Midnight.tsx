@@ -120,11 +120,13 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                 </span>{" "}
                 Languages
               </h3>
-              <div className="text-sm text-gray-300 pl-2 space-y-1">
+              <div className="text-sm text-gray-300 space-y-1 !pl-0 !ml-0">
                 {cvData.languages.map((lang) => (
-                  <div key={lang.id} className="flex justify-between">
-                    <span>{lang.name}</span>
-                    <span className="text-gray-500">{lang.proficiency}</span>
+                  <div key={lang.id} className="flex flex-col items-start mb-1">
+                    <span className="text-gray-200">{lang.name}</span>
+                    <span className="text-xs text-gray-500">
+                      {lang.proficiency}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -285,44 +287,52 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
 
   return (
-    <div className="min-h-[90vh] flex font-sans bg-gray-900 text-gray-100">
-      {/* Sidebar - Dark Blue/Gray */}
-      <div className="w-1/3 bg-gray-800 p-8 flex flex-col items-center text-center border-r border-gray-700 pb-10">
-        <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-400 mb-6 shadow-2xl">
-          {personalInfo.photo ? (
-            <img
-              src={personalInfo.photo}
-              alt={personalInfo.fullName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-700 flex items-center justify-center text-gray-500">
-              Photo
-            </div>
-          )}
+    <div className="relative min-h-full font-sans text-gray-100 bg-white">
+      {/* Absolute Background Layer for Sidebar */}
+      <div
+        className="absolute top-0 bottom-0 left-0 w-1/3 bg-[#1f2937] print:bg-[#1f2937] z-0 print:fixed print:top-0 print:left-0 print:h-screen"
+        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+      />
+      {/* Content Container */}
+      <div className="relative z-10 flex min-h-full">
+        {/* Sidebar - Dark Blue/Gray */}
+        <div className="w-1/3 p-8 flex flex-col items-center text-center border-r border-gray-700 pb-10">
+          <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-yellow-400 mb-6 shadow-2xl">
+            {personalInfo.photo ? (
+              <img
+                src={personalInfo.photo}
+                alt={personalInfo.fullName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-700 flex items-center justify-center text-gray-500">
+                Photo
+              </div>
+            )}
+          </div>
+
+          <h1 className="text-3xl font-bold text-yellow-400 mb-2">
+            {personalInfo.fullName}
+          </h1>
+          <p className="text-lg text-gray-300 font-light mb-8">
+            {personalInfo.title}
+          </p>
+
+          <div className="w-full flex flex-col gap-6 text-left">
+            {/* Render sidebar sections based on order */}
+            {order
+              .filter((key) => sidebarSections.includes(key))
+              .map((key) => renderSidebarSection(key))}
+          </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-yellow-400 mb-2">
-          {personalInfo.fullName}
-        </h1>
-        <p className="text-lg text-gray-300 font-light mb-8">
-          {personalInfo.title}
-        </p>
-
-        <div className="w-full flex flex-col gap-6 text-left">
-          {/* Render sidebar sections based on order */}
+        {/* Main Content */}
+        <div className="w-2/3 p-10 text-gray-800 flex flex-col gap-10">
+          {/* Render main sections based on order */}
           {order
-            .filter((key) => sidebarSections.includes(key))
-            .map((key) => renderSidebarSection(key))}
+            .filter((key) => mainSections.includes(key))
+            .map((key) => renderMainSection(key))}
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="w-2/3 p-10 bg-white text-gray-800 flex flex-col gap-10">
-        {/* Render main sections based on order */}
-        {order
-          .filter((key) => mainSections.includes(key))
-          .map((key) => renderMainSection(key))}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { CvData } from "../../types/cv";
 
-export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
+export default function Lagoon({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
 
   const formatDate = (dateStr: string) => {
@@ -29,9 +29,12 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
   };
 
   return (
-    <div className="w-full min-h-[90vh] pb-10 bg-white text-gray-800 font-sans">
+    <div
+      className="w-full min-h-full pb-10 bg-white text-gray-800"
+      style={{ fontFamily: "var(--font-family)" }}
+    >
       {/* Header */}
-      <header className="bg-teal-700 text-white p-8">
+      <header className="bg-[var(--primary-color)] text-white p-[calc(2rem*var(--density,1))]">
         <h1 className="text-4xl font-bold tracking-wide uppercase mb-2">
           {personalInfo.fullName}
         </h1>
@@ -65,13 +68,13 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
         </div>
       </header>
 
-      <div className="flex p-8 gap-8">
+      <div className="flex p-[calc(2rem*var(--density,1))] gap-[calc(2rem*var(--density,1))]">
         {/* Left Column */}
-        <div className="w-2/3 flex flex-col gap-8">
+        <div className="w-2/3 flex flex-col gap-[calc(2rem*var(--density,1))]">
           {/* Summary */}
           {cvData.visibility.summary && personalInfo.summary && (
             <section>
-              <h2 className="text-xl font-bold text-teal-700 border-b-2 border-teal-700 mb-3 pb-1">
+              <h2 className="text-xl font-bold text-[var(--primary-color)] border-b-2 border-[var(--primary-color)] mb-3 pb-1">
                 PROFILE
               </h2>
               <p className="text-sm leading-relaxed">{personalInfo.summary}</p>
@@ -165,7 +168,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
         </div>
 
         {/* Right Column */}
-        <div className="w-1/3 flex flex-col gap-8">
+        <div className="w-1/3 flex flex-col gap-[calc(2rem*var(--density,1))]">
           {/* Skills */}
           {cvData.visibility.skills && skills.length > 0 && (
             <section className="bg-gray-50 p-4 rounded">
@@ -200,15 +203,13 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
                 <h2 className="text-lg font-bold text-teal-700 mb-3 uppercase">
                   Languages
                 </h2>
-                <div className="space-y-2 flex flex-col !pl-0 !ml-0">
+                <div className="space-y-2">
                   {cvData.languages.map((lang) => (
                     <div
                       key={lang.id}
-                      className="text-sm flex flex-col items-start border-b border-gray-200 pb-1 last:border-0"
+                      className="text-sm flex flex-col gap-1 border-b border-gray-200 pb-1 last:border-0"
                     >
-                      <span className="font-medium text-gray-900">
-                        {lang.name}
-                      </span>
+                      <span className="font-medium">{lang.name}</span>
                       <span className="text-gray-500 text-xs">
                         {lang.proficiency}
                       </span>

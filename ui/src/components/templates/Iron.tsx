@@ -1,7 +1,7 @@
 import { Mail, Phone, Globe, MapPin } from "lucide-react";
 import { CvData } from "../../types/cv";
 
-export default function Slate({ cvData }: { cvData: CvData }) {
+export default function Iron({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
 
   // Define renderers for each section type
@@ -214,10 +214,13 @@ export default function Slate({ cvData }: { cvData: CvData }) {
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
 
   return (
-    <div className="flex flex-col min-h-full h-full bg-white font-serif text-gray-800 relative">
+    <div
+      className="min-h-full bg-white text-gray-800"
+      style={{ fontFamily: "var(--font-family)" }}
+    >
       {/* Header */}
-      <div className="bg-slate-700 text-white p-10 text-center relative z-20 flex-shrink-0">
-        <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-slate-500 mb-6 shadow-xl">
+      <div className="bg-[var(--primary-color)] text-white p-[calc(2.5rem*var(--density,1))] text-center">
+        <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-white/30 mb-6 shadow-xl">
           {personalInfo.photo ? (
             <img
               src={personalInfo.photo}
@@ -225,7 +228,7 @@ export default function Slate({ cvData }: { cvData: CvData }) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-slate-600 flex items-center justify-center">
+            <div className="w-full h-full bg-white/20 flex items-center justify-center">
               Photo
             </div>
           )}
@@ -303,14 +306,9 @@ export default function Slate({ cvData }: { cvData: CvData }) {
         </div>
       </div>
 
-      <div className="flex-1 p-10 grid grid-cols-3 gap-10 relative z-10">
-        {/* Absolute Separator Layer */}
-        <div className="absolute inset-0 p-10 grid grid-cols-3 gap-10 pointer-events-none z-0 print:fixed print:top-0 print:left-0 print:h-screen print:w-full">
-          <div className="col-span-1 border-r border-gray-200 h-full"></div>
-        </div>
-
+      <div className="p-[calc(2.5rem*var(--density,1))] grid grid-cols-3 gap-[calc(2.5rem*var(--density,1))]">
         {/* Left Sidebar */}
-        <div className="col-span-1 pr-8 flex flex-col gap-8 relative z-10">
+        <div className="col-span-1 border-r border-gray-200 pr-8 flex flex-col gap-[calc(2rem*var(--density,1))]">
           {/* Render sidebar sections based on order */}
           {order
             .filter((key) => sidebarSections.includes(key))
@@ -318,7 +316,7 @@ export default function Slate({ cvData }: { cvData: CvData }) {
         </div>
 
         {/* Main Content */}
-        <div className="col-span-2 flex flex-col gap-8 relative z-10">
+        <div className="col-span-2 flex flex-col gap-[calc(2rem*var(--density,1))]">
           {/* Render main sections based on order */}
           {order
             .filter((key) => mainSections.includes(key))

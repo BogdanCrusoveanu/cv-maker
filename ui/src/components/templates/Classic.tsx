@@ -180,7 +180,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
               </h3>
               <div className="space-y-4">
                 {experience.map((exp) => (
-                  <div key={exp.id}>
+                  <div key={exp.id} className="mb-6 break-inside-avoid-page">
                     <div className="font-semibold text-sm text-gray-900">
                       {formatDate(exp.startDate) || "Dec 20XX"} –{" "}
                       {formatDate(exp.endDate) || "Jan 20XX"}
@@ -217,7 +217,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
               </h3>
               <div className="space-y-3">
                 {education.map((edu) => (
-                  <div key={edu.id}>
+                  <div key={edu.id} className="mb-4 break-inside-avoid-page">
                     <div className="text-sm">
                       <span className="font-semibold text-gray-900">
                         {edu.school}
@@ -273,7 +273,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                 </h3>
                 <div className="space-y-4">
                   {section.items.map((item) => (
-                    <div key={item.id}>
+                    <div key={item.id} className="mb-4 break-inside-avoid-page">
                       <div className="font-semibold text-sm text-gray-900">
                         {item.date}
                       </div>
@@ -372,16 +372,23 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
   );
 
   return (
-    <div className="flex min-h-[90vh] relative">
-      {/* Sidebar - Purple & Navy */}
+    <div className="relative flex min-h-full h-full font-serif">
+      {/* Absolute Background Layer */}
       <div
-        className="w-1/3 relative overflow-hidden"
+        className="absolute top-0 bottom-0 left-0 w-1/3 z-0 overflow-hidden print:fixed print:top-0 print:left-0 print:h-screen"
         style={{
           background:
             "linear-gradient(to bottom, #E5D4ED 0%, #E5D4ED 40%, #2C3E50 40%, #2C3E50 100%)",
+          WebkitPrintColorAdjust: "exact",
+          printColorAdjust: "exact",
         }}
       >
-        <div className="relative z-10 p-8">
+        <WavePattern />
+      </div>
+
+      {/* Sidebar - Transparent Content Wrapper */}
+      <div className="w-1/3 relative z-10 min-h-full h-full">
+        <div className="p-8">
           {/* Photo */}
           <div className="mb-8 flex justify-center">
             <div className="w-40 h-40 rounded-full border-4 border-white overflow-hidden bg-white">
@@ -412,13 +419,10 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
               .map((key) => renderSidebarSection(key))}
           </div>
         </div>
-
-        {/* Decorative waves at bottom */}
-        <WavePattern />
       </div>
 
       {/* Main Content */}
-      <div className="w-2/3 p-10 bg-white">
+      <div className="w-2/3 p-10 bg-white relative z-10">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-5xl font-bold text-gray-900 mb-2 uppercase tracking-wide">

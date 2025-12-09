@@ -1,7 +1,7 @@
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import { CvData } from "../../types/cv";
 
-export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
+export default function Amber({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
 
   // Sidebar sections
@@ -204,7 +204,7 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
               <div className="space-y-4 mt-4">
                 {education.map((edu) => (
                   <div key={edu.id} className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-[#F4C430] rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="w-2 h-2 bg-[var(--primary-color)] rounded-full mt-2 flex-shrink-0"></div>
                     <div className="flex-1">
                       <div className="font-bold text-sm uppercase">
                         {edu.degree} | {formatDate(edu.startDate) || "20XX"} -{" "}
@@ -287,30 +287,30 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
   };
 
   return (
-    <div className="relative flex min-h-full h-full font-sans">
-      {/* Absolute Background Layers */}
+    <div className="relative min-h-full h-full font-sans">
+      {/* Background Layers */}
+      {/* Background Layers */}
       <div
         className="absolute top-0 bottom-0 left-0 w-4 bg-black z-0 print:fixed print:top-0 print:left-0 print:h-screen"
         style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
       />
       <div
-        className="absolute top-0 bottom-0 left-4 w-1/3 bg-[#F4C430] z-0 print:fixed print:top-0 print:left-4 print:h-screen"
+        className="absolute top-0 bottom-0 left-4 w-1/3 bg-[var(--primary-color)] z-0 print:fixed print:top-0 print:left-4 print:h-screen"
         style={{
           WebkitPrintColorAdjust: "exact",
           printColorAdjust: "exact",
-          backgroundColor: "#F4C430",
+          backgroundColor: "var(--primary-color)",
         }}
       />
-
       {/* Content Container */}
-      <div className="relative z-10 flex min-h-full h-full w-full">
-        {/* Black stripe */}
-        <div className="w-4 bg-black print:bg-transparent flex-shrink-0"></div>
+      <div className="relative z-10 flex min-h-full h-full">
+        {/* Black stripe - transparent bg because parent has it */}
+        <div className="w-4 flex-shrink-0"></div>
 
-        {/* Yellow Sidebar */}
-        <div
-          className="w-1/3 p-8 flex flex-col gap-8 pb-10 min-h-full h-full bg-[#F4C430] print:bg-transparent"
-          style={{ backgroundColor: "#F4C430" }}
+        {/* Sidebar */}
+        <div 
+          className="w-1/3 p-[calc(2rem*var(--density,1))] flex flex-col gap-[calc(2rem*var(--density,1))] pb-10 min-h-full h-full bg-[var(--primary-color)] print:bg-transparent"
+          style={{ backgroundColor: "var(--primary-color)" }}
         >
           {/* Photo */}
           <div>
@@ -342,9 +342,10 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
         </div>
 
         {/* Main Content - White with Black Header */}
-        <div className="flex-1 bg-white min-h-full h-full">
+        <div className="flex-1">
           {/* Black header bar */}
-          <div className="bg-black text-white p-8">
+          {/* Black header bar */}
+          <div className="bg-black text-white p-[calc(2rem*var(--density,1))]">
             <h1 className="text-5xl font-bold uppercase tracking-wide">
               {personalInfo.fullName || "NAME"}
             </h1>
@@ -355,7 +356,7 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
             )}
           </div>
 
-          <div className="p-8 flex flex-col gap-8">
+          <div className="p-[calc(2rem*var(--density,1))] flex flex-col gap-[calc(2rem*var(--density,1))]">
             {/* Render main sections based on order */}
             {order
               .filter((key) => mainSections.includes(key))

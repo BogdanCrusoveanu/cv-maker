@@ -10,13 +10,14 @@ import {
   Link,
   GripVertical,
 } from "lucide-react";
-import { useEffect } from "react";
-import api from "../services/api";
+import { ThemeEditor } from "./ThemeEditor";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
 import { TextArea } from "./ui/TextArea";
 import { Select } from "./ui/Select";
 import { SectionHeader } from "./ui/SectionHeader";
+import api from "../services/api";
 import {
   CvData,
   Experience,
@@ -98,6 +99,14 @@ export default function Editor({
   setCvData,
   currentTemplate,
 }: EditorProps) {
+  const [activeTab, setActiveTab] = useState<"content" | "design">("content");
+
+  useEffect(() => {
+    if (!currentTemplate.startsWith("custom-") && activeTab === "design") {
+      setActiveTab("content");
+    }
+  }, [currentTemplate, activeTab]);
+
   const toggleVisibility = (section: string) => {
     setCvData({
       ...cvData,
@@ -657,832 +666,723 @@ export default function Editor({
   };
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 lg:space-y-8">
-      {/* Section Visibility and Reordering Control */}
-      <section className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-700 mb-3">
-          Section Visibility & Order
-        </h3>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+    <div className="flex flex-col h-full bg-white">
+      {/* Editor Tabs */}
+      <div className="flex border-b border-gray-200 shrink-0">
+        <button
+          onClick={() => setActiveTab("content")}
+          className={`flex-1 py-3 font-semibold text-sm transition-colors ${
+            activeTab === "content"
+              ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50/50"
+              : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+          }`}
         >
-          <SortableContext
-            items={cvData.sectionOrder || Object.keys(cvData.visibility)}
-            strategy={verticalListSortingStrategy}
+          Content
+        </button>
+        {currentTemplate.startsWith("custom") && (
+          <button
+            onClick={() => setActiveTab("design")}
+            className={`flex-1 py-3 font-semibold text-sm transition-colors ${
+              activeTab === "design"
+                ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50/50"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+            }`}
           >
-            <div className="space-y-2">
-              {(cvData.sectionOrder || Object.keys(cvData.visibility)).map(
-                (key, index) => {
-                  // Ensure key exists in visibility (handle potential stale keys in order)
-                  if (cvData.visibility[key] === undefined) return null;
+            Design
+          </button>
+        )}
+      </div>
 
-                  return (
-                    <SortableItem key={key} id={key}>
-                      <Button
-                        onClick={() => toggleVisibility(key)}
-                        variant="ghost"
-                        icon={cvData.visibility[key] ? Eye : EyeOff}
-                        className={
-                          cvData.visibility[key]
-                            ? "text-blue-600"
-                            : "text-gray-400"
-                        }
-                      />
-                      <span className="capitalize font-medium text-gray-700">
-                        {key.replace(/([A-Z])/g, " $1").trim()}
-                      </span>
-                      <div className="flex items-center gap-1 ml-auto">
-                        <Button
-                          onClick={() => moveSection(index, -1)}
-                          variant="ghost"
-                          icon={ArrowUp}
-                          disabled={index === 0}
-                          className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                        />
-                        <Button
-                          onClick={() => moveSection(index, 1)}
-                          variant="ghost"
-                          icon={ArrowDown}
-                          disabled={
-                            index ===
-                            (
-                              cvData.sectionOrder ||
-                              Object.keys(cvData.visibility)
-                            ).length -
-                              1
-                          }
-                          className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
-                        />
-                      </div>
-                    </SortableItem>
-                  );
-                }
-              )}
-            </div>
-          </SortableContext>
-        </DndContext>
-      </section>
-
-      {/* Personal Info Section */}
-      <section>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-blue-500">
-          Personal Information
-        </h2>
-
-        {/* Photo Upload */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Profile Photo
-          </label>
-          <div className="flex items-center gap-4">
-            {cvData.personalInfo.photo ? (
-              <>
-                <img
-                  src={cvData.personalInfo.photo}
-                  alt="Profile"
-                  className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
-                />
-                <Button
-                  onClick={() => handlePersonalInfoChange("photo", "")}
-                  variant="danger"
-                  icon={X}
+      <div className="flex-1 overflow-hidden relative">
+        {activeTab === "design" ? (
+          <div className="absolute inset-0 overflow-y-auto p-4 lg:p-6">
+            <ThemeEditor cvData={cvData} setCvData={setCvData} />
+          </div>
+        ) : (
+          <div className="absolute inset-0 overflow-y-auto p-4 lg:p-6 space-y-6 lg:space-y-8">
+            {/* Section Visibility and Reordering Control */}
+            <section className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">
+                Section Visibility & Order
+              </h3>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={cvData.sectionOrder || Object.keys(cvData.visibility)}
+                  strategy={verticalListSortingStrategy}
                 >
-                  Remove Photo
-                </Button>
-              </>
-            ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-200 border-2 border-gray-300 flex items-center justify-center text-gray-400">
-                <Upload size={24} />
-              </div>
-            )}
-            <div>
-              <Button
-                as="label"
-                htmlFor="photo-upload"
-                variant="primary"
-                color="blue"
-                icon={Upload}
-                className="cursor-pointer"
-              >
-                Upload Photo
-              </Button>
-              <input
-                id="photo-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-            </div>
-          </div>
-        </div>
+                  <div className="space-y-2">
+                    {(
+                      cvData.sectionOrder || Object.keys(cvData.visibility)
+                    ).map((key, index) => {
+                      // Ensure key exists in visibility (handle potential stale keys in order)
+                      if (cvData.visibility[key] === undefined) return null;
 
-        <div className="grid grid-cols-1 gap-4">
-          <Input
-            placeholder="Full Name"
-            value={cvData.personalInfo.fullName}
-            onChange={(e) =>
-              handlePersonalInfoChange("fullName", e.target.value)
-            }
-            color="blue"
-          />
-          <Input
-            placeholder="Professional Title"
-            value={cvData.personalInfo.title}
-            onChange={(e) => handlePersonalInfoChange("title", e.target.value)}
-            color="blue"
-          />
-          <Input
-            type="email"
-            placeholder="Email"
-            value={cvData.personalInfo.email}
-            onChange={(e) => handlePersonalInfoChange("email", e.target.value)}
-            color="blue"
-          />
-          <Input
-            type="tel"
-            placeholder="Phone"
-            value={cvData.personalInfo.phone}
-            onChange={(e) => handlePersonalInfoChange("phone", e.target.value)}
-            color="blue"
-          />
-          <Input
-            placeholder="Location"
-            value={cvData.personalInfo.location}
-            onChange={(e) =>
-              handlePersonalInfoChange("location", e.target.value)
-            }
-            color="blue"
-          />
-          <Input
-            placeholder="Website"
-            value={cvData.personalInfo.website || ""}
-            onChange={(e) =>
-              handlePersonalInfoChange("website", e.target.value)
-            }
-            color="blue"
-          />
-          <TextArea
-            placeholder="Professional Summary"
-            value={cvData.personalInfo.summary}
-            onChange={(e) =>
-              handlePersonalInfoChange("summary", e.target.value)
-            }
-            rows={4}
-            color="blue"
-          />
-
-          {/* Custom Fields */}
-          <div className="space-y-3 pt-4 border-t border-gray-200">
-            <div className="flex justify-between items-center">
-              <label className="block text-sm font-medium text-gray-700">
-                Custom Fields
-              </label>
-              <Button
-                onClick={addCustomField}
-                variant="text"
-                color="blue"
-                icon={Plus}
-                iconSize={14}
-              >
-                Add Field
-              </Button>
-            </div>
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={reorderCustomFields}
-            >
-              <SortableContext
-                items={(cvData.personalInfo.customFields || []).map(
-                  (f) => f.id
-                )}
-                strategy={verticalListSortingStrategy}
-              >
-                {(cvData.personalInfo.customFields || []).map((field) => (
-                  <SortableItem key={field.id} id={field.id}>
-                    <div className="flex gap-2 items-center flex-1">
-                      <Input
-                        placeholder="Label (e.g. LinkedIn)"
-                        value={field.label}
-                        onChange={(e) =>
-                          updateCustomField(field.id, "label", e.target.value)
-                        }
-                        color="blue"
-                        className="w-1/3"
-                      />
-                      <Input
-                        placeholder="Value"
-                        value={field.value}
-                        onChange={(e) =>
-                          updateCustomField(field.id, "value", e.target.value)
-                        }
-                        color="blue"
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={() =>
-                          updateCustomField(field.id, "isUrl", !field.isUrl)
-                        }
-                        variant="ghost"
-                        icon={Link}
-                        title={field.isUrl ? "Unlink" : "Make URL"}
-                        className={
-                          field.isUrl ? "text-blue-500" : "text-gray-400"
-                        }
-                      />
-                      <Button
-                        onClick={() => removeCustomField(field.id)}
-                        variant="ghost"
-                        icon={X}
-                      />
-                    </div>
-                  </SortableItem>
-                ))}
-              </SortableContext>
-            </DndContext>
-          </div>
-        </div>
-      </section>
-
-      {/* Experience Section */}
-      {cvData.visibility?.experience && (
-        <section>
-          <SectionHeader
-            title="Experience"
-            color="green"
-            onAdd={addExperience}
-            addButtonLabel="Add Experience"
-          />
-
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={reorderExperience}
-          >
-            <SortableContext
-              items={cvData.experience.map((exp) => exp.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {cvData.experience.map((exp) => (
-                <SortableItem key={exp.id} id={exp.id}>
-                  <div className="flex-1">
-                    <Button
-                      onClick={() => removeExperience(exp.id)}
-                      variant="ghost"
-                      icon={X}
-                      className="float-right"
-                    />
-                    <div className="grid grid-cols-1 gap-3 pr-8">
-                      <Input
-                        placeholder="Job Title"
-                        value={exp.title}
-                        onChange={(e) =>
-                          updateExperience(exp.id, "title", e.target.value)
-                        }
-                        color="green"
-                      />
-                      <Input
-                        placeholder="Company"
-                        value={exp.company}
-                        onChange={(e) =>
-                          updateExperience(exp.id, "company", e.target.value)
-                        }
-                        color="green"
-                      />
-                      <Input
-                        placeholder="Location"
-                        value={exp.location}
-                        onChange={(e) =>
-                          updateExperience(exp.id, "location", e.target.value)
-                        }
-                        color="green"
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <Input
-                          type="month"
-                          placeholder="Start Date"
-                          value={exp.startDate}
-                          onChange={(e) =>
-                            updateExperience(
-                              exp.id,
-                              "startDate",
-                              e.target.value
-                            )
-                          }
-                          color="green"
-                        />
-                        <div className="flex gap-2">
-                          <Input
-                            placeholder="End Date"
-                            value={exp.endDate === "Ongoing" ? "" : exp.endDate}
-                            onChange={(e) =>
-                              updateExperience(
-                                exp.id,
-                                "endDate",
-                                e.target.value
-                              )
-                            }
-                            color="green"
-                            type={exp.endDate === "Ongoing" ? "text" : "month"}
-                            disabled={exp.endDate === "Ongoing"}
-                            className="flex-1"
-                          />
-                          <div className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={exp.endDate === "Ongoing"}
-                              onChange={(e) => {
-                                updateExperience(
-                                  exp.id,
-                                  "endDate",
-                                  e.target.checked ? "Ongoing" : ""
-                                );
-                              }}
-                              className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
-                              id={`ongoing-exp-${exp.id}`}
-                            />
-                            <label
-                              htmlFor={`ongoing-exp-${exp.id}`}
-                              className="ml-2 text-sm font-medium text-gray-900"
-                            >
-                              Ongoing
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <TextArea
-                        placeholder="Job Description"
-                        value={exp.description}
-                        onChange={(e) =>
-                          updateExperience(
-                            exp.id,
-                            "description",
-                            e.target.value
-                          )
-                        }
-                        rows={3}
-                        color="green"
-                      />
-                    </div>
-                  </div>
-                </SortableItem>
-              ))}
-            </SortableContext>
-          </DndContext>
-        </section>
-      )}
-
-      {/* Education Section */}
-      {cvData.visibility?.education && (
-        <section>
-          <SectionHeader
-            title="Education"
-            color="purple"
-            onAdd={addEducation}
-            addButtonLabel="Add Education"
-          />
-
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={reorderEducation}
-          >
-            <SortableContext
-              items={cvData.education.map((edu) => edu.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              {cvData.education.map((edu) => (
-                <SortableItem key={edu.id} id={edu.id}>
-                  <div className="flex-1">
-                    <Button
-                      onClick={() => removeEducation(edu.id)}
-                      variant="ghost"
-                      icon={X}
-                      className="float-right"
-                    />
-                    <div className="grid grid-cols-1 gap-3 pr-8">
-                      <Input
-                        placeholder="Degree"
-                        value={edu.degree}
-                        onChange={(e) =>
-                          updateEducation(edu.id, "degree", e.target.value)
-                        }
-                        color="purple"
-                      />
-                      <Input
-                        placeholder="School/University"
-                        value={edu.school}
-                        onChange={(e) =>
-                          updateEducation(edu.id, "school", e.target.value)
-                        }
-                        color="purple"
-                      />
-                      <Input
-                        placeholder="Location"
-                        value={edu.location}
-                        onChange={(e) =>
-                          updateEducation(edu.id, "location", e.target.value)
-                        }
-                        color="purple"
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <Input
-                          type="month"
-                          placeholder="Start Date"
-                          value={edu.startDate}
-                          onChange={(e) =>
-                            updateEducation(edu.id, "startDate", e.target.value)
-                          }
-                          color="purple"
-                        />
-                        <div className="flex gap-2">
-                          <Input
-                            type={edu.endDate === "Ongoing" ? "text" : "month"}
-                            placeholder="End Date"
-                            value={edu.endDate === "Ongoing" ? "" : edu.endDate}
-                            onChange={(e) =>
-                              updateEducation(edu.id, "endDate", e.target.value)
-                            }
-                            color="purple"
-                            disabled={edu.endDate === "Ongoing"}
-                            className="flex-1"
-                          />
-                          <div className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={edu.endDate === "Ongoing"}
-                              onChange={(e) => {
-                                updateEducation(
-                                  edu.id,
-                                  "endDate",
-                                  e.target.checked ? "Ongoing" : ""
-                                );
-                              }}
-                              className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
-                              id={`ongoing-edu-${edu.id}`}
-                            />
-                            <label
-                              htmlFor={`ongoing-edu-${edu.id}`}
-                              className="ml-2 text-sm font-medium text-gray-900"
-                            >
-                              Ongoing
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <Input
-                        placeholder="GPA (optional)"
-                        value={edu.gpa}
-                        onChange={(e) =>
-                          updateEducation(edu.id, "gpa", e.target.value)
-                        }
-                        color="purple"
-                      />
-                    </div>
-                  </div>
-                </SortableItem>
-              ))}
-            </SortableContext>
-          </DndContext>
-        </section>
-      )}
-
-      {/* Skills Section */}
-      {cvData.visibility?.skills && (
-        <section>
-          <SectionHeader
-            title="Skills"
-            color="orange"
-            onAdd={addSkill}
-            addButtonLabel="Add Skill"
-          />
-
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={reorderSkills}
-          >
-            <SortableContext
-              items={cvData.skills.map((s) => s.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {cvData.skills.map((skill) => (
-                  <SortableItem key={skill.id} id={skill.id}>
-                    <div className="flex flex-col gap-2 p-1 w-full relative">
-                      <Button
-                        onClick={() => removeSkill(skill.id)}
-                        variant="ghost"
-                        icon={X}
-                        className="absolute top-0 right-0"
-                      />
-                      <div className="pr-8">
-                        <Input
-                          placeholder="Skill Name"
-                          value={skill.name}
-                          onChange={(e) =>
-                            updateSkill(skill.id, "name", e.target.value)
-                          }
-                          color="orange"
-                          className="mb-2"
-                        />
-                      </div>
-
-                      {supportsSkillLevels && (
-                        <div className="flex items-center gap-3">
-                          <div className="flex-1 flex items-center gap-2">
-                            <span className="text-xs text-gray-500 w-12">
-                              Level: {skill.level || 75}%
-                            </span>
-                            <input
-                              type="range"
-                              min="0"
-                              max="100"
-                              value={skill.level || 75}
-                              onChange={(e) =>
-                                updateSkill(
-                                  skill.id,
-                                  "level",
-                                  parseInt(e.target.value)
-                                )
-                              }
-                              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
-                              disabled={skill.showLevel === false}
-                            />
-                          </div>
+                      return (
+                        <SortableItem key={key} id={key}>
                           <Button
-                            onClick={() =>
-                              updateSkill(
-                                skill.id,
-                                "showLevel",
-                                !skill.showLevel
-                              )
-                            }
+                            onClick={() => toggleVisibility(key)}
                             variant="ghost"
-                            icon={skill.showLevel !== false ? Eye : EyeOff}
-                            title={
-                              skill.showLevel !== false
-                                ? "Hide Level"
-                                : "Show Level"
-                            }
+                            icon={cvData.visibility[key] ? Eye : EyeOff}
                             className={
-                              skill.showLevel === false
-                                ? "text-gray-400"
-                                : "text-orange-500"
+                              cvData.visibility[key]
+                                ? "text-blue-600"
+                                : "text-gray-400"
                             }
                           />
-                        </div>
-                      )}
-                    </div>
-                  </SortableItem>
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        </section>
-      )}
+                          <span className="capitalize font-medium text-gray-700">
+                            {key.replace(/([A-Z])/g, " $1").trim()}
+                          </span>
+                          <div className="flex items-center gap-1 ml-auto">
+                            <Button
+                              onClick={() => moveSection(index, -1)}
+                              variant="ghost"
+                              icon={ArrowUp}
+                              disabled={index === 0}
+                              className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                            />
+                            <Button
+                              onClick={() => moveSection(index, 1)}
+                              variant="ghost"
+                              icon={ArrowDown}
+                              disabled={
+                                index ===
+                                (
+                                  cvData.sectionOrder ||
+                                  Object.keys(cvData.visibility)
+                                ).length -
+                                  1
+                              }
+                              className="text-gray-500 hover:text-gray-700 disabled:opacity-30"
+                            />
+                          </div>
+                        </SortableItem>
+                      );
+                    })}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </section>
 
-      {/* Interests Section */}
-      {cvData.visibility?.interests && (
-        <section>
-          <SectionHeader
-            title="Interests"
-            color="pink"
-            onAdd={addInterest}
-            addButtonLabel="Add Interest"
-          />
+            {/* Personal Info Section */}
+            <section>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-blue-500">
+                Personal Information
+              </h2>
 
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={reorderInterests}
-          >
-            <SortableContext
-              items={(cvData.interests || []).map((i) => i.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {(cvData.interests || []).map((interest) => (
-                  <SortableItem key={interest.id} id={interest.id}>
-                    <div className="flex gap-2 items-center flex-1">
-                      <Input
-                        placeholder="Interest"
-                        value={interest.name}
-                        onChange={(e) =>
-                          updateInterest(interest.id, e.target.value)
-                        }
-                        color="pink"
-                        className="flex-1"
+              {/* Photo Upload */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Profile Photo
+                </label>
+                <div className="flex items-center gap-4">
+                  {cvData.personalInfo.photo ? (
+                    <>
+                      <img
+                        src={cvData.personalInfo.photo}
+                        alt="Profile"
+                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
                       />
                       <Button
-                        onClick={() => removeInterest(interest.id)}
-                        variant="ghost"
+                        onClick={() => handlePersonalInfoChange("photo", "")}
+                        variant="danger"
                         icon={X}
-                      />
+                      >
+                        Remove Photo
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="w-20 h-20 rounded-full bg-gray-200 border-2 border-gray-300 flex items-center justify-center text-gray-400">
+                      <Upload size={24} />
                     </div>
-                  </SortableItem>
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        </section>
-      )}
-
-      {/* Languages Section */}
-      {cvData.visibility?.languages && (
-        <section>
-          <SectionHeader
-            title="Languages"
-            color="teal"
-            onAdd={addLanguage}
-            addButtonLabel="Add Language"
-          />
-
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={reorderLanguages}
-          >
-            <SortableContext
-              items={(cvData.languages || []).map((l) => l.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="space-y-3">
-                {(cvData.languages || []).map((lang) => (
-                  <SortableItem key={lang.id} id={lang.id}>
-                    <div className="flex gap-2 items-center flex-1">
-                      <Input
-                        placeholder="Language"
-                        value={lang.name}
-                        onChange={(e) =>
-                          updateLanguage(lang.id, "name", e.target.value)
-                        }
-                        color="teal"
-                        className="flex-1"
-                      />
-                      <Select
-                        placeholder="Proficiency"
-                        value={lang.proficiency}
-                        onChange={(e) =>
-                          updateLanguage(lang.id, "proficiency", e.target.value)
-                        }
-                        options={[
-                          {
-                            value: "Novice/Beginner (A1)",
-                            label: "Novice/Beginner (A1)",
-                          },
-                          {
-                            value: "Intermediate (B1)",
-                            label: "Intermediate (B1)",
-                          },
-                          { value: "Advanced (C1)", label: "Advanced (C1)" },
-                          { value: "Fluent", label: "Fluent" },
-                          { value: "Native", label: "Native" },
-                        ]}
-                        color="teal"
-                        className="w-1/3"
-                      />
-                      <Button
-                        onClick={() => removeLanguage(lang.id)}
-                        variant="ghost"
-                        icon={X}
-                      />
-                    </div>
-                  </SortableItem>
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        </section>
-      )}
-
-      {/* Custom Sections */}
-      {cvData.visibility?.customSections && (
-        <section>
-          <SectionHeader
-            title="Custom Sections"
-            color="indigo"
-            onAdd={addCustomSection}
-            addButtonLabel="Add Section"
-          />
-
-          <div className="space-y-6">
-            {(cvData.customSections || []).map((section) => (
-              <div
-                key={section.id}
-                className="border border-gray-300 rounded-lg p-4 bg-gray-50"
-              >
-                <div className="flex justify-between items-center mb-4">
-                  <input
-                    type="text"
-                    value={section.title}
-                    onChange={(e) =>
-                      updateCustomSectionTitle(section.id, e.target.value)
-                    }
-                    className="text-lg font-bold bg-transparent border-b border-gray-300 focus:border-indigo-500 focus:outline-none px-1"
-                    placeholder="Section Title"
-                  />
-                  <div className="flex gap-2">
+                  )}
+                  <div>
                     <Button
-                      onClick={() => addCustomSectionItem(section.id)}
-                      variant="text"
-                      color="indigo"
-                      icon={Plus}
-                      iconSize={14}
+                      as="label"
+                      htmlFor="photo-upload"
+                      variant="primary"
+                      color="blue"
+                      icon={Upload}
+                      className="cursor-pointer"
                     >
-                      Add Item
+                      Upload Photo
                     </Button>
-                    <Button
-                      onClick={() => removeCustomSection(section.id)}
-                      variant="ghost"
-                      icon={Trash2}
+                    <input
+                      id="photo-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
                     />
                   </div>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                <Input
+                  placeholder="Full Name"
+                  value={cvData.personalInfo.fullName}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("fullName", e.target.value)
+                  }
+                  color="blue"
+                />
+                <Input
+                  placeholder="Professional Title"
+                  value={cvData.personalInfo.title}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("title", e.target.value)
+                  }
+                  color="blue"
+                />
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  value={cvData.personalInfo.email}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("email", e.target.value)
+                  }
+                  color="blue"
+                />
+                <Input
+                  type="tel"
+                  placeholder="Phone"
+                  value={cvData.personalInfo.phone}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("phone", e.target.value)
+                  }
+                  color="blue"
+                />
+                <Input
+                  placeholder="Location"
+                  value={cvData.personalInfo.location}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("location", e.target.value)
+                  }
+                  color="blue"
+                />
+                <Input
+                  placeholder="Website"
+                  value={cvData.personalInfo.website || ""}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("website", e.target.value)
+                  }
+                  color="blue"
+                />
+                <TextArea
+                  placeholder="Professional Summary"
+                  value={cvData.personalInfo.summary}
+                  onChange={(e) =>
+                    handlePersonalInfoChange("summary", e.target.value)
+                  }
+                  rows={4}
+                  color="blue"
+                />
+
+                {/* Custom Fields */}
+                <div className="space-y-3 pt-4 border-t border-gray-200">
+                  <div className="flex justify-between items-center">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Custom Fields
+                    </label>
+                    <Button
+                      onClick={addCustomField}
+                      variant="text"
+                      color="blue"
+                      icon={Plus}
+                      iconSize={14}
+                    >
+                      Add Field
+                    </Button>
+                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={reorderCustomFields}
+                  >
+                    <SortableContext
+                      items={(cvData.personalInfo.customFields || []).map(
+                        (f) => f.id
+                      )}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {(cvData.personalInfo.customFields || []).map((field) => (
+                        <SortableItem key={field.id} id={field.id}>
+                          <div className="flex gap-2 items-center flex-1">
+                            <Input
+                              placeholder="Label (e.g. LinkedIn)"
+                              value={field.label}
+                              onChange={(e) =>
+                                updateCustomField(
+                                  field.id,
+                                  "label",
+                                  e.target.value
+                                )
+                              }
+                              color="blue"
+                              className="w-1/3"
+                            />
+                            <Input
+                              placeholder="Value"
+                              value={field.value}
+                              onChange={(e) =>
+                                updateCustomField(
+                                  field.id,
+                                  "value",
+                                  e.target.value
+                                )
+                              }
+                              color="blue"
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={() =>
+                                updateCustomField(
+                                  field.id,
+                                  "isUrl",
+                                  !field.isUrl
+                                )
+                              }
+                              variant="ghost"
+                              icon={Link}
+                              title={field.isUrl ? "Unlink" : "Make URL"}
+                              className={
+                                field.isUrl ? "text-blue-500" : "text-gray-400"
+                              }
+                            />
+                            <Button
+                              onClick={() => removeCustomField(field.id)}
+                              variant="ghost"
+                              icon={X}
+                            />
+                          </div>
+                        </SortableItem>
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                </div>
+              </div>
+            </section>
+
+            {/* Experience Section */}
+            {cvData.visibility?.experience && (
+              <section>
+                <SectionHeader
+                  title="Experience"
+                  color="green"
+                  onAdd={addExperience}
+                  addButtonLabel="Add Experience"
+                />
 
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
-                  onDragEnd={(e) => reorderCustomSectionItems(e, section.id)}
+                  onDragEnd={reorderExperience}
                 >
                   <SortableContext
-                    items={section.items.map((i) => i.id)}
+                    items={cvData.experience.map((exp) => exp.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="space-y-4">
-                      {section.items.map((item) => (
-                        <SortableItem key={item.id} id={item.id}>
-                          <div className="grid grid-cols-1 gap-3 p-1 w-full relative">
-                            <Button
-                              onClick={() =>
-                                removeCustomSectionItem(section.id, item.id)
-                              }
-                              variant="ghost"
-                              icon={X}
-                              iconSize={16}
-                              className="absolute top-0 right-0"
-                            />
+                    {cvData.experience.map((exp) => (
+                      <SortableItem key={exp.id} id={exp.id}>
+                        <div className="flex-1">
+                          <Button
+                            onClick={() => removeExperience(exp.id)}
+                            variant="ghost"
+                            icon={X}
+                            className="float-right"
+                          />
+                          <div className="grid grid-cols-1 gap-3 pr-8">
                             <Input
-                              placeholder="Title / Role"
-                              value={item.title}
+                              placeholder="Job Title"
+                              value={exp.title}
                               onChange={(e) =>
-                                updateCustomSectionItem(
-                                  section.id,
-                                  item.id,
+                                updateExperience(
+                                  exp.id,
                                   "title",
                                   e.target.value
                                 )
                               }
-                              color="indigo"
-                              className="text-sm pr-8"
+                              color="green"
                             />
-                            <div className="grid grid-cols-2 gap-2">
+                            <Input
+                              placeholder="Company"
+                              value={exp.company}
+                              onChange={(e) =>
+                                updateExperience(
+                                  exp.id,
+                                  "company",
+                                  e.target.value
+                                )
+                              }
+                              color="green"
+                            />
+                            <Input
+                              placeholder="Location"
+                              value={exp.location}
+                              onChange={(e) =>
+                                updateExperience(
+                                  exp.id,
+                                  "location",
+                                  e.target.value
+                                )
+                              }
+                              color="green"
+                            />
+                            <div className="grid grid-cols-2 gap-3">
                               <Input
-                                placeholder="Subtitle / Company"
-                                value={item.subtitle}
+                                type="month"
+                                placeholder="Start Date"
+                                value={exp.startDate}
                                 onChange={(e) =>
-                                  updateCustomSectionItem(
-                                    section.id,
-                                    item.id,
-                                    "subtitle",
+                                  updateExperience(
+                                    exp.id,
+                                    "startDate",
                                     e.target.value
                                   )
                                 }
-                                color="indigo"
-                                className="text-sm"
+                                color="green"
                               />
-                              <Input
-                                placeholder="Date / Duration"
-                                value={item.date}
-                                onChange={(e) =>
-                                  updateCustomSectionItem(
-                                    section.id,
-                                    item.id,
-                                    "date",
-                                    e.target.value
-                                  )
-                                }
-                                color="indigo"
-                                className="text-sm"
-                              />
+                              <div className="flex gap-2">
+                                <Input
+                                  placeholder="End Date"
+                                  value={
+                                    exp.endDate === "Ongoing" ? "" : exp.endDate
+                                  }
+                                  onChange={(e) =>
+                                    updateExperience(
+                                      exp.id,
+                                      "endDate",
+                                      e.target.value
+                                    )
+                                  }
+                                  color="green"
+                                  type={
+                                    exp.endDate === "Ongoing" ? "text" : "month"
+                                  }
+                                  disabled={exp.endDate === "Ongoing"}
+                                  className="flex-1"
+                                />
+                                <div className="flex items-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={exp.endDate === "Ongoing"}
+                                    onChange={(e) => {
+                                      updateExperience(
+                                        exp.id,
+                                        "endDate",
+                                        e.target.checked ? "Ongoing" : ""
+                                      );
+                                    }}
+                                    className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                                    id={`ongoing-exp-${exp.id}`}
+                                  />
+                                  <label
+                                    htmlFor={`ongoing-exp-${exp.id}`}
+                                    className="ml-2 text-sm font-medium text-gray-900"
+                                  >
+                                    Ongoing
+                                  </label>
+                                </div>
+                              </div>
                             </div>
                             <TextArea
-                              placeholder="Description"
-                              value={item.description}
+                              placeholder="Job Description"
+                              value={exp.description}
                               onChange={(e) =>
-                                updateCustomSectionItem(
-                                  section.id,
-                                  item.id,
+                                updateExperience(
+                                  exp.id,
                                   "description",
                                   e.target.value
                                 )
                               }
-                              rows={2}
-                              color="indigo"
-                              className="text-sm"
+                              rows={3}
+                              color="green"
+                            />
+                          </div>
+                        </div>
+                      </SortableItem>
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              </section>
+            )}
+
+            {/* Education Section */}
+            {cvData.visibility?.education && (
+              <section>
+                <SectionHeader
+                  title="Education"
+                  color="purple"
+                  onAdd={addEducation}
+                  addButtonLabel="Add Education"
+                />
+
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={reorderEducation}
+                >
+                  <SortableContext
+                    items={cvData.education.map((edu) => edu.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {cvData.education.map((edu) => (
+                      <SortableItem key={edu.id} id={edu.id}>
+                        <div className="flex-1">
+                          <Button
+                            onClick={() => removeEducation(edu.id)}
+                            variant="ghost"
+                            icon={X}
+                            className="float-right"
+                          />
+                          <div className="grid grid-cols-1 gap-3 pr-8">
+                            <Input
+                              placeholder="Degree"
+                              value={edu.degree}
+                              onChange={(e) =>
+                                updateEducation(
+                                  edu.id,
+                                  "degree",
+                                  e.target.value
+                                )
+                              }
+                              color="purple"
+                            />
+                            <Input
+                              placeholder="School/University"
+                              value={edu.school}
+                              onChange={(e) =>
+                                updateEducation(
+                                  edu.id,
+                                  "school",
+                                  e.target.value
+                                )
+                              }
+                              color="purple"
+                            />
+                            <Input
+                              placeholder="Location"
+                              value={edu.location}
+                              onChange={(e) =>
+                                updateEducation(
+                                  edu.id,
+                                  "location",
+                                  e.target.value
+                                )
+                              }
+                              color="purple"
+                            />
+                            <div className="grid grid-cols-2 gap-3">
+                              <Input
+                                type="month"
+                                placeholder="Start Date"
+                                value={edu.startDate}
+                                onChange={(e) =>
+                                  updateEducation(
+                                    edu.id,
+                                    "startDate",
+                                    e.target.value
+                                  )
+                                }
+                                color="purple"
+                              />
+                              <div className="flex gap-2">
+                                <Input
+                                  type={
+                                    edu.endDate === "Ongoing" ? "text" : "month"
+                                  }
+                                  placeholder="End Date"
+                                  value={
+                                    edu.endDate === "Ongoing" ? "" : edu.endDate
+                                  }
+                                  onChange={(e) =>
+                                    updateEducation(
+                                      edu.id,
+                                      "endDate",
+                                      e.target.value
+                                    )
+                                  }
+                                  color="purple"
+                                  disabled={edu.endDate === "Ongoing"}
+                                  className="flex-1"
+                                />
+                                <div className="flex items-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={edu.endDate === "Ongoing"}
+                                    onChange={(e) => {
+                                      updateEducation(
+                                        edu.id,
+                                        "endDate",
+                                        e.target.checked ? "Ongoing" : ""
+                                      );
+                                    }}
+                                    className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
+                                    id={`ongoing-edu-${edu.id}`}
+                                  />
+                                  <label
+                                    htmlFor={`ongoing-edu-${edu.id}`}
+                                    className="ml-2 text-sm font-medium text-gray-900"
+                                  >
+                                    Ongoing
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                            <Input
+                              placeholder="GPA (optional)"
+                              value={edu.gpa}
+                              onChange={(e) =>
+                                updateEducation(edu.id, "gpa", e.target.value)
+                              }
+                              color="purple"
+                            />
+                          </div>
+                        </div>
+                      </SortableItem>
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              </section>
+            )}
+
+            {/* Skills Section */}
+            {cvData.visibility?.skills && (
+              <section>
+                <SectionHeader
+                  title="Skills"
+                  color="orange"
+                  onAdd={addSkill}
+                  addButtonLabel="Add Skill"
+                />
+
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={reorderSkills}
+                >
+                  <SortableContext
+                    items={cvData.skills.map((s) => s.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {cvData.skills.map((skill) => (
+                        <SortableItem key={skill.id} id={skill.id}>
+                          <div className="flex flex-col gap-2 p-1 w-full relative">
+                            <Button
+                              onClick={() => removeSkill(skill.id)}
+                              variant="ghost"
+                              icon={X}
+                              className="absolute top-0 right-0"
+                            />
+                            <div className="pr-8">
+                              <Input
+                                placeholder="Skill Name"
+                                value={skill.name}
+                                onChange={(e) =>
+                                  updateSkill(skill.id, "name", e.target.value)
+                                }
+                                color="orange"
+                                className="mb-2"
+                              />
+                            </div>
+
+                            {supportsSkillLevels && (
+                              <div className="flex items-center gap-3">
+                                <div className="flex-1 flex items-center gap-2">
+                                  <span className="text-xs text-gray-500 w-12">
+                                    Level: {skill.level || 75}%
+                                  </span>
+                                  <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={skill.level || 75}
+                                    onChange={(e) =>
+                                      updateSkill(
+                                        skill.id,
+                                        "level",
+                                        parseInt(e.target.value)
+                                      )
+                                    }
+                                    className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                                    disabled={skill.showLevel === false}
+                                  />
+                                </div>
+                                <Button
+                                  onClick={() =>
+                                    updateSkill(
+                                      skill.id,
+                                      "showLevel",
+                                      !skill.showLevel
+                                    )
+                                  }
+                                  variant="ghost"
+                                  icon={
+                                    skill.showLevel !== false ? Eye : EyeOff
+                                  }
+                                  title={
+                                    skill.showLevel !== false
+                                      ? "Hide Level"
+                                      : "Show Level"
+                                  }
+                                  className={
+                                    skill.showLevel === false
+                                      ? "text-gray-400"
+                                      : "text-orange-500"
+                                  }
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </SortableItem>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </section>
+            )}
+
+            {/* Interests Section */}
+            {cvData.visibility?.interests && (
+              <section>
+                <SectionHeader
+                  title="Interests"
+                  color="pink"
+                  onAdd={addInterest}
+                  addButtonLabel="Add Interest"
+                />
+
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={reorderInterests}
+                >
+                  <SortableContext
+                    items={(cvData.interests || []).map((i) => i.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {(cvData.interests || []).map((interest) => (
+                        <SortableItem key={interest.id} id={interest.id}>
+                          <div className="flex gap-2 items-center flex-1">
+                            <Input
+                              placeholder="Interest"
+                              value={interest.name}
+                              onChange={(e) =>
+                                updateInterest(interest.id, e.target.value)
+                              }
+                              color="pink"
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={() => removeInterest(interest.id)}
+                              variant="ghost"
+                              icon={X}
                             />
                           </div>
                         </SortableItem>
@@ -1490,11 +1390,228 @@ export default function Editor({
                     </div>
                   </SortableContext>
                 </DndContext>
-              </div>
-            ))}
+              </section>
+            )}
+
+            {/* Languages Section */}
+            {cvData.visibility?.languages && (
+              <section>
+                <SectionHeader
+                  title="Languages"
+                  color="teal"
+                  onAdd={addLanguage}
+                  addButtonLabel="Add Language"
+                />
+
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={reorderLanguages}
+                >
+                  <SortableContext
+                    items={(cvData.languages || []).map((l) => l.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-3">
+                      {(cvData.languages || []).map((lang) => (
+                        <SortableItem key={lang.id} id={lang.id}>
+                          <div className="flex gap-2 items-center flex-1">
+                            <Input
+                              placeholder="Language"
+                              value={lang.name}
+                              onChange={(e) =>
+                                updateLanguage(lang.id, "name", e.target.value)
+                              }
+                              color="teal"
+                              className="flex-1"
+                            />
+                            <Select
+                              placeholder="Proficiency"
+                              value={lang.proficiency}
+                              onChange={(e) =>
+                                updateLanguage(
+                                  lang.id,
+                                  "proficiency",
+                                  e.target.value
+                                )
+                              }
+                              options={[
+                                {
+                                  value: "Novice/Beginner (A1)",
+                                  label: "Novice/Beginner (A1)",
+                                },
+                                {
+                                  value: "Intermediate (B1)",
+                                  label: "Intermediate (B1)",
+                                },
+                                {
+                                  value: "Advanced (C1)",
+                                  label: "Advanced (C1)",
+                                },
+                                { value: "Fluent", label: "Fluent" },
+                                { value: "Native", label: "Native" },
+                              ]}
+                              color="teal"
+                              className="w-1/3"
+                            />
+                            <Button
+                              onClick={() => removeLanguage(lang.id)}
+                              variant="ghost"
+                              icon={X}
+                            />
+                          </div>
+                        </SortableItem>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              </section>
+            )}
+
+            {/* Custom Sections */}
+            {cvData.visibility?.customSections && (
+              <section>
+                <SectionHeader
+                  title="Custom Sections"
+                  color="indigo"
+                  onAdd={addCustomSection}
+                  addButtonLabel="Add Section"
+                />
+
+                <div className="space-y-6">
+                  {(cvData.customSections || []).map((section) => (
+                    <div
+                      key={section.id}
+                      className="border border-gray-300 rounded-lg p-4 bg-gray-50"
+                    >
+                      <div className="flex justify-between items-center mb-4">
+                        <input
+                          type="text"
+                          value={section.title}
+                          onChange={(e) =>
+                            updateCustomSectionTitle(section.id, e.target.value)
+                          }
+                          className="text-lg font-bold bg-transparent border-b border-gray-300 focus:border-indigo-500 focus:outline-none px-1"
+                          placeholder="Section Title"
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => addCustomSectionItem(section.id)}
+                            variant="text"
+                            color="indigo"
+                            icon={Plus}
+                            iconSize={14}
+                          >
+                            Add Item
+                          </Button>
+                          <Button
+                            onClick={() => removeCustomSection(section.id)}
+                            variant="ghost"
+                            icon={Trash2}
+                          />
+                        </div>
+                      </div>
+
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={(e) =>
+                          reorderCustomSectionItems(e, section.id)
+                        }
+                      >
+                        <SortableContext
+                          items={section.items.map((i) => i.id)}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="space-y-4">
+                            {section.items.map((item) => (
+                              <SortableItem key={item.id} id={item.id}>
+                                <div className="grid grid-cols-1 gap-3 p-1 w-full relative">
+                                  <Button
+                                    onClick={() =>
+                                      removeCustomSectionItem(
+                                        section.id,
+                                        item.id
+                                      )
+                                    }
+                                    variant="ghost"
+                                    icon={X}
+                                    iconSize={16}
+                                    className="absolute top-0 right-0"
+                                  />
+                                  <Input
+                                    placeholder="Title / Role"
+                                    value={item.title}
+                                    onChange={(e) =>
+                                      updateCustomSectionItem(
+                                        section.id,
+                                        item.id,
+                                        "title",
+                                        e.target.value
+                                      )
+                                    }
+                                    color="indigo"
+                                    className="text-sm pr-8"
+                                  />
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <Input
+                                      placeholder="Subtitle / Company"
+                                      value={item.subtitle}
+                                      onChange={(e) =>
+                                        updateCustomSectionItem(
+                                          section.id,
+                                          item.id,
+                                          "subtitle",
+                                          e.target.value
+                                        )
+                                      }
+                                      color="indigo"
+                                      className="text-sm"
+                                    />
+                                    <Input
+                                      placeholder="Date / Duration"
+                                      value={item.date}
+                                      onChange={(e) =>
+                                        updateCustomSectionItem(
+                                          section.id,
+                                          item.id,
+                                          "date",
+                                          e.target.value
+                                        )
+                                      }
+                                      color="indigo"
+                                      className="text-sm"
+                                    />
+                                  </div>
+                                  <TextArea
+                                    placeholder="Description"
+                                    value={item.description}
+                                    onChange={(e) =>
+                                      updateCustomSectionItem(
+                                        section.id,
+                                        item.id,
+                                        "description",
+                                        e.target.value
+                                      )
+                                    }
+                                    rows={2}
+                                    color="indigo"
+                                    className="text-sm"
+                                  />
+                                </div>
+                              </SortableItem>
+                            ))}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
-        </section>
-      )}
+        )}
+      </div>
     </div>
   );
 }

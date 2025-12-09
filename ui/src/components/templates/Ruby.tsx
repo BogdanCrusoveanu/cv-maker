@@ -1,6 +1,6 @@
 import { CvData } from "../../types/cv";
 
-export default function ModernTemplate({ cvData }: { cvData: CvData }) {
+export default function Ruby({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
 
   // Sidebar sections
@@ -8,7 +8,10 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
     switch (key) {
       case "personalInfo":
         return (
-          <div key="contact" className="flex flex-col gap-6">
+          <div
+            key="contact"
+            className="flex flex-col gap-[calc(1.5rem*var(--density,1))]"
+          >
             {personalInfo.location && (
               <div>
                 {/* Top separator removed to avoid double lines */}
@@ -71,7 +74,7 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
 
             {/* Custom Fields */}
             {(personalInfo.customFields || []).map((field) => (
-              <div key={field.id} className="break-inside-avoid-page">
+              <div key={field.id}>
                 <h3 className="font-bold text-lg mb-2">{field.label}</h3>
                 <p className="text-sm">
                   {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
@@ -101,9 +104,9 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
           cvData.visibility.languages &&
           cvData.languages &&
           cvData.languages.length > 0 && (
-            <div key="languages" className="break-inside-avoid-page">
+            <div key="languages">
               <h3 className="font-bold text-lg mb-2">Languages</h3>
-              <ul className="text-sm space-y-1">
+              <ul className="text-sm space-y-[calc(0.25rem*var(--density,1))]">
                 {cvData.languages.map((lang) => (
                   <li key={lang.id}>
                     <span className="font-medium">{lang.name}</span>
@@ -122,9 +125,9 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
           cvData.visibility.interests &&
           cvData.interests &&
           cvData.interests.length > 0 && (
-            <div key="interests" className="break-inside-avoid-page">
+            <div key="interests">
               <h3 className="font-bold text-lg mb-2">Interests</h3>
-              <ul className="text-sm space-y-1">
+              <ul className="text-sm space-y-[calc(0.25rem*var(--density,1))]">
                 {cvData.interests.map((interest) => (
                   <li key={interest.id}>{interest.name}</li>
                 ))}
@@ -145,7 +148,7 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
         return (
           cvData.visibility.summary &&
           personalInfo.summary && (
-            <div key="summary" className="break-inside-avoid-page">
+            <div key="summary">
               <p className="text-sm text-gray-700 leading-relaxed">
                 {personalInfo.summary}
               </p>
@@ -163,9 +166,9 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                 </h3>
                 <div className="flex-1 h-0.5 bg-gray-900"></div>
               </div>
-              <div className="space-y-5">
+              <div className="space-y-[calc(1.25rem*var(--density,1))]">
                 {experience.map((exp) => (
-                  <div key={exp.id} className="break-inside-avoid-page">
+                  <div key={exp.id}>
                     <div className="mb-1">
                       <span className="font-bold text-gray-900">
                         {formatDate(exp.startDate) || "20XX"} –{" "}
@@ -201,9 +204,9 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                 </h3>
                 <div className="flex-1 h-0.5 bg-gray-900"></div>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-[calc(1rem*var(--density,1))]">
                 {education.map((edu) => (
-                  <div key={edu.id} className="break-inside-avoid-page">
+                  <div key={edu.id}>
                     <div className="text-sm">
                       <span className="font-semibold">{edu.school}</span>
                       {edu.location && <span> | {edu.location}</span>}
@@ -229,14 +232,14 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
         return (
           cvData.visibility.skills &&
           skills.length > 0 && (
-            <div key="skills" className="break-inside-avoid-page">
+            <div key="skills">
               <div className="flex items-center mb-4">
                 <h3 className="text-2xl font-bold text-gray-900 mr-4">
                   Key skills and characteristics
                 </h3>
                 <div className="flex-1 h-0.5 bg-gray-900"></div>
               </div>
-              <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+              <ul className="list-disc list-inside text-sm text-gray-700 space-y-[calc(0.25rem*var(--density,1))]">
                 {skills.map((skill) => (
                   <li key={skill.id}>{skill.name}</li>
                 ))}
@@ -256,9 +259,9 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                   </h3>
                   <div className="flex-1 h-0.5 bg-gray-900"></div>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-[calc(1rem*var(--density,1))]">
                   {section.items.map((item) => (
-                    <div key={item.id} className="break-inside-avoid-page">
+                    <div key={item.id}>
                       <div className="flex justify-between items-baseline mb-1">
                         <span className="font-bold text-gray-900">
                           {item.title}
@@ -328,16 +331,23 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
   };
 
   return (
-    <div className="relative min-h-full font-serif">
+    <div
+      className="relative min-h-full bg-gray-50"
+      style={{ fontFamily: "var(--font-family)" }}
+    >
       {/* Absolute Background Layer for Sidebar */}
       <div
-        className="absolute top-0 bottom-0 left-0 w-1/3 bg-[#C85A54] print:bg-[#C85A54] z-0 print:fixed print:top-0 print:left-0 print:h-screen"
-        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+        className="absolute top-0 bottom-0 left-0 w-1/3 bg-[var(--primary-color)] print:bg-[var(--primary-color)] z-0 print:fixed print:top-0 print:left-0 print:h-screen"
+        style={{
+          WebkitPrintColorAdjust: "exact",
+          printColorAdjust: "exact",
+          backgroundColor: "var(--primary-color)",
+        }}
       />
       {/* Content Container */}
       <div className="relative z-10 flex min-h-full">
         {/* Sidebar - Terracotta Red */}
-        <div className="w-1/3 text-white p-8 flex flex-col gap-6 pb-10 min-h-full">
+        <div className="w-1/3 text-white p-8 flex flex-col gap-[calc(1.5rem*var(--density,1))] pb-10">
           {/* Photo or Initials Box */}
           <div
             className="bg-white flex items-center justify-center"
@@ -350,7 +360,7 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-[#C85A54] text-5xl font-bold">
+              <span className="text-[var(--primary-color)] text-5xl font-bold">
                 {getInitials(personalInfo.fullName)}
               </span>
             )}
@@ -363,21 +373,21 @@ export default function ModernTemplate({ cvData }: { cvData: CvData }) {
         </div>
 
         {/* Main Content */}
-        <div className="w-2/3 p-10 bg-gray-50">
+        <div className="w-2/3 p-10">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
               {personalInfo.fullName || "Your Name"}
             </h1>
             {personalInfo.title && (
-              <h2 className="text-xl font-medium text-[#C85A54] mb-4">
+              <h2 className="text-xl font-medium text-[var(--primary-color)] mb-4">
                 {personalInfo.title}
               </h2>
             )}
           </div>
 
           {/* Render main sections based on order */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-[calc(2rem*var(--density,1))]">
             {order
               .filter((key) => mainSections.includes(key))
               .map((key) => renderMainSection(key))}

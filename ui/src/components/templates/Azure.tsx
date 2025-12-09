@@ -146,14 +146,18 @@ export default function Azure({ cvData }: { cvData: CvData }) {
               <h2 className="text-xl font-bold text-gray-800 border-b-2 border-blue-400 pb-2 mb-4 uppercase">
                 Languages
               </h2>
-              <ul className="text-sm text-gray-600 space-y-2">
+              <div className="text-sm text-gray-600 space-y-2 flex flex-col !pl-0 !ml-0">
                 {cvData.languages.map((lang) => (
-                  <li key={lang.id} className="flex justify-between">
-                    <span className="font-medium">{lang.name}</span>
-                    <span className="text-gray-500">{lang.proficiency}</span>
-                  </li>
+                  <div key={lang.id} className="flex flex-col items-start mb-1">
+                    <span className="font-medium text-gray-800">
+                      {lang.name}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {lang.proficiency}
+                    </span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </section>
           )
         );
@@ -183,117 +187,130 @@ export default function Azure({ cvData }: { cvData: CvData }) {
   const mainSections = ["experience", "education", "customSections"];
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
   return (
-    <div className="min-h-[90vh] bg-gray-50 font-sans">
-      {/* Header */}
-      <div className="bg-blue-400 text-white p-8 relative overflow-hidden">
-        <div className="flex justify-between items-start relative z-10">
-          <div className="w-2/3">
-            <h1 className="text-4xl font-bold mb-2">{personalInfo.fullName}</h1>
-            <p className="text-xl text-blue-100 uppercase tracking-wide mb-6">
-              {personalInfo.title}
-            </p>
-            <p className="text-sm text-blue-50 leading-relaxed max-w-lg">
-              {personalInfo.summary}
-            </p>
-          </div>
-          <div className="w-1/3 flex justify-end">
-            <div className="w-40 h-40 bg-blue-300 rounded-lg overflow-hidden shadow-lg transform rotate-3 border-4 border-white">
-              {personalInfo.photo ? (
-                <img
-                  src={personalInfo.photo}
-                  alt={personalInfo.fullName}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-blue-700">
-                  Photo
-                </div>
-              )}
+    <div className="relative min-h-full font-sans bg-slate-50">
+      {/* Absolute Background Layer for Sidebar */}
+      <div
+        className="absolute top-0 bottom-0 left-0 w-1/3 bg-[#0F172A] print:bg-[#0F172A] z-0 print:fixed print:top-0 print:left-0 print:h-screen"
+        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+      />
+      {/* Content Container */}
+      <div className="relative z-10 flex min-h-full">
+        {/* Left Sidebar */}
+        <div className="w-1/3 text-white p-8 min-h-full relative overflow-hidden">
+          <div className="flex justify-between items-start relative z-10">
+            <div className="w-2/3">
+              <h1 className="text-4xl font-bold mb-2">
+                {personalInfo.fullName}
+              </h1>
+              <p className="text-xl text-blue-100 uppercase tracking-wide mb-6">
+                {personalInfo.title}
+              </p>
+              <p className="text-sm text-blue-50 leading-relaxed max-w-lg">
+                {personalInfo.summary}
+              </p>
+            </div>
+            <div className="w-1/3 flex justify-end">
+              <div className="w-40 h-40 bg-blue-300 rounded-lg overflow-hidden shadow-lg transform rotate-3 border-4 border-white">
+                {personalInfo.photo ? (
+                  <img
+                    src={personalInfo.photo}
+                    alt={personalInfo.fullName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-blue-700">
+                    Photo
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-8 flex flex-wrap gap-6 text-sm font-medium text-blue-50 border-t border-blue-300 pt-6">
-          {personalInfo.email && (
-            <div className="flex items-center gap-2">
-              <Mail size={16} />{" "}
-              <a
-                href={`mailto:${personalInfo.email}`}
-                className="hover:underline"
-              >
-                {personalInfo.email}
-              </a>
-            </div>
-          )}
-          {personalInfo.phone && (
-            <div className="flex items-center gap-2">
-              <Phone size={16} />{" "}
-              <a href={`tel:${personalInfo.phone}`} className="hover:underline">
-                {personalInfo.phone}
-              </a>
-            </div>
-          )}
-          {personalInfo.location && (
-            <div className="flex items-center gap-2">
-              <MapPin size={16} /> {personalInfo.location}
-            </div>
-          )}
-          {personalInfo.website && (
-            <div className="flex items-center gap-2">
-              <Globe size={16} />{" "}
-              <a
-                href={
-                  personalInfo.website.startsWith("http")
-                    ? personalInfo.website
-                    : `https://${personalInfo.website}`
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                {personalInfo.website}
-              </a>
-            </div>
-          )}
-          {(personalInfo.customFields || []).map((field) => (
-            <div key={field.id} className="flex items-center gap-2">
-              <span className="opacity-75">{field.label}:</span>
-              {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+          <div className="mt-8 flex flex-wrap gap-6 text-sm font-medium text-blue-50 border-t border-blue-300 pt-6">
+            {personalInfo.email && (
+              <div className="flex items-center gap-2">
+                <Mail size={16} />{" "}
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  className="hover:underline"
+                >
+                  {personalInfo.email}
+                </a>
+              </div>
+            )}
+            {personalInfo.phone && (
+              <div className="flex items-center gap-2">
+                <Phone size={16} />{" "}
+                <a
+                  href={`tel:${personalInfo.phone}`}
+                  className="hover:underline"
+                >
+                  {personalInfo.phone}
+                </a>
+              </div>
+            )}
+            {personalInfo.location && (
+              <div className="flex items-center gap-2">
+                <MapPin size={16} /> {personalInfo.location}
+              </div>
+            )}
+            {personalInfo.website && (
+              <div className="flex items-center gap-2">
+                <Globe size={16} />{" "}
                 <a
                   href={
-                    field.value.startsWith("http")
-                      ? field.value
-                      : `https://${field.value}`
+                    personalInfo.website.startsWith("http")
+                      ? personalInfo.website
+                      : `https://${personalInfo.website}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline"
                 >
-                  {field.value}
+                  {personalInfo.website}
                 </a>
-              ) : (
-                field.value
-              )}
-            </div>
-          ))}
+              </div>
+            )}
+            {(personalInfo.customFields || []).map((field) => (
+              <div key={field.id} className="flex items-center gap-2">
+                <span className="opacity-75">{field.label}:</span>
+                {field.isUrl || /^(https?:\/\/|www\.)/i.test(field.value) ? (
+                  <a
+                    href={
+                      field.value.startsWith("http")
+                        ? field.value
+                        : `https://${field.value}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {field.value}
+                  </a>
+                ) : (
+                  field.value
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="p-8 flex gap-8 pb-10">
-        {/* Left Column */}
-        <div className="w-2/3 flex flex-col gap-8">
-          {/* Render main sections based on order */}
-          {order
-            .filter((key) => mainSections.includes(key))
-            .map((key) => renderSection(key))}
-        </div>
+        <div className="p-8 flex gap-8 pb-10">
+          {/* Left Column */}
+          <div className="w-2/3 flex flex-col gap-8">
+            {/* Render main sections based on order */}
+            {order
+              .filter((key) => mainSections.includes(key))
+              .map((key) => renderSection(key))}
+          </div>
 
-        {/* Right Column */}
-        <div className="w-1/3 flex flex-col gap-8">
-          {/* Render sidebar sections based on order */}
-          {order
-            .filter((key) => sidebarSections.includes(key))
-            .map((key) => renderSidebarSection(key))}
+          {/* Right Column */}
+          <div className="w-1/3 flex flex-col gap-8">
+            {/* Render sidebar sections based on order */}
+            {order
+              .filter((key) => sidebarSections.includes(key))
+              .map((key) => renderSidebarSection(key))}
+          </div>
         </div>
       </div>
     </div>

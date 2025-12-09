@@ -8,7 +8,12 @@ export const CvPreview: React.FC<CvPreviewProps> = ({
   template = "modern",
 }) => {
   const getPreview = () => {
-    switch (template) {
+    // Map custom templates to their base template layout
+    const baseTemplate = template.startsWith("custom-")
+      ? template.replace("custom-", "")
+      : template;
+
+    switch (baseTemplate) {
       case "modern":
         return (
           <div className="w-full h-full bg-white flex flex-col relative overflow-hidden">
