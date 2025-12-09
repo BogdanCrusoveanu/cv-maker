@@ -5,7 +5,8 @@ A modern, interactive CV builder application that allows users to create, custom
 ## 🚀 Features
 
 - **Real-time Editing:** See changes instantly as you type.
-- **Multiple Templates:** Choose from a variety of professionally designed templates (Midnight, Slate, Azure, Citrus, Classic, Minimal, Modern, Noir).
+- **Cover Letter Builder:** Create tailored cover letters matching your CV style.
+- **Multiple Templates:** Choose from a variety of professionally designed templates (Midnight, Slate, Azure, Citrus, Classic, Minimal, Modern, Noir, Aurora, Academic, Polygonal, Verde, Orbit).
 - **Drag-and-Drop:** Easily reorder sections and individual items (Experience, Education, Skills, etc.) via drag-and-drop.
 - **Rich Text Support:** Add details to your experience and education.
 - **Public Sharing:** Share your CV with a unique public link, or view it as a read-only page.

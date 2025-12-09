@@ -13,6 +13,7 @@ interface NavbarProps {
   onChangePassword: () => void;
   onCreateCv: () => void;
   onDeleteAccount: () => void;
+  activeTab?: "cvs" | "coverLetters";
 }
 
 export const Navbar = ({
@@ -20,6 +21,7 @@ export const Navbar = ({
   onChangePassword,
   onCreateCv,
   onDeleteAccount,
+  activeTab = "cvs",
 }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
@@ -59,7 +61,9 @@ export const Navbar = ({
               icon={Plus}
               className="shadow-sm hover:shadow transition-all"
             >
-              {t("app.createNew")}
+              {activeTab === "coverLetters"
+                ? t("app.createCoverLetter")
+                : t("app.createNew")}
             </Button>
 
             <div className="h-6 w-px bg-gray-300 mx-2"></div>
@@ -134,7 +138,9 @@ export const Navbar = ({
               icon={Plus}
               className="w-full justify-center mb-2"
             >
-              {t("app.createNew")}
+              {activeTab === "coverLetters"
+                ? t("app.createCoverLetter")
+                : t("app.createNew")}
             </Button>
             <Button
               onClick={() => {

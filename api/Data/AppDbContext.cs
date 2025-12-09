@@ -9,4 +9,5 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Cv> Cvs { get; set; }
+    public DbSet<CoverLetter> CoverLetters { get; set; }
 }
