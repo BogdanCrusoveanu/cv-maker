@@ -1,8 +1,17 @@
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function Azure({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (date: string) => {
+    if (!date) return "";
+    return date.toLowerCase() === "present" || date.toLowerCase() === "ongoing"
+      ? t("cv.present")
+      : date;
+  };
 
   // Define renderers for each section type
   const renderSection = (key: string) => {
@@ -13,7 +22,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
           experience.length > 0 && (
             <section key="experience">
               <h2 className="text-xl font-bold text-gray-800 border-b-2 border-blue-400 pb-2 mb-4 uppercase">
-                Work Experience
+                {t("cv.sections.experience")}
               </h2>
               <div className="space-y-6">
                 {experience.map((exp) => (
@@ -25,7 +34,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
                     <div className="flex justify-between items-baseline mb-1">
                       <h3 className="font-bold text-gray-800">{exp.title}</h3>
                       <span className="text-sm font-semibold text-blue-500">
-                        {exp.startDate} - {exp.endDate}
+                        {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                       </span>
                     </div>
                     <div className="text-sm text-gray-500 italic mb-2">
@@ -44,7 +53,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
           education.length > 0 && (
             <section key="education">
               <h2 className="text-xl font-bold text-gray-800 border-b-2 border-blue-400 pb-2 mb-4 uppercase">
-                Education
+                {t("cv.sections.education")}
               </h2>
               <div className="space-y-4">
                 {education.map((edu) => (
@@ -52,7 +61,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
                     <div className="flex justify-between">
                       <h3 className="font-bold text-gray-800">{edu.school}</h3>
                       <span className="text-sm text-gray-500">
-                        {edu.startDate} - {edu.endDate}
+                        {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
                       </span>
                     </div>
                     <p className="text-gray-600">{edu.degree}</p>
@@ -113,7 +122,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
           skills.length > 0 && (
             <section key="skills">
               <h2 className="text-xl font-bold text-gray-800 border-b-2 border-blue-400 pb-2 mb-4 uppercase">
-                Skills
+                {t("cv.sections.skills")}
               </h2>
               <div className="space-y-3">
                 {skills.map((skill) => (
@@ -144,7 +153,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
           cvData.languages.length > 0 && (
             <section key="languages">
               <h2 className="text-xl font-bold text-gray-800 border-b-2 border-blue-400 pb-2 mb-4 uppercase">
-                Languages
+                {t("cv.sections.languages")}
               </h2>
               <div className="text-sm text-gray-600 space-y-2 flex flex-col !pl-0 !ml-0">
                 {cvData.languages.map((lang) => (
@@ -168,7 +177,7 @@ export default function Azure({ cvData }: { cvData: CvData }) {
           cvData.interests.length > 0 && (
             <section key="interests">
               <h2 className="text-xl font-bold text-gray-800 border-b-2 border-blue-400 pb-2 mb-4 uppercase">
-                Interests
+                {t("cv.sections.interests")}
               </h2>
               <ul className="text-sm text-gray-600 space-y-2">
                 {cvData.interests.map((interest) => (

@@ -1,0 +1,262 @@
+{
+  "app": {
+    "dashboard": "Übersicht",
+    "createNew": "Neuen Lebenslauf erstellen",
+    "myCvs": "Meine Lebensläufe",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "downloadPdf": "PDF herunterladen",
+    "preview": "Vorschau",
+    "back": "Zurück",
+    "welcome": "Willkommen zurück",
+    "createFirst": "Erstellen Sie Ihren ersten Lebenslauf, um zu beginnen!",
+    "dashboardSubtitle": "Verwalten und bearbeiten Sie Ihre professionellen Lebensläufe",
+    "startFromScratch": "Beginnen Sie von Grund auf mit einer professionellen Vorlage",
+    "updated": "Aktualisiert",
+    "logout": "Abmelden",
+    "changePassword": "Passwort ändern",
+    "deleteAccount": "Konto löschen",
+    "errorLoading": "Fehler beim Laden der Lebensläufe",
+    "retry": "Wiederholen",
+    "noSummary": "Keine Zusammenfassung angegeben",
+    "resumeCount_one": "{{count}} Lebenslauf",
+    "resumeCount_other": "{{count}} Lebensläufe",
+    "share": "Teilen",
+    "dialogs": {
+      "deleteAccountTitle": "Konto löschen",
+      "deleteAccountMessage": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Alle Ihre Lebensläufe und Daten gehen dauerhaft verloren. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteCvTitle": "Lebenslauf löschen",
+      "deleteCvMessage": "Sind Sie sicher, dass Sie diesen Lebenslauf löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "toasts": {
+      "accountDeleted": "Konto erfolgreich gelöscht",
+      "accountDeleteFailed": "Konto konnte nicht gelöscht werden",
+      "cvDeleted": "Lebenslauf erfolgreich gelöscht",
+      "cvDeleteFailed": "Lebenslauf konnte nicht gelöscht werden"
+    }
+  },
+  "auth": {
+    "loginTitle": "Melden Sie sich bei Ihrem Konto an",
+    "banner": {
+      "title": "Bauen Sie Ihre berufliche Zukunft mit Zuversicht auf.",
+      "subtitle": "Erstellen Sie in wenigen Minuten beeindruckende, ATS-freundliche Lebensläufe mit unseren professionellen Vorlagen und dem intuitiven Builder.",
+      "features": {
+        "templates": "Professionelle Vorlagen",
+        "export": "Sofortiger PDF-Export",
+        "secure": "Sicher & Privat",
+        "ats": "ATS-Optimiert"
+      },
+      "copyright": "© {{year}} CV Maker. Alle Rechte vorbehalten."
+    },
+    "registerTitle": "Erstellen Sie Ihr Konto",
+    "registerSubtitle": "Schließen Sie sich Tausenden von Profis an, die ihre Karriere vorantreiben",
+    "emailLabel": "E-Mail-Adresse",
+    "emailPlaceholder": "sie@beispiel.de",
+    "fullNameLabel": "Vollständiger Name",
+    "namePlaceholder": "Max Mustermann",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "Erstellen Sie ein starkes Passwort",
+    "passwordHint": "Muss mindestens 8 Zeichen mit Großbuchstaben, Kleinbuchstaben, Zahlen und Sonderzeichen enthalten.",
+    "confirmPasswordLabel": "Passwort bestätigen",
+    "invalidCredentials": "Ungültige E-Mail oder Passwort",
+    "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "registerFailed": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "creatingAccount": "Konto wird erstellt...",
+    "createAccountButton": "Konto erstellen",
+    "signInButton": "Anmelden",
+    "signUpButton": "Registrieren",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Haben Sie kein Konto?",
+    "hasAccount": "Haben Sie bereits ein Konto?",
+    "registerLink": "Registrieren",
+    "loginLink": "Anmelden",
+    "forgotPasswordTitle": "Passwort vergessen",
+    "forgotPasswordSubtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts",
+    "checkEmailTitle": "Überprüfen Sie Ihre E-Mails",
+    "checkEmailSubtitle": "Wir haben Anweisungen zum Zurücksetzen des Passworts an {{email}} gesendet",
+    "emailSentMessage": "Wenn ein Konto für {{email}} existiert, erhalten Sie eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
+    "demoSimulation": "NUR DEMO (E-Mail-Simulation):",
+    "clickToReset": "Klicken Sie hier, um das Passwort zurückzusetzen",
+    "didNotReceiveEmail": "Haben Sie die E-Mail nicht erhalten? Überprüfen Sie Ihren Spam-Ordner oder",
+    "tryAnotherEmail": "versuchen Sie eine andere E-Mail-Adresse",
+    "backToSignIn": "Zurück zur Anmeldung",
+    "sendResetLink": "Link senden",
+    "sendingLink": "Sende Link...",
+    "resetPasswordTitle": "Passwort zurücksetzen",
+    "resetPasswordSubtitle": "Geben Sie unten Ihr neues Passwort ein",
+    "newPasswordLabel": "Neues Passwort",
+    "confirmNewPasswordLabel": "Neues Passwort bestätigen",
+    "resetPasswordButton": "Passwort zurücksetzen",
+    "resettingPassword": "Wird zurückgesetzt..."
+  },
+  "editor": {
+    "tabs": {
+      "content": "Inhalt",
+      "design": "Design",
+      "standardTemplates": "Standardvorlagen",
+      "customizableTemplates": "Anpassbare Vorlagen"
+    },
+    "sections": {
+      "visibilityOrder": "Abschnittssichtbarkeit & Reihenfolge"
+    },
+    "personalInfo": {
+      "title": "Persönliche Daten",
+      "photoLabel": "Profilbild",
+      "uploadPhoto": "Foto hochladen",
+      "removePhoto": "Foto entfernen",
+      "fullNamePlaceholder": "Vollständiger Name",
+      "titlePlaceholder": "Berufsbezeichnung",
+      "emailPlaceholder": "E-Mail",
+      "phonePlaceholder": "Telefon",
+      "locationPlaceholder": "Ort",
+      "websitePlaceholder": "Webseite",
+      "summaryPlaceholder": "Berufliche Zusammenfassung"
+    },
+    "customFields": {
+      "title": "Benutzerdefinierte Felder",
+      "addField": "Feld hinzufügen",
+      "labelPlaceholder": "Label (z.B. LinkedIn)",
+      "valuePlaceholder": "Wert"
+    },
+    "experience": {
+      "title": "Erfahrung",
+      "add": "Erfahrung hinzufügen",
+      "jobTitlePlaceholder": "Berufsbezeichnung",
+      "companyPlaceholder": "Firma",
+      "locationPlaceholder": "Ort",
+      "startDatePlaceholder": "Startdatum",
+      "endDatePlaceholder": "Enddatum",
+      "ongoing": "Laufend",
+      "descriptionPlaceholder": "Stellenbeschreibung"
+    },
+    "education": {
+      "title": "Bildung",
+      "add": "Bildung hinzufügen",
+      "degreePlaceholder": "Abschluss",
+      "schoolPlaceholder": "Schule/Universität",
+      "locationPlaceholder": "Ort",
+      "gpaPlaceholder": "Notendurchschnitt (optional)"
+    },
+    "skills": {
+      "title": "Fähigkeiten",
+      "add": "Fähigkeit hinzufügen",
+      "namePlaceholder": "Fähigkeitsname",
+      "level": "Niveau"
+    },
+    "interests": {
+      "title": "Interessen",
+      "add": "Interesse hinzufügen",
+      "namePlaceholder": "Interesse"
+    },
+    "languages": {
+      "title": "Sprachen",
+      "add": "Sprache hinzufügen",
+      "namePlaceholder": "Sprache",
+      "proficiencyPlaceholder": "Kenntnisse"
+    },
+    "customSections": {
+      "title": "Benutzerdefinierte Abschnitte",
+      "add": "Abschnitt hinzufügen",
+      "addItem": "Element hinzufügen",
+      "sectionTitlePlaceholder": "Abschnittstitel",
+      "itemTitlePlaceholder": "Titel / Rolle",
+      "subtitlePlaceholder": "Untertitel / Firma",
+      "datePlaceholder": "Datum / Dauer",
+      "descriptionPlaceholder": "Beschreibung"
+    },
+    "buttons": {
+      "save": "Speichern",
+      "export": "Exportieren",
+      "share": "Teilen",
+      "logout": "Abmelden",
+      "back": "Zurück"
+    },
+    "mobile": {
+      "editor": "Editor",
+      "preview": "Vorschau"
+    },
+    "export": {
+      "generating": "PDF wird erstellt...",
+      "waitMessage": "Dies kann einige Sekunden dauern"
+    },
+    "theme": {
+      "accentColor": "Akzentfarbe",
+      "current": "Aktuell",
+      "default": "Standard",
+      "typography": "Typografie",
+      "spacingDensity": "Abstände & Dichte",
+      "density": {
+        "compact": "Kompakt",
+        "normal": "Normal",
+        "spacious": "Geräumig"
+      }
+    },
+    "auth": {
+      "errors": {
+        "invalidEncryption": "Ungültige Passwortverschlüsselung",
+        "userExists": "Benutzer existiert bereits",
+        "invalidCredentials": "Ungültige Anmeldedaten",
+        "noRefreshToken": "Kein Aktualisierungstoken",
+        "sessionExpired": "Sitzung abgelaufen",
+        "invalidToken": "Ungültiges Token",
+        "passwordChangeFailed": "Passwortänderung fehlgeschlagen. Überprüfen Sie Ihr aktuelles Passwort.",
+        "userNotFound": "Benutzer nicht gefunden",
+        "invalidResetToken": "Ungültiges oder abgelaufenes Token",
+        "emailNotFound": "E-Mail nicht gefunden",
+        "passwordsDoNotMatch": "Passwörter stimmen nicht überein",
+        "passwordTooShort": "Passwort muss mindestens 6 Zeichen lang sein"
+      },
+      "toasts": {
+        "resetSuccess": "Passwort erfolgreich zurückgesetzt. Bitte anmelden."
+      }
+    },
+    "cv": {
+      "errors": {
+        "notFound": "Lebenslauf nicht gefunden",
+        "saveFailed": "Speichern des Lebenslaufs fehlgeschlagen",
+        "pdfGenerationFailed": "PDF-Erstellung fehlgeschlagen",
+        "noFile": "Keine Datei hochgeladen"
+      }
+    },
+    "common": {
+      "errors": {
+        "unexpected": "Ein unerwarteter Fehler ist aufgetreten",
+        "generic": "Etwas ist schief gelaufen"
+      }
+    }
+  },
+  "shareDialog": {
+    "title": "Lebenslauf teilen",
+    "descriptionPublic": "Jeder mit diesem Link kann Ihren Lebenslauf sehen.",
+    "descriptionPrivate": "Erstellen Sie einen öffentlichen Link, um Ihren Lebenslauf mit Personalvermittlern oder Freunden zu teilen.",
+    "copy": "Kopieren",
+    "stopSharing": "Nicht mehr teilen",
+    "unsharing": "Teilen beenden...",
+    "createLink": "Öffentlichen Link erstellen",
+    "creatingLink": "Link erstellen..."
+  },
+  "cv": {
+    "present": "Gegenwart",
+    "sections": {
+      "personalInfo": "Persönliche Daten",
+      "summary": "Zusammenfassung",
+      "experience": "Erfahrung",
+      "education": "Ausbildung",
+      "skills": "Fähigkeiten",
+      "languages": "Sprachen",
+      "interests": "Interessen",
+      "custom": "Benutzerdefinierter Bereich",
+      "customSections": "Benutzerdefinierte Bereiche",
+      "profile": "Profil"
+    },
+    "labels": {
+      "contact": "Kontakt",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "location": "Standort",
+      "website": "Webseite",
+      "present": "Gegenwart",
+      "ongoing": "Laufend"
+    }
+  }
+}

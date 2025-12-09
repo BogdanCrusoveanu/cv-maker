@@ -1,8 +1,33 @@
 import { MapPin, Phone, Mail, Globe } from "lucide-react";
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    if (dateStr.toLowerCase() === "present") return t("cv.present");
+    const [year, month] = dateStr.split("-");
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    // Fallback if month is missing
+    if (!month) return year;
+    return `${months[parseInt(month) - 1]} ${year}`;
+  };
 
   // Sidebar sections
   const renderSidebarSection = (key: string) => {
@@ -118,7 +143,9 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
           cvData.languages &&
           cvData.languages.length > 0 && (
             <div key="languages" className="pt-6 border-t border-white/20">
-              <h3 className="font-bold text-lg mb-3">LANGUAGES</h3>
+              <h3 className="font-bold text-lg mb-3">
+                {t("cv.sections.languages").toUpperCase()}
+              </h3>
               <ul className="space-y-2">
                 {cvData.languages.map((lang) => (
                   <li key={lang.id} className="text-sm">
@@ -138,7 +165,9 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
           cvData.interests &&
           cvData.interests.length > 0 && (
             <div key="interests" className="pt-6 border-t border-white/20">
-              <h3 className="font-bold text-lg mb-3">INTERESTS</h3>
+              <h3 className="font-bold text-lg mb-3">
+                {t("cv.sections.interests").toUpperCase()}
+              </h3>
               <ul className="space-y-2">
                 {cvData.interests.map((interest) => (
                   <li key={interest.id} className="text-sm">
@@ -154,7 +183,9 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
           cvData.visibility.summary &&
           personalInfo.summary && (
             <div key="summary" className="pt-6 border-t border-white/20">
-              <h3 className="font-bold text-lg mb-3">OBJECTIVE</h3>
+              <h3 className="font-bold text-lg mb-3">
+                {t("cv.sections.summary").toUpperCase()}
+              </h3>
               <p className="text-sm leading-relaxed">{personalInfo.summary}</p>
             </div>
           )
@@ -176,7 +207,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                 className="text-xl font-bold mb-4"
                 style={{ color: "#9B59B6" }}
               >
-                EXPERIENCE
+                {t("cv.sections.experience").toUpperCase()}
               </h3>
               <div className="space-y-4">
                 {experience.map((exp) => (
@@ -213,7 +244,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                 className="text-xl font-bold mb-4"
                 style={{ color: "#9B59B6" }}
               >
-                EDUCATION
+                {t("cv.sections.education").toUpperCase()}
               </h3>
               <div className="space-y-3">
                 {education.map((edu) => (
@@ -244,7 +275,7 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
                 className="text-xl font-bold mb-4"
                 style={{ color: "#9B59B6" }}
               >
-                SKILLS
+                {t("cv.sections.skills").toUpperCase()}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill) => (
@@ -307,27 +338,6 @@ export default function ClassicTemplate({ cvData }: { cvData: CvData }) {
   const sidebarSections = ["personalInfo", "languages", "interests", "summary"];
   const mainSections = ["experience", "education", "customSections", "skills"];
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
-
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    if (dateStr.toLowerCase() === "present") return "Present";
-    const [year, month] = dateStr.split("-");
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    return `${months[parseInt(month) - 1]} ${year}`;
-  };
 
   // SVG wave patterns
   const WavePattern = () => (

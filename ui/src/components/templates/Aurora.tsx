@@ -1,7 +1,9 @@
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
@@ -9,7 +11,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
       dateStr.toLowerCase() === "present" ||
       dateStr.toLowerCase() === "ongoing"
     )
-      return "Ongoing";
+      return t("cv.present");
     const [year, month] = dateStr.split("-");
     const months = [
       "Jan",
@@ -25,6 +27,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
       "Nov",
       "Dec",
     ];
+    if (!month) return year;
     return `${months[parseInt(month) - 1]} ${year}`;
   };
 
@@ -72,7 +75,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
           {cvData.visibility.summary && personalInfo.summary && (
             <section>
               <h2 className="text-xl font-bold text-teal-700 border-b-2 border-teal-700 mb-3 pb-1">
-                PROFILE
+                {t("cv.sections.profile") || "PROFILE"}
               </h2>
               <p className="text-sm leading-relaxed">{personalInfo.summary}</p>
             </section>
@@ -82,7 +85,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
           {cvData.visibility.experience && experience.length > 0 && (
             <section>
               <h2 className="text-xl font-bold text-teal-700 border-b-2 border-teal-700 mb-4 pb-1">
-                EXPERIENCE
+                {t("cv.sections.experience").toUpperCase()}
               </h2>
               <div className="flex flex-col gap-6">
                 {experience.map((exp) => (
@@ -113,7 +116,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
           {cvData.visibility.education && education.length > 0 && (
             <section>
               <h2 className="text-xl font-bold text-teal-700 border-b-2 border-teal-700 mb-4 pb-1">
-                EDUCATION
+                {t("cv.sections.education").toUpperCase()}
               </h2>
               <div className="flex flex-col gap-4">
                 {education.map((edu) => (
@@ -170,7 +173,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
           {cvData.visibility.skills && skills.length > 0 && (
             <section className="bg-gray-50 p-4 rounded">
               <h2 className="text-lg font-bold text-teal-700 mb-3 uppercase">
-                Skills
+                {t("cv.sections.skills")}
               </h2>
               <div className="flex flex-col gap-3">
                 {skills.map((skill) => (
@@ -198,7 +201,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
             cvData.languages.length > 0 && (
               <section className="bg-gray-50 p-4 rounded">
                 <h2 className="text-lg font-bold text-teal-700 mb-3 uppercase">
-                  Languages
+                  {t("cv.sections.languages")}
                 </h2>
                 <div className="space-y-2 flex flex-col !pl-0 !ml-0">
                   {cvData.languages.map((lang) => (
@@ -224,7 +227,7 @@ export default function AuroraTemplate({ cvData }: { cvData: CvData }) {
             cvData.interests.length > 0 && (
               <section className="bg-gray-50 p-4 rounded">
                 <h2 className="text-lg font-bold text-teal-700 mb-3 uppercase">
-                  Interests
+                  {t("cv.sections.interests")}
                 </h2>
                 <ul className="list-disc list-inside text-sm space-y-1">
                   {cvData.interests.map((int) => (

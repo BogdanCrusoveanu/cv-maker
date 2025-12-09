@@ -46,10 +46,10 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register(RegisterDto dto)
     {
         var decryptedPassword = _rsaKeyService.Decrypt(dto.Password);
-        if (decryptedPassword == null) return BadRequest("Invalid password encryption");
+        if (decryptedPassword == null) return Problem(detail: "auth.errors.invalidEncryption", statusCode: 400);
 
         var user = await _authService.RegisterAsync(dto.Email, decryptedPassword, dto.Name);
-        if (user == null) return BadRequest("User already exists");
+        if (user == null) return Problem(detail: "auth.errors.userExists", statusCode: 400);
         return Ok(new { message = "User registered successfully" });
     }
 
@@ -65,11 +65,11 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         var decryptedPassword = _rsaKeyService.Decrypt(model.Password);
-        if (decryptedPassword == null) return Unauthorized("Invalid credentials");
+        if (decryptedPassword == null) return Problem(detail: "auth.errors.invalidEncryption", statusCode: 401);
 
         var result = await _authService.LoginAsync(model.Email, decryptedPassword);
         if (result == null)
-            return Unauthorized("Invalid credentials");
+            return Problem(detail: "auth.errors.invalidCredentials", statusCode: 401);
 
         SetTokenCookies(result.Value.AccessToken, result.Value.RefreshToken);
 
@@ -89,20 +89,19 @@ public class AuthController : ControllerBase
         var accessToken = Request.Cookies["accessToken"]; 
 
         if (string.IsNullOrEmpty(refreshToken))
-            return Unauthorized("No refresh token");
+            return Problem(detail: "auth.errors.noRefreshToken", statusCode: 401);
 
         if (string.IsNullOrEmpty(accessToken))
         {
-             return Unauthorized("Session expired");
+             return Problem(detail: "auth.errors.sessionExpired", statusCode: 401);
         }
 
         var result = await _authService.RefreshTokenAsync(accessToken, refreshToken);
         if (result == null)
         {
-            // Clear cookies if refresh fails
             Response.Cookies.Delete("accessToken");
             Response.Cookies.Delete("refreshToken");
-            return Unauthorized("Invalid token");
+            return Problem(detail: "auth.errors.invalidToken", statusCode: 401);
         }
 
         SetTokenCookies(result.Value.AccessToken, result.Value.RefreshToken);
@@ -170,10 +169,10 @@ public class AuthController : ControllerBase
         var decryptedNewPassword = _rsaKeyService.Decrypt(model.NewPassword);
 
         if (decryptedCurrentPassword == null || decryptedNewPassword == null)
-            return BadRequest("Invalid password encryption");
+            return Problem(detail: "auth.errors.invalidEncryption", statusCode: 400);
 
         var success = await _authService.ChangePasswordAsync(userId, decryptedCurrentPassword, decryptedNewPassword);
-        if (!success) return BadRequest("Failed to change password. Check your current password.");
+        if (!success) return Problem(detail: "auth.errors.passwordChangeFailed", statusCode: 400);
 
         return Ok(new { message = "Password changed successfully" });
     }
@@ -194,7 +193,7 @@ public class AuthController : ControllerBase
             return Unauthorized();
 
         var success = await _authService.DeleteAccountAsync(userId);
-        if (!success) return NotFound("User not found");
+        if (!success) return Problem(detail: "auth.errors.userNotFound", statusCode: 404);
         
         // Clear cookies on account deletion
         Response.Cookies.Delete("accessToken");
@@ -234,10 +233,10 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
     {
         var decryptedNewPassword = _rsaKeyService.Decrypt(dto.NewPassword);
-        if (decryptedNewPassword == null) return BadRequest("Invalid password encryption");
+        if (decryptedNewPassword == null) return Problem(detail: "auth.errors.invalidEncryption", statusCode: 400);
 
         var success = await _authService.ResetPasswordAsync(dto.Email, dto.Token, decryptedNewPassword);
-        if (!success) return BadRequest("Invalid or expired token");
+        if (!success) return Problem(detail: "auth.errors.invalidResetToken", statusCode: 400);
 
         return Ok(new { message = "Password reset successfully" });
     }

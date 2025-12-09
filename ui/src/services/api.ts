@@ -1,4 +1,5 @@
 import axios from "axios";
+import i18next from "../i18n";
 
 let showToast: (message: string, type: "success" | "error" | "info") => void;
 
@@ -46,10 +47,11 @@ axiosInstance.interceptors.response.use(
       }
     }
     if (showToast) {
-      const message =
-        error.response?.data?.detail ||
-        error.message ||
-        "An unexpected error occurred";
+      // Use i18next directly
+      const detail = error.response?.data?.detail;
+      const message = detail
+        ? i18next.t(detail)
+        : error.message || i18next.t("common.errors.unexpected");
       showToast(message, "error");
     }
 

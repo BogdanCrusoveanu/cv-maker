@@ -1,8 +1,33 @@
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    if (dateStr.toLowerCase() === "present") return t("cv.present");
+    const [year, month] = dateStr.split("-");
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    // Fallback
+    if (!month) return year;
+    return `${month}/${year}`;
+  };
 
   // Sidebar sections
   const renderSidebarSection = (key: string) => {
@@ -10,8 +35,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
       case "personalInfo":
         return (
           <div key="contact">
-            <h3 className="text-lg font-bold mb-3 pb-1 border-b-4 border-black inline-block">
-              CONTACT
+            <h3 className="text-lg font-bold mb-3 pb-1 border-b-4 border-black inline-block uppercase">
+              {t("cv.labels.contact")}
             </h3>
             <div className="space-y-3 mt-4">
               {personalInfo.email && (
@@ -102,8 +127,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
           cvData.visibility.summary &&
           personalInfo.summary && (
             <div key="summary">
-              <h3 className="text-lg font-bold mb-2 pb-1 border-b-4 border-black inline-block">
-                PROFILE
+              <h3 className="text-lg font-bold mb-2 pb-1 border-b-4 border-black inline-block uppercase">
+                {t("cv.sections.profile") || "PROFILE"}
               </h3>
               <p className="text-sm leading-relaxed mt-3 text-gray-900">
                 {personalInfo.summary}
@@ -117,8 +142,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
           cvData.languages &&
           cvData.languages.length > 0 && (
             <div key="languages">
-              <h3 className="text-lg font-bold mb-3 pb-1 border-b-4 border-black inline-block">
-                LANGUAGES
+              <h3 className="text-lg font-bold mb-3 pb-1 border-b-4 border-black inline-block uppercase">
+                {t("cv.sections.languages")}
               </h3>
               <div className="space-y-2 mt-4">
                 {cvData.languages.map((lang) => (
@@ -140,8 +165,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
           cvData.visibility.skills &&
           skills.length > 0 && (
             <div key="skills">
-              <h3 className="text-lg font-bold mb-3 pb-1 border-b-4 border-black inline-block">
-                SKILLS
+              <h3 className="text-lg font-bold mb-3 pb-1 border-b-4 border-black inline-block uppercase">
+                {t("cv.sections.skills")}
               </h3>
               <div className="space-y-3 mt-4">
                 {skills.map((skill) => (
@@ -166,8 +191,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
           cvData.visibility.experience &&
           experience.length > 0 && (
             <div key="experience">
-              <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block">
-                PROFESSIONAL EXPERIENCE
+              <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block uppercase">
+                {t("cv.sections.experience")}
               </h3>
               <div className="space-y-5 mt-4">
                 {experience.map((exp) => (
@@ -198,8 +223,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
           cvData.visibility.education &&
           education.length > 0 && (
             <div key="education">
-              <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block">
-                EDUCATION
+              <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block uppercase">
+                {t("cv.sections.education")}
               </h3>
               <div className="space-y-4 mt-4">
                 {education.map((edu) => (
@@ -224,8 +249,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
           cvData.interests &&
           cvData.interests.length > 0 && (
             <div key="interests">
-              <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block">
-                INTERESTS
+              <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block uppercase">
+                {t("cv.sections.interests")}
               </h3>
               <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mt-4">
                 {cvData.interests.map((interest) => (
@@ -241,8 +266,8 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
           if (key === "customSections") {
             return cvData.customSections.map((section) => (
               <div key={section.id}>
-                <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block">
-                  {section.title.toUpperCase()}
+                <h3 className="text-xl font-bold mb-4 pb-1 border-b-4 border-black inline-block uppercase">
+                  {section.title}
                 </h3>
                 <div className="space-y-4 mt-4">
                   {section.items.map((item) => (
@@ -279,11 +304,14 @@ export default function MinimalTemplate({ cvData }: { cvData: CvData }) {
   ];
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    if (dateStr.toLowerCase() === "present") return "Present";
-    const [year, month] = dateStr.split("-");
-    return `${month}/${year}`;
+  const getInitials = (name: string) => {
+    if (!name) return "JD";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (

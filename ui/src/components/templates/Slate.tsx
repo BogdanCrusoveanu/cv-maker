@@ -1,8 +1,17 @@
 import { Mail, Phone, Globe, MapPin } from "lucide-react";
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function Slate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (date: string) => {
+    if (!date) return "";
+    return date.toLowerCase() === "present" || date.toLowerCase() === "ongoing"
+      ? t("cv.present")
+      : date;
+  };
 
   // Define renderers for each section type
   const renderSection = (key: string) => {
@@ -13,14 +22,17 @@ export default function Slate({ cvData }: { cvData: CvData }) {
           education.length > 0 && (
             <section key="education">
               <h2 className="text-2xl font-bold text-slate-700 mb-6 uppercase border-b border-gray-300 pb-2">
-                Education
+                {t("cv.sections.education")}
               </h2>
               <div className="space-y-6">
                 {education.map((edu) => (
                   <div key={edu.id} className="flex gap-4">
                     <div className="w-24 pt-1 text-right text-sm font-bold text-slate-500">
                       {edu.startDate && edu.startDate.split("-")[0]} -{" "}
-                      {edu.endDate && edu.endDate.split("-")[0]}
+                      {edu.endDate &&
+                        (edu.endDate.toLowerCase() === "present"
+                          ? t("cv.present")
+                          : edu.endDate.split("-")[0])}
                     </div>
                     <div className="border-l-2 border-slate-200 pl-6 pb-2 relative">
                       <div className="absolute -left-[5px] top-2 w-2 h-2 rounded-full bg-slate-700"></div>
@@ -41,16 +53,17 @@ export default function Slate({ cvData }: { cvData: CvData }) {
           experience.length > 0 && (
             <section key="experience">
               <h2 className="text-2xl font-bold text-slate-700 mb-6 uppercase border-b border-gray-300 pb-2">
-                Experience
+                {t("cv.sections.experience")}
               </h2>
               <div className="space-y-6">
                 {experience.map((exp) => (
                   <div key={exp.id} className="flex gap-4">
                     <div className="w-24 pt-1 text-right text-sm font-bold text-slate-500">
                       {exp.startDate && exp.startDate.split("-")[0]} -{" "}
-                      {exp.endDate === "Present"
-                        ? "Now"
-                        : exp.endDate && exp.endDate.split("-")[0]}
+                      {exp.endDate &&
+                        (exp.endDate.toLowerCase() === "present"
+                          ? t("cv.present")
+                          : exp.endDate.split("-")[0])}
                     </div>
                     <div className="border-l-2 border-slate-200 pl-6 pb-2 relative">
                       <div className="absolute -left-[5px] top-2 w-2 h-2 rounded-full bg-slate-700"></div>
@@ -118,7 +131,7 @@ export default function Slate({ cvData }: { cvData: CvData }) {
               <span className="w-6 h-6 bg-slate-700 text-white flex items-center justify-center rounded-full text-xs">
                 A
               </span>
-              About Me
+              {t("cv.sections.profile") || "About Me"}
             </h2>
             <p className="text-sm leading-relaxed text-gray-600">
               {personalInfo.summary}
@@ -134,7 +147,7 @@ export default function Slate({ cvData }: { cvData: CvData }) {
                 <span className="w-6 h-6 bg-slate-700 text-white flex items-center justify-center rounded-full text-xs">
                   S
                 </span>
-                Skills
+                {t("cv.sections.skills")}
               </h2>
               <div className="space-y-3">
                 {skills.map((skill) => (
@@ -166,7 +179,7 @@ export default function Slate({ cvData }: { cvData: CvData }) {
                 <span className="w-6 h-6 bg-slate-700 text-white flex items-center justify-center rounded-full text-xs">
                   L
                 </span>
-                Languages
+                {t("cv.sections.languages")}
               </h2>
               <div className="space-y-2">
                 {cvData.languages.map((lang) => (
@@ -194,7 +207,7 @@ export default function Slate({ cvData }: { cvData: CvData }) {
                 <span className="w-6 h-6 bg-slate-700 text-white flex items-center justify-center rounded-full text-xs">
                   I
                 </span>
-                Interests
+                {t("cv.sections.interests")}
               </h2>
               <ul className="text-sm text-gray-600 list-disc list-inside">
                 {cvData.interests.map((interest) => (

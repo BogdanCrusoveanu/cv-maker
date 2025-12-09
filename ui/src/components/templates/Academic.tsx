@@ -1,11 +1,13 @@
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
-    if (dateStr.toLowerCase() === "present") return "Present";
+    if (dateStr.toLowerCase() === "present") return t("cv.present");
     const [year, month] = dateStr.split("-");
     const months = [
       "January",
@@ -21,6 +23,8 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
       "November",
       "December",
     ];
+    // Fallback if month is undefined (e.g. only year present)
+    if (!month) return year;
     return `${months[parseInt(month) - 1]} ${year}`;
   };
 
@@ -45,7 +49,7 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
         {cvData.visibility.summary && personalInfo.summary && (
           <section>
             <h2 className="text-lg font-bold uppercase border-b border-gray-400 mb-3">
-              Professional Summary
+              {t("cv.sections.summary")}
             </h2>
             <p className="text-sm text-justify">{personalInfo.summary}</p>
           </section>
@@ -55,7 +59,7 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
         {cvData.visibility.education && education.length > 0 && (
           <section>
             <h2 className="text-lg font-bold uppercase border-b border-gray-400 mb-3">
-              Education
+              {t("cv.sections.education")}
             </h2>
             <div className="flex flex-col gap-3">
               {education.map((edu) => (
@@ -80,7 +84,7 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
         {cvData.visibility.experience && experience.length > 0 && (
           <section>
             <h2 className="text-lg font-bold uppercase border-b border-gray-400 mb-3">
-              Professional Experience
+              {t("cv.sections.experience")}
             </h2>
             <div className="flex flex-col gap-4">
               {experience.map((exp) => (
@@ -111,7 +115,7 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
         {cvData.visibility.skills && skills.length > 0 && (
           <section>
             <h2 className="text-lg font-bold uppercase border-b border-gray-400 mb-3">
-              Skills
+              {t("cv.sections.skills")}
             </h2>
             <p className="text-sm">{skills.map((s) => s.name).join(" • ")}</p>
           </section>
@@ -155,7 +159,7 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
               cvData.languages.length > 0 && (
                 <section>
                   <h2 className="text-lg font-bold uppercase border-b border-gray-400 mb-3">
-                    Languages
+                    {t("cv.sections.languages")}
                   </h2>
                   <ul className="text-sm">
                     {cvData.languages.map((l) => (
@@ -171,7 +175,7 @@ export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
               cvData.interests.length > 0 && (
                 <section>
                   <h2 className="text-lg font-bold uppercase border-b border-gray-400 mb-3">
-                    Interests
+                    {t("cv.sections.interests")}
                   </h2>
                   <ul className="text-sm">
                     {cvData.interests.map((i) => (

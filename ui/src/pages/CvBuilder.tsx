@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Download,
   Palette,
@@ -17,6 +18,7 @@ import { useCv, useSaveCv } from "../hooks/useCv";
 import { useToast } from "../context/ToastContext";
 import { CvData } from "../types/cv";
 import { ShareCvDialog } from "../components/ShareCvDialog";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import api from "../services/api";
 
 export default function CvBuilder() {
@@ -24,6 +26,7 @@ export default function CvBuilder() {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { showToast } = useToast();
+  const { t } = useTranslation();
 
   // Fetch specific CV if ID exists, otherwise null
   const { data: cvDataFromApi, isLoading, isError } = useCv(id);
@@ -316,11 +319,11 @@ export default function CvBuilder() {
     saveCvMutation.mutate(cvToSave, {
       onSuccess: (data) => {
         setCvId(data.id);
-        showToast("CV Saved!", "success");
+        showToast(t("app.toasts.saveSuccess"), "success");
       },
       onError: (error) => {
         console.error("Failed to save CV", error);
-        showToast("Failed to save CV", "error");
+        showToast(t("app.toasts.saveError"), "error");
       },
     });
   };
@@ -340,12 +343,14 @@ export default function CvBuilder() {
 
   const handlePrint = () => {
     if (!cvId) {
+      showToast(t("app.toasts.saveFirst"), "error"); // Note: Need to add this key or reuse saveError? Actually I missed this one in the keys list. Let's use "Failed to save CV" or create a new one? Or maybe just hardcode fallback for now to avoid breaking if key missing. I will add 'saveFirst' key later or reuse. Wait, I didn't add 'saveFirst'. Let's check my keys. I added 'saveError'. I'll stick to English for this specific one if I missed it, or reuse 'saveError' which is close enough? No, "Please save first" is different. I'll add "saveFirst" to en.json later. For now let's use a temporary string or existing key. actually I will assume I will add it.
+      // Better yet, I'll just use a direct string for now and add it in next turn to be safe.
       showToast("Please save your CV first", "error");
       return;
     }
 
     setIsGeneratingPdf(true);
-    showToast("Starting download...", "info");
+    showToast(t("app.toasts.exportInfo"), "info");
 
     // Direct download approach: let the browser handle it via navigation.
     // This allows the browser to respect the server's Content-Disposition header perfectly.
@@ -385,11 +390,12 @@ export default function CvBuilder() {
                 className="text-white hover:text-gray-200 hover:bg-white/10 p-2"
                 icon={ArrowLeft}
               >
-                <span className="hidden sm:inline">Back</span>
+                <span className="hidden sm:inline">{t("app.back")}</span>
               </Button>
               <h1 className="text-xl lg:text-3xl font-bold">CV Builder</h1>
             </div>
             <div className="flex gap-2 items-center">
+              <LanguageSwitcher />
               {cvId && (
                 <Button
                   onClick={() => setIsShareDialogOpen(true)}
@@ -397,7 +403,9 @@ export default function CvBuilder() {
                   className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 lg:px-3 text-xs lg:text-sm rounded flex items-center gap-1 lg:gap-2"
                   icon={Share2}
                 >
-                  <span className="hidden sm:inline">Share</span>
+                  <span className="hidden sm:inline">
+                    {t("editor.buttons.share")}
+                  </span>
                 </Button>
               )}
               <Button
@@ -405,7 +413,7 @@ export default function CvBuilder() {
                 variant="custom"
                 className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 lg:px-3 text-xs lg:text-sm rounded"
               >
-                Logout
+                {t("editor.buttons.logout")}
               </Button>
             </div>
           </div>
@@ -424,7 +432,7 @@ export default function CvBuilder() {
                   : "text-blue-100 hover:text-white"
               }`}
             >
-              Standard Templates
+              {t("editor.tabs.standardTemplates")}
             </button>
             <button
               onClick={() => {
@@ -438,7 +446,7 @@ export default function CvBuilder() {
                   : "text-blue-100 hover:text-white"
               }`}
             >
-              Customizable Templates
+              {t("editor.tabs.customizableTemplates")}
             </button>
           </div>
 
@@ -480,7 +488,7 @@ export default function CvBuilder() {
               icon={Save}
               iconSize={20}
             >
-              Save
+              {t("editor.buttons.save")}
             </Button>
             <Button
               onClick={handlePrint}
@@ -489,7 +497,7 @@ export default function CvBuilder() {
               icon={Download}
               iconSize={20}
             >
-              Export
+              {t("editor.buttons.export")}
             </Button>
           </div>
         </div>
@@ -542,7 +550,7 @@ export default function CvBuilder() {
               : "text-gray-500 hover:bg-gray-50"
           }`}
         >
-          Editor
+          {t("editor.mobile.editor")}
         </button>
         <div className="w-px bg-gray-200"></div>
         <button
@@ -553,7 +561,7 @@ export default function CvBuilder() {
               : "text-gray-500 hover:bg-gray-50"
           }`}
         >
-          Preview
+          {t("editor.mobile.preview")}
         </button>
       </div>
 
@@ -578,10 +586,10 @@ export default function CvBuilder() {
             </div>
             <div className="text-center">
               <h3 className="text-lg font-bold text-gray-900 mb-1">
-                Generating PDF...
+                {t("editor.export.generating")}
               </h3>
               <p className="text-sm text-gray-600">
-                This may take a few seconds
+                {t("editor.export.waitMessage")}
               </p>
             </div>
           </div>

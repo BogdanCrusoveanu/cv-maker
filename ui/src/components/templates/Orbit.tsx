@@ -1,7 +1,9 @@
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
@@ -9,7 +11,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
       dateStr.toLowerCase() === "present" ||
       dateStr.toLowerCase() === "ongoing"
     )
-      return "Ongoing";
+      return t("cv.present");
     const [year, month] = dateStr.split("-");
     const months = [
       "Jan",
@@ -25,6 +27,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
       "Nov",
       "Dec",
     ];
+    if (!month) return year;
     return `${months[parseInt(month) - 1]} ${year}`;
   };
 
@@ -79,7 +82,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
             {/* Contact Info Box */}
             <div className="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-600 shadow-sm">
               <h3 className="font-bold text-blue-800 mb-4 uppercase tracking-wider text-sm">
-                Contact
+                {t("cv.labels.contact")}
               </h3>
               <div className="space-y-3 text-sm">
                 {personalInfo.email && (
@@ -113,7 +116,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
             {cvData.visibility.skills && skills.length > 0 && (
               <section>
                 <h2 className="text-lg font-bold text-blue-900 border-b-2 border-orange-200 mb-3 uppercase tracking-wider">
-                  Skills
+                  {t("cv.sections.skills")}
                 </h2>
                 <div className="space-y-4">
                   {skills.map((skill) => (
@@ -141,7 +144,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
               cvData.languages.length > 0 && (
                 <section>
                   <h2 className="text-lg font-bold text-blue-900 border-b-2 border-orange-200 mb-3 uppercase tracking-wider">
-                    Languages
+                    {t("cv.sections.languages")}
                   </h2>
                   <div className="space-y-2 text-sm flex flex-col !pl-0 !ml-0">
                     {cvData.languages.map((l) => (
@@ -167,7 +170,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
               cvData.interests.length > 0 && (
                 <section>
                   <h2 className="text-lg font-bold text-blue-900 border-b-2 border-orange-200 mb-3 uppercase tracking-wider">
-                    Interests
+                    {t("cv.sections.interests")}
                   </h2>
                   <ul className="space-y-2 text-sm">
                     {cvData.interests.map((interest) => (
@@ -188,7 +191,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
               <section>
                 <h2 className="text-2xl font-bold text-blue-900 mb-4 flex items-center gap-2">
                   <span className="w-3 h-3 bg-orange-400 rounded-full"></span>
-                  Profile
+                  {t("cv.sections.profile") || "Profile"}
                 </h2>
                 <p className="text-gray-700 leading-relaxed border-l-2 border-gray-200 pl-4">
                   {personalInfo.summary}
@@ -201,7 +204,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
               <section>
                 <h2 className="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
                   <span className="w-3 h-3 bg-orange-400 rounded-full"></span>
-                  Experience
+                  {t("cv.sections.experience")}
                 </h2>
                 <div className="space-y-8">
                   {experience.map((exp) => (
@@ -236,7 +239,7 @@ export default function OrbitTemplate({ cvData }: { cvData: CvData }) {
               <section>
                 <h2 className="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
                   <span className="w-3 h-3 bg-orange-400 rounded-full"></span>
-                  Education
+                  {t("cv.sections.education")}
                 </h2>
                 <div className="grid grid-cols-1 gap-6">
                   {education.map((edu) => (

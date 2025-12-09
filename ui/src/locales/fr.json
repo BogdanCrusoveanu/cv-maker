@@ -1,0 +1,270 @@
+{
+  "app": {
+    "dashboard": "Tableau de bord",
+    "createNew": "Créer un nouveau CV",
+    "myCvs": "Mes CVs",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "downloadPdf": "Télécharger PDF",
+    "preview": "Aperçu",
+    "back": "Retour",
+    "welcome": "Bon retour",
+    "createFirst": "Créez votre premier CV pour commencer !",
+    "dashboardSubtitle": "Gérez et modifiez vos CV professionnels",
+    "startFromScratch": "Commencez à zéro avec un modèle professionnel",
+    "updated": "Mis à jour",
+    "logout": "Déconnexion",
+    "changePassword": "Changer le mot de passe",
+    "deleteAccount": "Supprimer le compte",
+    "errorLoading": "Erreur lors du chargement des CV",
+    "retry": "Réessayer",
+    "noSummary": "Pas de résumé fourni",
+    "resumeCount_one": "{{count}} CV",
+    "resumeCount_other": "{{count}} CVs",
+    "share": "Partager",
+    "dialogs": {
+      "deleteAccountTitle": "Supprimer le compte",
+      "deleteAccountMessage": "Êtes-vous sûr de vouloir supprimer votre compte ? Tous vos CV et données seront définitivement perdus. Cette action est irréversible.",
+      "deleteCvTitle": "Supprimer le CV",
+      "deleteCvMessage": "Êtes-vous sûr de vouloir supprimer ce CV ? Cette action est irréversible."
+    },
+    "toasts": {
+      "accountDeleted": "Compte supprimé avec succès",
+      "accountDeleteFailed": "Échec de la suppression du compte",
+      "cvDeleted": "CV supprimé avec succès",
+      "cvDeleteFailed": "Échec de la suppression du CV",
+      "saveSuccess": "CV Enregistré !",
+      "saveError": "Échec de l'enregistrement du CV",
+      "exportInfo": "Démarrage du téléchargement...",
+      "shareSuccess": "CV partagé avec succès !",
+      "shareError": "Échec du partage du CV",
+      "unshareSuccess": "Arrêt du partage du CV réussi",
+      "unshareError": "Échec de l'arrêt du partage du CV",
+      "copySuccess": "Lien copié dans le presse-papiers !"
+    }
+  },
+  "auth": {
+    "loginTitle": "Connectez-vous à votre compte",
+    "banner": {
+      "title": "Construisez votre avenir professionnel en toute confiance.",
+      "subtitle": "Créez des CV époustouflants et compatibles ATS en quelques minutes avec nos modèles professionnels et notre générateur intuitif.",
+      "features": {
+        "templates": "Modèles Professionnels",
+        "export": "Export PDF Instantané",
+        "secure": "Sécurisé et Privé",
+        "ats": "Optimisé ATS"
+      },
+      "copyright": "© {{year}} CV Maker. Tous droits réservés."
+    },
+    "registerTitle": "Créez votre compte",
+    "registerSubtitle": "Rejoignez des milliers de professionnels qui font avancer leur carrière",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "vous@exemple.com",
+    "fullNameLabel": "Nom complet",
+    "namePlaceholder": "Jean Dupont",
+    "passwordLabel": "Mot de passe",
+    "passwordPlaceholder": "Créez un mot de passe fort",
+    "passwordHint": "Doit contenir au moins 8 caractères avec majuscules, minuscules, chiffres et caractères spéciaux.",
+    "confirmPasswordLabel": "Confirmer le mot de passe",
+    "invalidCredentials": "E-mail ou mot de passe invalide",
+    "invalidEmail": "Veuillez entrer une adresse e-mail valide",
+    "registerFailed": "L'inscription a échoué. Veuillez réessayer.",
+    "creatingAccount": "Création du compte...",
+    "createAccountButton": "Créer un compte",
+    "signInButton": "Se connecter",
+    "signUpButton": "S'inscrire",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "registerLink": "S'inscrire",
+    "loginLink": "Se connecter",
+    "forgotPasswordTitle": "Mot de passe oublié",
+    "forgotPasswordSubtitle": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe",
+    "checkEmailTitle": "Vérifiez votre e-mail",
+    "checkEmailSubtitle": "Nous avons envoyé des instructions de réinitialisation du mot de passe à {{email}}",
+    "emailSentMessage": "Si un compte existe pour {{email}}, vous recevrez un e-mail avec des instructions pour réinitialiser votre mot de passe.",
+    "demoSimulation": "DÉMO SEULEMENT (Simulation d'E-mail) :",
+    "clickToReset": "Cliquez ici pour réinitialiser le mot de passe",
+    "didNotReceiveEmail": "Vous n'avez pas reçu l'e-mail ? Vérifiez vos spams ou",
+    "tryAnotherEmail": "essayez une autre adresse e-mail",
+    "backToSignIn": "Retour à la connexion",
+    "sendResetLink": "Envoyer le lien de réinitialisation",
+    "sendingLink": "Envoi du lien...",
+    "resetPasswordTitle": "Réinitialiser le mot de passe",
+    "resetPasswordSubtitle": "Entrez votre nouveau mot de passe ci-dessous",
+    "newPasswordLabel": "Nouveau mot de passe",
+    "confirmNewPasswordLabel": "Confirmer le nouveau mot de passe",
+    "resetPasswordButton": "Réinitialiser le mot de passe",
+    "resettingPassword": "Réinitialisation..."
+  },
+  "editor": {
+    "tabs": {
+      "content": "Contenu",
+      "design": "Design",
+      "standardTemplates": "Modèles Standard",
+      "customizableTemplates": "Modèles Personnalisables"
+    },
+    "sections": {
+      "visibilityOrder": "Visibilité et Ordre"
+    },
+    "personalInfo": {
+      "title": "Informations Personnelles",
+      "photoLabel": "Photo de Profil",
+      "uploadPhoto": "Télécharger Photo",
+      "removePhoto": "Supprimer Photo",
+      "fullNamePlaceholder": "Nom Complet",
+      "titlePlaceholder": "Titre Professionnel",
+      "emailPlaceholder": "E-mail",
+      "phonePlaceholder": "Téléphone",
+      "locationPlaceholder": "Lieu",
+      "websitePlaceholder": "Site Web",
+      "summaryPlaceholder": "Résumé Professionnel"
+    },
+    "customFields": {
+      "title": "Champs Personnalisés",
+      "addField": "Ajouter Champ",
+      "labelPlaceholder": "Libellé (ex. LinkedIn)",
+      "valuePlaceholder": "Valeur"
+    },
+    "experience": {
+      "title": "Expérience",
+      "add": "Ajouter Expérience",
+      "jobTitlePlaceholder": "Intitulé du Poste",
+      "companyPlaceholder": "Entreprise",
+      "locationPlaceholder": "Lieu",
+      "startDatePlaceholder": "Date de Début",
+      "endDatePlaceholder": "Date de Fin",
+      "ongoing": "En cours",
+      "descriptionPlaceholder": "Description du Poste"
+    },
+    "education": {
+      "title": "Formation",
+      "add": "Ajouter Formation",
+      "degreePlaceholder": "Diplôme",
+      "schoolPlaceholder": "École/Université",
+      "locationPlaceholder": "Lieu",
+      "gpaPlaceholder": "Moyenne (optionnel)"
+    },
+    "skills": {
+      "title": "Compétences",
+      "add": "Ajouter Compétence",
+      "namePlaceholder": "Nom de la Compétence",
+      "level": "Niveau"
+    },
+    "interests": {
+      "title": "Intérêts",
+      "add": "Ajouter Intérêt",
+      "namePlaceholder": "Intérêt"
+    },
+    "languages": {
+      "title": "Langues",
+      "add": "Ajouter Langue",
+      "namePlaceholder": "Langue",
+      "proficiencyPlaceholder": "Niveau"
+    },
+    "customSections": {
+      "title": "Sections Personnalisées",
+      "add": "Ajouter Section",
+      "addItem": "Ajouter Élément",
+      "sectionTitlePlaceholder": "Titre de Section",
+      "itemTitlePlaceholder": "Titre / Rôle",
+      "subtitlePlaceholder": "Sous-titre / Entreprise",
+      "datePlaceholder": "Date / Durée",
+      "descriptionPlaceholder": "Description"
+    },
+    "buttons": {
+      "save": "Enregistrer",
+      "export": "Exporter",
+      "share": "Partager",
+      "logout": "Déconnexion",
+      "back": "Retour"
+    },
+    "mobile": {
+      "editor": "Éditeur",
+      "preview": "Aperçu"
+    },
+    "export": {
+      "generating": "Génération du PDF...",
+      "waitMessage": "Cela peut prendre quelques secondes"
+    },
+    "theme": {
+      "accentColor": "Couleur d'Accent",
+      "current": "Actuel",
+      "default": "Défaut",
+      "typography": "Typographie",
+      "spacingDensity": "Espacement et Densité",
+      "density": {
+        "compact": "Compact",
+        "normal": "Normal",
+        "spacious": "Spacieux"
+      }
+    },
+    "auth": {
+      "errors": {
+        "invalidEncryption": "Chiffrement du mot de passe invalide",
+        "userExists": "L'utilisateur existe déjà",
+        "invalidCredentials": "Identifiants invalides",
+        "noRefreshToken": "Pas de jeton d'actualisation",
+        "sessionExpired": "Session expirée",
+        "invalidToken": "Jeton invalide",
+        "passwordChangeFailed": "Échec du changement de mot de passe. Vérifiez votre mot de passe actuel.",
+        "userNotFound": "Utilisateur introuvable",
+        "invalidResetToken": "Jeton invalide ou expiré",
+        "emailNotFound": "Email non trouvé",
+        "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+        "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères"
+      },
+      "toasts": {
+        "resetSuccess": "Mot de passe réinitialisé avec succès. Veuillez vous connecter."
+      }
+    },
+    "cv": {
+      "errors": {
+        "notFound": "CV introuvable",
+        "saveFailed": "Échec de l'enregistrement du CV",
+        "pdfGenerationFailed": "Échec de la génération du PDF",
+        "noFile": "Aucun fichier téléchargé"
+      }
+    },
+    "common": {
+      "errors": {
+        "unexpected": "Une erreur inattendue s'est produite",
+        "generic": "Quelque chose s'est mal passé"
+      }
+    }
+  },
+  "shareDialog": {
+    "title": "Partager votre CV",
+    "descriptionPublic": "Toute personne disposant de ce lien peut voir votre CV.",
+    "descriptionPrivate": "Créez un lien public pour partager votre CV avec des recruteurs ou des amis.",
+    "copy": "Copier",
+    "stopSharing": "Arrêter le Partage",
+    "unsharing": "Arrêt du partage...",
+    "createLink": "Créer Lien Public",
+    "creatingLink": "Création du lien..."
+  },
+  "cv": {
+    "present": "Présent",
+    "sections": {
+      "personalInfo": "Infos Personnelles",
+      "summary": "Résumé",
+      "experience": "Expérience",
+      "education": "Formation",
+      "skills": "Compétences",
+      "languages": "Langues",
+      "interests": "Intérêts",
+      "custom": "Section Personnalisée",
+      "customSections": "Sections Personnalisées",
+      "profile": "Profil"
+    },
+    "labels": {
+      "contact": "Contact",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "location": "Emplacement",
+      "website": "Site web",
+      "present": "Présent",
+      "ongoing": "En cours"
+    }
+  }
+}

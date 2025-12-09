@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { ThemeEditor } from "./ThemeEditor";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
 import { TextArea } from "./ui/TextArea";
@@ -99,6 +100,7 @@ export default function Editor({
   setCvData,
   currentTemplate,
 }: EditorProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"content" | "design">("content");
 
   useEffect(() => {
@@ -677,7 +679,7 @@ export default function Editor({
               : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
           }`}
         >
-          Content
+          {t("editor.tabs.content")}
         </button>
         {currentTemplate.startsWith("custom") && (
           <button
@@ -688,7 +690,7 @@ export default function Editor({
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
             }`}
           >
-            Design
+            {t("editor.tabs.design")}
           </button>
         )}
       </div>
@@ -703,7 +705,7 @@ export default function Editor({
             {/* Section Visibility and Reordering Control */}
             <section className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                Section Visibility & Order
+                {t("editor.sections.visibilityOrder")}
               </h3>
               <DndContext
                 sensors={sensors}
@@ -734,7 +736,24 @@ export default function Editor({
                             }
                           />
                           <span className="capitalize font-medium text-gray-700">
-                            {key.replace(/([A-Z])/g, " $1").trim()}
+                            {/* We might need a map for section names if we want them translated in the drag list
+                                For now, let's try to translate using existing keys or a fallback
+                             */}
+                            {(() => {
+                              if (key.startsWith("customSection_")) {
+                                const sectionId = parseInt(key.split("_")[1]);
+                                const section = cvData.customSections?.find(
+                                  (s) => s.id === sectionId
+                                );
+                                return section
+                                  ? section.title
+                                  : t("cv.sections.custom");
+                              }
+                              return t(
+                                `cv.sections.${key}`,
+                                key.replace(/([A-Z])/g, " $1").trim()
+                              );
+                            })()}
                           </span>
                           <div className="flex items-center gap-1 ml-auto">
                             <Button
@@ -770,13 +789,13 @@ export default function Editor({
             {/* Personal Info Section */}
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-blue-500">
-                Personal Information
+                {t("editor.personalInfo.title")}
               </h2>
 
               {/* Photo Upload */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Profile Photo
+                  {t("editor.personalInfo.photoLabel")}
                 </label>
                 <div className="flex items-center gap-4">
                   {cvData.personalInfo.photo ? (
@@ -791,7 +810,7 @@ export default function Editor({
                         variant="danger"
                         icon={X}
                       >
-                        Remove Photo
+                        {t("editor.personalInfo.removePhoto")}
                       </Button>
                     </>
                   ) : (
@@ -808,7 +827,7 @@ export default function Editor({
                       icon={Upload}
                       className="cursor-pointer"
                     >
-                      Upload Photo
+                      {t("editor.personalInfo.uploadPhoto")}
                     </Button>
                     <input
                       id="photo-upload"
@@ -823,7 +842,7 @@ export default function Editor({
 
               <div className="grid grid-cols-1 gap-4">
                 <Input
-                  placeholder="Full Name"
+                  placeholder={t("editor.personalInfo.fullNamePlaceholder")}
                   value={cvData.personalInfo.fullName}
                   onChange={(e) =>
                     handlePersonalInfoChange("fullName", e.target.value)
@@ -831,7 +850,7 @@ export default function Editor({
                   color="blue"
                 />
                 <Input
-                  placeholder="Professional Title"
+                  placeholder={t("editor.personalInfo.titlePlaceholder")}
                   value={cvData.personalInfo.title}
                   onChange={(e) =>
                     handlePersonalInfoChange("title", e.target.value)
@@ -840,7 +859,7 @@ export default function Editor({
                 />
                 <Input
                   type="email"
-                  placeholder="Email"
+                  placeholder={t("editor.personalInfo.emailPlaceholder")}
                   value={cvData.personalInfo.email}
                   onChange={(e) =>
                     handlePersonalInfoChange("email", e.target.value)
@@ -849,7 +868,7 @@ export default function Editor({
                 />
                 <Input
                   type="tel"
-                  placeholder="Phone"
+                  placeholder={t("editor.personalInfo.phonePlaceholder")}
                   value={cvData.personalInfo.phone}
                   onChange={(e) =>
                     handlePersonalInfoChange("phone", e.target.value)
@@ -857,7 +876,7 @@ export default function Editor({
                   color="blue"
                 />
                 <Input
-                  placeholder="Location"
+                  placeholder={t("editor.personalInfo.locationPlaceholder")}
                   value={cvData.personalInfo.location}
                   onChange={(e) =>
                     handlePersonalInfoChange("location", e.target.value)
@@ -865,7 +884,7 @@ export default function Editor({
                   color="blue"
                 />
                 <Input
-                  placeholder="Website"
+                  placeholder={t("editor.personalInfo.websitePlaceholder")}
                   value={cvData.personalInfo.website || ""}
                   onChange={(e) =>
                     handlePersonalInfoChange("website", e.target.value)
@@ -873,7 +892,7 @@ export default function Editor({
                   color="blue"
                 />
                 <TextArea
-                  placeholder="Professional Summary"
+                  placeholder={t("editor.personalInfo.summaryPlaceholder")}
                   value={cvData.personalInfo.summary}
                   onChange={(e) =>
                     handlePersonalInfoChange("summary", e.target.value)
@@ -882,11 +901,10 @@ export default function Editor({
                   color="blue"
                 />
 
-                {/* Custom Fields */}
                 <div className="space-y-3 pt-4 border-t border-gray-200">
                   <div className="flex justify-between items-center">
                     <label className="block text-sm font-medium text-gray-700">
-                      Custom Fields
+                      {t("editor.customFields.title")}
                     </label>
                     <Button
                       onClick={addCustomField}
@@ -895,7 +913,7 @@ export default function Editor({
                       icon={Plus}
                       iconSize={14}
                     >
-                      Add Field
+                      {t("editor.customFields.addField")}
                     </Button>
                   </div>
                   <DndContext
@@ -913,7 +931,9 @@ export default function Editor({
                         <SortableItem key={field.id} id={field.id}>
                           <div className="flex gap-2 items-center flex-1">
                             <Input
-                              placeholder="Label (e.g. LinkedIn)"
+                              placeholder={t(
+                                "editor.customFields.labelPlaceholder"
+                              )}
                               value={field.label}
                               onChange={(e) =>
                                 updateCustomField(
@@ -926,7 +946,9 @@ export default function Editor({
                               className="w-1/3"
                             />
                             <Input
-                              placeholder="Value"
+                              placeholder={t(
+                                "editor.customFields.valuePlaceholder"
+                              )}
                               value={field.value}
                               onChange={(e) =>
                                 updateCustomField(
@@ -971,10 +993,10 @@ export default function Editor({
             {cvData.visibility?.experience && (
               <section>
                 <SectionHeader
-                  title="Experience"
+                  title={t("editor.experience.title")}
                   color="green"
                   onAdd={addExperience}
-                  addButtonLabel="Add Experience"
+                  addButtonLabel={t("editor.experience.add")}
                 />
 
                 <DndContext
@@ -997,7 +1019,9 @@ export default function Editor({
                           />
                           <div className="grid grid-cols-1 gap-3 pr-8">
                             <Input
-                              placeholder="Job Title"
+                              placeholder={t(
+                                "editor.experience.jobTitlePlaceholder"
+                              )}
                               value={exp.title}
                               onChange={(e) =>
                                 updateExperience(
@@ -1009,7 +1033,9 @@ export default function Editor({
                               color="green"
                             />
                             <Input
-                              placeholder="Company"
+                              placeholder={t(
+                                "editor.experience.companyPlaceholder"
+                              )}
                               value={exp.company}
                               onChange={(e) =>
                                 updateExperience(
@@ -1021,7 +1047,9 @@ export default function Editor({
                               color="green"
                             />
                             <Input
-                              placeholder="Location"
+                              placeholder={t(
+                                "editor.experience.locationPlaceholder"
+                              )}
                               value={exp.location}
                               onChange={(e) =>
                                 updateExperience(
@@ -1035,7 +1063,9 @@ export default function Editor({
                             <div className="grid grid-cols-2 gap-3">
                               <Input
                                 type="month"
-                                placeholder="Start Date"
+                                placeholder={t(
+                                  "editor.experience.startDatePlaceholder"
+                                )}
                                 value={exp.startDate}
                                 onChange={(e) =>
                                   updateExperience(
@@ -1048,7 +1078,9 @@ export default function Editor({
                               />
                               <div className="flex gap-2">
                                 <Input
-                                  placeholder="End Date"
+                                  placeholder={t(
+                                    "editor.experience.endDatePlaceholder"
+                                  )}
                                   value={
                                     exp.endDate === "Ongoing" ? "" : exp.endDate
                                   }
@@ -1084,13 +1116,15 @@ export default function Editor({
                                     htmlFor={`ongoing-exp-${exp.id}`}
                                     className="ml-2 text-sm font-medium text-gray-900"
                                   >
-                                    Ongoing
+                                    {t("editor.experience.ongoing")}
                                   </label>
                                 </div>
                               </div>
                             </div>
                             <TextArea
-                              placeholder="Job Description"
+                              placeholder={t(
+                                "editor.experience.descriptionPlaceholder"
+                              )}
                               value={exp.description}
                               onChange={(e) =>
                                 updateExperience(
@@ -1115,10 +1149,10 @@ export default function Editor({
             {cvData.visibility?.education && (
               <section>
                 <SectionHeader
-                  title="Education"
+                  title={t("editor.education.title")}
                   color="purple"
                   onAdd={addEducation}
-                  addButtonLabel="Add Education"
+                  addButtonLabel={t("editor.education.add")}
                 />
 
                 <DndContext
@@ -1141,7 +1175,9 @@ export default function Editor({
                           />
                           <div className="grid grid-cols-1 gap-3 pr-8">
                             <Input
-                              placeholder="Degree"
+                              placeholder={t(
+                                "editor.education.degreePlaceholder"
+                              )}
                               value={edu.degree}
                               onChange={(e) =>
                                 updateEducation(
@@ -1153,7 +1189,9 @@ export default function Editor({
                               color="purple"
                             />
                             <Input
-                              placeholder="School/University"
+                              placeholder={t(
+                                "editor.education.schoolPlaceholder"
+                              )}
                               value={edu.school}
                               onChange={(e) =>
                                 updateEducation(
@@ -1165,7 +1203,9 @@ export default function Editor({
                               color="purple"
                             />
                             <Input
-                              placeholder="Location"
+                              placeholder={t(
+                                "editor.education.locationPlaceholder"
+                              )}
                               value={edu.location}
                               onChange={(e) =>
                                 updateEducation(
@@ -1179,7 +1219,9 @@ export default function Editor({
                             <div className="grid grid-cols-2 gap-3">
                               <Input
                                 type="month"
-                                placeholder="Start Date"
+                                placeholder={t(
+                                  "editor.experience.startDatePlaceholder"
+                                )}
                                 value={edu.startDate}
                                 onChange={(e) =>
                                   updateEducation(
@@ -1195,7 +1237,9 @@ export default function Editor({
                                   type={
                                     edu.endDate === "Ongoing" ? "text" : "month"
                                   }
-                                  placeholder="End Date"
+                                  placeholder={t(
+                                    "editor.experience.endDatePlaceholder"
+                                  )}
                                   value={
                                     edu.endDate === "Ongoing" ? "" : edu.endDate
                                   }
@@ -1228,13 +1272,13 @@ export default function Editor({
                                     htmlFor={`ongoing-edu-${edu.id}`}
                                     className="ml-2 text-sm font-medium text-gray-900"
                                   >
-                                    Ongoing
+                                    {t("editor.experience.ongoing")}
                                   </label>
                                 </div>
                               </div>
                             </div>
                             <Input
-                              placeholder="GPA (optional)"
+                              placeholder={t("editor.education.gpaPlaceholder")}
                               value={edu.gpa}
                               onChange={(e) =>
                                 updateEducation(edu.id, "gpa", e.target.value)
@@ -1254,10 +1298,10 @@ export default function Editor({
             {cvData.visibility?.skills && (
               <section>
                 <SectionHeader
-                  title="Skills"
+                  title={t("editor.skills.title")}
                   color="orange"
                   onAdd={addSkill}
-                  addButtonLabel="Add Skill"
+                  addButtonLabel={t("editor.skills.add")}
                 />
 
                 <DndContext
@@ -1281,7 +1325,7 @@ export default function Editor({
                             />
                             <div className="pr-8">
                               <Input
-                                placeholder="Skill Name"
+                                placeholder={t("editor.skills.namePlaceholder")}
                                 value={skill.name}
                                 onChange={(e) =>
                                   updateSkill(skill.id, "name", e.target.value)
@@ -1295,7 +1339,8 @@ export default function Editor({
                               <div className="flex items-center gap-3">
                                 <div className="flex-1 flex items-center gap-2">
                                   <span className="text-xs text-gray-500 w-12">
-                                    Level: {skill.level || 75}%
+                                    {t("editor.skills.level")}:{" "}
+                                    {skill.level || 75}%
                                   </span>
                                   <input
                                     type="range"
@@ -1351,10 +1396,10 @@ export default function Editor({
             {cvData.visibility?.interests && (
               <section>
                 <SectionHeader
-                  title="Interests"
+                  title={t("editor.interests.title")}
                   color="pink"
                   onAdd={addInterest}
-                  addButtonLabel="Add Interest"
+                  addButtonLabel={t("editor.interests.add")}
                 />
 
                 <DndContext
@@ -1371,7 +1416,9 @@ export default function Editor({
                         <SortableItem key={interest.id} id={interest.id}>
                           <div className="flex gap-2 items-center flex-1">
                             <Input
-                              placeholder="Interest"
+                              placeholder={t(
+                                "editor.interests.namePlaceholder"
+                              )}
                               value={interest.name}
                               onChange={(e) =>
                                 updateInterest(interest.id, e.target.value)
@@ -1397,10 +1444,10 @@ export default function Editor({
             {cvData.visibility?.languages && (
               <section>
                 <SectionHeader
-                  title="Languages"
+                  title={t("editor.languages.title")}
                   color="teal"
                   onAdd={addLanguage}
-                  addButtonLabel="Add Language"
+                  addButtonLabel={t("editor.languages.add")}
                 />
 
                 <DndContext
@@ -1417,7 +1464,9 @@ export default function Editor({
                         <SortableItem key={lang.id} id={lang.id}>
                           <div className="flex gap-2 items-center flex-1">
                             <Input
-                              placeholder="Language"
+                              placeholder={t(
+                                "editor.languages.namePlaceholder"
+                              )}
                               value={lang.name}
                               onChange={(e) =>
                                 updateLanguage(lang.id, "name", e.target.value)
@@ -1426,7 +1475,9 @@ export default function Editor({
                               className="flex-1"
                             />
                             <Select
-                              placeholder="Proficiency"
+                              placeholder={t(
+                                "editor.languages.proficiencyPlaceholder"
+                              )}
                               value={lang.proficiency}
                               onChange={(e) =>
                                 updateLanguage(
@@ -1472,10 +1523,10 @@ export default function Editor({
             {cvData.visibility?.customSections && (
               <section>
                 <SectionHeader
-                  title="Custom Sections"
+                  title={t("editor.customSections.title")}
                   color="indigo"
                   onAdd={addCustomSection}
-                  addButtonLabel="Add Section"
+                  addButtonLabel={t("editor.customSections.add")}
                 />
 
                 <div className="space-y-6">
@@ -1492,7 +1543,9 @@ export default function Editor({
                             updateCustomSectionTitle(section.id, e.target.value)
                           }
                           className="text-lg font-bold bg-transparent border-b border-gray-300 focus:border-indigo-500 focus:outline-none px-1"
-                          placeholder="Section Title"
+                          placeholder={t(
+                            "editor.customSections.sectionTitlePlaceholder"
+                          )}
                         />
                         <div className="flex gap-2">
                           <Button
@@ -1502,7 +1555,7 @@ export default function Editor({
                             icon={Plus}
                             iconSize={14}
                           >
-                            Add Item
+                            {t("editor.customSections.addItem")}
                           </Button>
                           <Button
                             onClick={() => removeCustomSection(section.id)}
@@ -1540,7 +1593,9 @@ export default function Editor({
                                     className="absolute top-0 right-0"
                                   />
                                   <Input
-                                    placeholder="Title / Role"
+                                    placeholder={t(
+                                      "editor.customSections.itemTitlePlaceholder"
+                                    )}
                                     value={item.title}
                                     onChange={(e) =>
                                       updateCustomSectionItem(
@@ -1555,7 +1610,9 @@ export default function Editor({
                                   />
                                   <div className="grid grid-cols-2 gap-2">
                                     <Input
-                                      placeholder="Subtitle / Company"
+                                      placeholder={t(
+                                        "editor.customSections.subtitlePlaceholder"
+                                      )}
                                       value={item.subtitle}
                                       onChange={(e) =>
                                         updateCustomSectionItem(
@@ -1569,7 +1626,9 @@ export default function Editor({
                                       className="text-sm"
                                     />
                                     <Input
-                                      placeholder="Date / Duration"
+                                      placeholder={t(
+                                        "editor.customSections.datePlaceholder"
+                                      )}
                                       value={item.date}
                                       onChange={(e) =>
                                         updateCustomSectionItem(
@@ -1584,7 +1643,9 @@ export default function Editor({
                                     />
                                   </div>
                                   <TextArea
-                                    placeholder="Description"
+                                    placeholder={t(
+                                      "editor.customSections.descriptionPlaceholder"
+                                    )}
                                     value={item.description}
                                     onChange={(e) =>
                                       updateCustomSectionItem(

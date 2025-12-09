@@ -1,7 +1,9 @@
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
@@ -9,7 +11,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
       dateStr.toLowerCase() === "present" ||
       dateStr.toLowerCase() === "ongoing"
     )
-      return "Ongoing";
+      return t("cv.present");
     const [year, month] = dateStr.split("-");
     const months = [
       "Jan",
@@ -25,6 +27,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
       "Nov",
       "Dec",
     ];
+    if (!month) return year;
     return `${months[parseInt(month) - 1]} ${year}`;
   };
 
@@ -67,7 +70,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
             {personalInfo.email && (
               <div className="flex flex-col">
                 <span className="text-xs uppercase text-slate-500 font-bold tracking-wider">
-                  Email
+                  {t("cv.labels.email") || "Email"}
                 </span>
                 <span className="break-all">{personalInfo.email}</span>
               </div>
@@ -75,7 +78,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
             {personalInfo.phone && (
               <div className="flex flex-col">
                 <span className="text-xs uppercase text-slate-500 font-bold tracking-wider">
-                  Phone
+                  {t("cv.labels.phone") || "Phone"}
                 </span>
                 <span>{personalInfo.phone}</span>
               </div>
@@ -83,7 +86,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
             {personalInfo.location && (
               <div className="flex flex-col">
                 <span className="text-xs uppercase text-slate-500 font-bold tracking-wider">
-                  Location
+                  {t("cv.labels.location") || "Location"}
                 </span>
                 <span>{personalInfo.location}</span>
               </div>
@@ -91,7 +94,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
             {personalInfo.website && (
               <div className="flex flex-col">
                 <span className="text-xs uppercase text-slate-500 font-bold tracking-wider">
-                  Portfolio
+                  {t("cv.labels.website") || "Portfolio"}
                 </span>
                 <span className="break-all">{personalInfo.website}</span>
               </div>
@@ -102,7 +105,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
           {cvData.visibility.skills && skills.length > 0 && (
             <div>
               <h3 className="text-lg font-bold border-b border-slate-700 pb-2 mb-4 text-indigo-400">
-                SKILLS
+                {t("cv.sections.skills").toUpperCase()}
               </h3>
               <div className="flex flex-col gap-3">
                 {skills.map((skill) => (
@@ -131,7 +134,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
             cvData.languages.length > 0 && (
               <div>
                 <h3 className="text-lg font-bold border-b border-slate-700 pb-2 mb-4 text-pink-400">
-                  LANGUAGES
+                  {t("cv.sections.languages").toUpperCase()}
                 </h3>
                 <ul className="space-y-2 text-sm">
                   {cvData.languages.map((l) => (
@@ -152,7 +155,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
             cvData.interests.length > 0 && (
               <div>
                 <h3 className="text-lg font-bold border-b border-slate-700 pb-2 mb-4 text-emerald-400">
-                  INTERESTS
+                  {t("cv.sections.interests").toUpperCase()}
                 </h3>
                 <ul className="space-y-2 text-sm">
                   {cvData.interests.map((interest) => (
@@ -191,7 +194,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
                 <span className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded flex items-center justify-center mr-3 text-sm">
                   💼
                 </span>
-                EXPERIENCE
+                {t("cv.sections.experience").toUpperCase()}
               </h3>
               <div className="border-l-2 border-indigo-100 ml-4 pl-8 space-y-8">
                 {experience.map((exp) => (
@@ -224,7 +227,7 @@ export default function PolygonalTemplate({ cvData }: { cvData: CvData }) {
                 <span className="w-8 h-8 bg-pink-100 text-pink-600 rounded flex items-center justify-center mr-3 text-sm">
                   🎓
                 </span>
-                EDUCATION
+                {t("cv.sections.education").toUpperCase()}
               </h3>
               <div className="grid grid-cols-1 gap-4">
                 {education.map((edu) => (

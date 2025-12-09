@@ -1,8 +1,17 @@
 import { Mail, Phone, MapPin } from "lucide-react";
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function Noir({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (date: string) => {
+    if (!date) return "";
+    return date.toLowerCase() === "present" || date.toLowerCase() === "ongoing"
+      ? t("cv.present")
+      : date;
+  };
 
   // Sidebar sections
   const renderSidebarSection = (key: string) => {
@@ -11,7 +20,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
         return (
           <div key="contact">
             <h2 className="text-xl uppercase tracking-widest mb-4 border-b border-gray-700 pb-2">
-              Contact
+              {t("cv.labels.contact")}
             </h2>
             <div className="space-y-3 text-sm text-gray-400">
               {personalInfo.email && (
@@ -90,7 +99,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
           skills.length > 0 && (
             <div key="skills">
               <h2 className="text-xl uppercase tracking-widest mb-4 border-b border-gray-700 pb-2">
-                Skills
+                {t("cv.sections.skills")}
               </h2>
               <ul className="space-y-2 text-sm text-gray-400">
                 {skills.map((skill) => (
@@ -109,7 +118,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
           cvData.languages.length > 0 && (
             <div key="languages">
               <h2 className="text-xl uppercase tracking-widest mb-4 border-b border-gray-700 pb-2">
-                Languages
+                {t("cv.sections.languages")}
               </h2>
               <div className="space-y-2 text-sm text-gray-400 flex flex-col !pl-0 !ml-0">
                 {cvData.languages.map((lang) => (
@@ -131,7 +140,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
           cvData.interests.length > 0 && (
             <div key="interests">
               <h2 className="text-xl uppercase tracking-widest mb-4 border-b border-gray-700 pb-2">
-                Interests
+                {t("cv.sections.interests")}
               </h2>
               <ul className="space-y-2 text-sm text-gray-400">
                 {cvData.interests.map((interest) => (
@@ -155,7 +164,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
           experience.length > 0 && (
             <div key="experience" className="mb-10">
               <h2 className="text-2xl font-light uppercase tracking-widest mb-6 text-gray-800">
-                Experience
+                {t("cv.sections.experience")}
               </h2>
               <div className="border-l border-gray-300 ml-3 space-y-6">
                 {experience.map((exp) => (
@@ -169,7 +178,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
                         {exp.title}
                       </h3>
                       <span className="text-sm text-gray-500">
-                        {exp.startDate} - {exp.endDate}
+                        {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                       </span>
                     </div>
                     <div className="text-sm font-medium text-gray-600 mb-2 uppercase">
@@ -190,7 +199,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
           education.length > 0 && (
             <div key="education" className="mb-10">
               <h2 className="text-2xl font-light uppercase tracking-widest mb-6 text-gray-800">
-                Education
+                {t("cv.sections.education")}
               </h2>
               <div className="border-l border-gray-300 ml-3 space-y-6">
                 {education.map((edu) => (
@@ -204,7 +213,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
                         {edu.school}
                       </h3>
                       <span className="text-sm text-gray-500">
-                        {edu.startDate} - {edu.endDate}
+                        {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
                       </span>
                     </div>
                     <div className="text-sm text-gray-600 uppercase">
@@ -310,7 +319,7 @@ export default function Noir({ cvData }: { cvData: CvData }) {
             {cvData.visibility.summary && personalInfo.summary && (
               <div className="mb-10">
                 <h2 className="text-2xl font-light uppercase tracking-widest mb-6 text-gray-800">
-                  About Me
+                  {t("cv.sections.profile") || "About Me"}
                 </h2>
                 <p className="text-gray-600 text-sm leading-relaxed">
                   {personalInfo.summary}

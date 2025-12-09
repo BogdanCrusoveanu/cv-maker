@@ -48,7 +48,7 @@ public class CvController : ControllerBase
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         var cv = await _cvService.GetCvAsync(id, userId);
-        if (cv == null) return NotFound();
+        if (cv == null) return Problem(detail: "cv.errors.notFound", statusCode: 404);
         return Ok(cv);
     }
 
@@ -72,7 +72,7 @@ public class CvController : ControllerBase
         catch (Exception ex)
         {
             Console.WriteLine($"Error saving CV: {ex}");
-            return StatusCode(500, ex.Message);
+            return Problem(detail: "cv.errors.saveFailed", statusCode: 500);
         }
     }
 
@@ -89,7 +89,7 @@ public class CvController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         var token = await _cvService.ShareCvAsync(id, userId);
         
-        if (token == null) return NotFound();
+        if (token == null) return Problem(detail: "cv.errors.notFound", statusCode: 404);
 
         return Ok(new { token });
     }
@@ -107,7 +107,7 @@ public class CvController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         var success = await _cvService.UnshareCvAsync(id, userId);
         
-        if (!success) return NotFound();
+        if (!success) return Problem(detail: "cv.errors.notFound", statusCode: 404);
 
         return Ok();
     }
@@ -124,7 +124,7 @@ public class CvController : ControllerBase
     public async Task<IActionResult> GetSharedCv(string token)
     {
         var cv = await _cvService.GetSharedCvAsync(token);
-        if (cv == null) return NotFound();
+        if (cv == null) return Problem(detail: "cv.errors.notFound", statusCode: 404);
         
         // Return only necessary data for viewing
         return Ok(new { cv.Title, cv.Data, cv.UpdatedAt });
@@ -145,7 +145,7 @@ public class CvController : ControllerBase
     public async Task<IActionResult> GetCvDataForPdf(int id)
     {
         var cv = await _cvService.GetCvForPdfAsync(id);
-        if (cv == null) return NotFound();
+        if (cv == null) return Problem(detail: "cv.errors.notFound", statusCode: 404);
         
         return Ok(new { cv.Id, cv.Title, cv.Data, cv.UpdatedAt });
     }
@@ -167,14 +167,14 @@ public class CvController : ControllerBase
         try
         {
             var result = await _cvService.GeneratePdfForDownloadAsync(id, userId, frontendUrl);
-            if (result == null) return NotFound();
+            if (result == null) return Problem(detail: "cv.errors.notFound", statusCode: 404);
 
             Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{result.Value.FileName}\"");
             return File(result.Value.FileBytes, "application/pdf", result.Value.FileName);
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = "Failed to generate PDF", details = ex.Message });
+            return Problem(detail: "cv.errors.pdfGenerationFailed", statusCode: 500);
         }
     }
 
@@ -195,14 +195,14 @@ public class CvController : ControllerBase
         try
         {
             var result = await _cvService.GenerateSharedPdfForDownloadAsync(token, frontendUrl);
-            if (result == null) return NotFound();
+            if (result == null) return Problem(detail: "cv.errors.notFound", statusCode: 404);
 
             Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{result.Value.FileName}\"");
             return File(result.Value.FileBytes, "application/pdf", result.Value.FileName);
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = "Failed to generate PDF", details = ex.Message });
+            return Problem(detail: "cv.errors.pdfGenerationFailed", statusCode: 500);
         }
     }
 
@@ -221,12 +221,12 @@ public class CvController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         
         if (file == null || file.Length == 0)
-            return BadRequest("No file uploaded.");
+            return Problem(detail: "cv.errors.noFile", statusCode: 400);
 
         using var stream = file.OpenReadStream();
         var success = await _cvService.UploadProfilePictureAsync(id, userId, stream);
         
-        if (!success) return NotFound();
+        if (!success) return Problem(detail: "cv.errors.notFound", statusCode: 404);
 
         return Ok();
     }
@@ -243,7 +243,7 @@ public class CvController : ControllerBase
     public async Task<IActionResult> GetProfilePicture(int id)
     {
         var photoData = await _cvService.GetProfilePictureAsync(id);
-        if (photoData == null || photoData.Length == 0) return NotFound();
+        if (photoData == null || photoData.Length == 0) return Problem(detail: "cv.errors.notFound", statusCode: 404);
 
         // Default to image/png as we don't store the content type yet
         return File(photoData, "image/png");

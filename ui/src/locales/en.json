@@ -1,0 +1,270 @@
+{
+  "app": {
+    "dashboard": "Dashboard",
+    "createNew": "Create New CV",
+    "myCvs": "My CVs",
+    "edit": "Edit",
+    "delete": "Delete",
+    "downloadPdf": "Download PDF",
+    "preview": "Preview",
+    "back": "Back",
+    "welcome": "Welcome back",
+    "createFirst": "Create your first CV to get started!",
+    "dashboardSubtitle": "Manage and edit your professional CVs",
+    "startFromScratch": "Start from scratch with a professional template",
+    "updated": "Updated",
+    "logout": "Logout",
+    "changePassword": "Change Password",
+    "deleteAccount": "Delete Account",
+    "errorLoading": "Error loading CVs",
+    "retry": "Retry",
+    "noSummary": "No summary provided",
+    "resumeCount_one": "{{count}} Resume",
+    "resumeCount_other": "{{count}} Resumes",
+    "share": "Share",
+    "dialogs": {
+      "deleteAccountTitle": "Delete Account",
+      "deleteAccountMessage": "Are you sure you want to delete your account? All your CVs and data will be permanently lost. This action cannot be undone.",
+      "deleteCvTitle": "Delete CV",
+      "deleteCvMessage": "Are you sure you want to delete this CV? This action cannot be undone."
+    },
+    "toasts": {
+      "accountDeleted": "Account deleted successfully",
+      "accountDeleteFailed": "Failed to delete account",
+      "cvDeleted": "CV deleted successfully",
+      "cvDeleteFailed": "Failed to delete CV",
+      "saveSuccess": "CV Saved!",
+      "saveError": "Failed to save CV",
+      "exportInfo": "Starting download...",
+      "shareSuccess": "CV shared successfully!",
+      "shareError": "Failed to share CV",
+      "unshareSuccess": "CV unshared successfully",
+      "unshareError": "Failed to unshare CV",
+      "copySuccess": "Link copied to clipboard!"
+    }
+  },
+  "auth": {
+    "loginTitle": "Sign in to your account",
+    "banner": {
+      "title": "Build your professional future with confidence.",
+      "subtitle": "Create stunning, ATS-friendly CVs in minutes with our professional templates and intuitive builder.",
+      "features": {
+        "templates": "Professional Templates",
+        "export": "Instant PDF Export",
+        "secure": "Secure & Private",
+        "ats": "ATS Optimized"
+      },
+      "copyright": "© {{year}} CV Maker. All rights reserved."
+    },
+    "registerTitle": "Create your account",
+    "registerSubtitle": "Join thousands of professionals advancing their careers",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "fullNameLabel": "Full Name",
+    "namePlaceholder": "John Doe",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Create a strong password",
+    "passwordHint": "Must be at least 8 characters with uppercase, lowercase, number & special char.",
+    "confirmPasswordLabel": "Confirm Password",
+    "invalidCredentials": "Invalid email or password",
+    "invalidEmail": "Please enter a valid email address",
+    "registerFailed": "Registration failed. Please try again.",
+    "creatingAccount": "Creating Account...",
+    "createAccountButton": "Create Account",
+    "signInButton": "Sign In",
+    "signUpButton": "Sign Up",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "registerLink": "Register",
+    "loginLink": "Sign in",
+    "forgotPasswordTitle": "Forgot Password",
+    "forgotPasswordSubtitle": "Enter your email address and we'll send you a link to reset your password",
+    "checkEmailTitle": "Check your email",
+    "checkEmailSubtitle": "We've sent password reset instructions to {{email}}",
+    "emailSentMessage": "If an account exists for {{email}}, you will receive an email with instructions on how to reset your password.",
+    "demoSimulation": "DEMO ONLY (Email Simulation):",
+    "clickToReset": "Click here to reset password",
+    "didNotReceiveEmail": "Did not receive the email? Check your spam filter or",
+    "tryAnotherEmail": "try another email address",
+    "backToSignIn": "Back to Sign In",
+    "sendResetLink": "Send Reset Link",
+    "sendingLink": "Sending Link...",
+    "resetPasswordTitle": "Reset Password",
+    "resetPasswordSubtitle": "Enter your new password below",
+    "newPasswordLabel": "New Password",
+    "confirmNewPasswordLabel": "Confirm New Password",
+    "resetPasswordButton": "Reset Password",
+    "resettingPassword": "Resetting Password..."
+  },
+  "editor": {
+    "tabs": {
+      "content": "Content",
+      "design": "Design",
+      "standardTemplates": "Standard Templates",
+      "customizableTemplates": "Customizable Templates"
+    },
+    "sections": {
+      "visibilityOrder": "Section Visibility & Order"
+    },
+    "personalInfo": {
+      "title": "Personal Information",
+      "photoLabel": "Profile Photo",
+      "uploadPhoto": "Upload Photo",
+      "removePhoto": "Remove Photo",
+      "fullNamePlaceholder": "Full Name",
+      "titlePlaceholder": "Professional Title",
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Phone",
+      "locationPlaceholder": "Location",
+      "websitePlaceholder": "Website",
+      "summaryPlaceholder": "Professional Summary"
+    },
+    "customFields": {
+      "title": "Custom Fields",
+      "addField": "Add Field",
+      "labelPlaceholder": "Label (e.g. LinkedIn)",
+      "valuePlaceholder": "Value"
+    },
+    "experience": {
+      "title": "Experience",
+      "add": "Add Experience",
+      "jobTitlePlaceholder": "Job Title",
+      "companyPlaceholder": "Company",
+      "locationPlaceholder": "Location",
+      "startDatePlaceholder": "Start Date",
+      "endDatePlaceholder": "End Date",
+      "ongoing": "Ongoing",
+      "descriptionPlaceholder": "Job Description"
+    },
+    "education": {
+      "title": "Education",
+      "add": "Add Education",
+      "degreePlaceholder": "Degree",
+      "schoolPlaceholder": "School/University",
+      "locationPlaceholder": "Location",
+      "gpaPlaceholder": "GPA (optional)"
+    },
+    "skills": {
+      "title": "Skills",
+      "add": "Add Skill",
+      "namePlaceholder": "Skill Name",
+      "level": "Level"
+    },
+    "interests": {
+      "title": "Interests",
+      "add": "Add Interest",
+      "namePlaceholder": "Interest"
+    },
+    "languages": {
+      "title": "Languages",
+      "add": "Add Language",
+      "namePlaceholder": "Language",
+      "proficiencyPlaceholder": "Proficiency"
+    },
+    "customSections": {
+      "title": "Custom Sections",
+      "add": "Add Section",
+      "addItem": "Add Item",
+      "sectionTitlePlaceholder": "Section Title",
+      "itemTitlePlaceholder": "Title / Role",
+      "subtitlePlaceholder": "Subtitle / Company",
+      "datePlaceholder": "Date / Duration",
+      "descriptionPlaceholder": "Description"
+    },
+    "buttons": {
+      "save": "Save",
+      "export": "Export",
+      "share": "Share",
+      "logout": "Logout",
+      "back": "Back"
+    },
+    "mobile": {
+      "editor": "Editor",
+      "preview": "Preview"
+    },
+    "export": {
+      "generating": "Generating PDF...",
+      "waitMessage": "This may take a few seconds"
+    },
+    "theme": {
+      "accentColor": "Accent Color",
+      "current": "Current",
+      "default": "Default",
+      "typography": "Typography",
+      "spacingDensity": "Spacing & Density",
+      "density": {
+        "compact": "Compact",
+        "normal": "Normal",
+        "spacious": "Spacious"
+      }
+    },
+    "auth": {
+      "errors": {
+        "invalidEncryption": "Invalid password encryption",
+        "userExists": "User already exists",
+        "invalidCredentials": "Invalid credentials",
+        "noRefreshToken": "No refresh token",
+        "sessionExpired": "Session expired",
+        "invalidToken": "Invalid token",
+        "passwordChangeFailed": "Failed to change password. Check your current password.",
+        "userNotFound": "User not found",
+        "invalidResetToken": "Invalid or expired token",
+        "emailNotFound": "Email not found",
+        "passwordsDoNotMatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 6 characters"
+      },
+      "toasts": {
+        "resetSuccess": "Password reset successfully. Please login."
+      }
+    },
+    "cv": {
+      "errors": {
+        "notFound": "CV not found",
+        "saveFailed": "Failed to save CV",
+        "pdfGenerationFailed": "Failed to generate PDF",
+        "noFile": "No file uploaded"
+      }
+    },
+    "common": {
+      "errors": {
+        "unexpected": "An unexpected error occurred",
+        "generic": "Something went wrong"
+      }
+    }
+  },
+  "shareDialog": {
+    "title": "Share Your CV",
+    "descriptionPublic": "Anyone with this link can view your CV.",
+    "descriptionPrivate": "Create a public link to share your CV with recruiters or friends.",
+    "copy": "Copy",
+    "stopSharing": "Stop Sharing",
+    "unsharing": "Unsharing...",
+    "createLink": "Create Public Link",
+    "creatingLink": "Creating Link..."
+  },
+  "cv": {
+    "present": "Present",
+    "sections": {
+      "personalInfo": "Personal Info",
+      "summary": "Summary",
+      "experience": "Experience",
+      "education": "Education",
+      "skills": "Skills",
+      "languages": "Languages",
+      "interests": "Interests",
+      "custom": "Custom Section",
+      "customSections": "Custom Sections",
+      "profile": "Profile"
+    },
+    "labels": {
+      "contact": "Contact",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "website": "Website",
+      "present": "Present",
+      "ongoing": "Ongoing"
+    }
+  }
+}

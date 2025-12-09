@@ -1,7 +1,9 @@
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
@@ -9,7 +11,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
       dateStr.toLowerCase() === "present" ||
       dateStr.toLowerCase() === "ongoing"
     )
-      return "Ongoing";
+      return t("cv.present");
     const [year, month] = dateStr.split("-");
     const months = [
       "Jan",
@@ -25,6 +27,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
       "Nov",
       "Dec",
     ];
+    if (!month) return year;
     return `${months[parseInt(month) - 1]} ${year}`;
   };
 
@@ -73,7 +76,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
               <section>
                 <h2 className="text-2xl font-bold text-emerald-800 mb-6 flex items-center gap-2">
                   <span className="w-2 h-8 bg-emerald-500 rounded-sm"></span>
-                  Experience
+                  {t("cv.sections.experience")}
                 </h2>
                 <div className="space-y-8 border-l border-emerald-100 ml-1 pl-6">
                   {experience.map((exp) => (
@@ -102,7 +105,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
               <section>
                 <h2 className="text-2xl font-bold text-emerald-800 mb-6 flex items-center gap-2">
                   <span className="w-2 h-8 bg-emerald-500 rounded-sm"></span>
-                  Education
+                  {t("cv.sections.education")}
                 </h2>
                 <div className="space-y-8 border-l border-emerald-100 ml-1 pl-6">
                   {education.map((edu) => (
@@ -124,7 +127,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
               </section>
             )}
 
-            {/* Experience */}
+            {/* Custom Sections */}
             {cvData.visibility.customSections &&
               cvData.customSections &&
               cvData.customSections.map((section) => (
@@ -161,7 +164,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
             {cvData.visibility.skills && skills.length > 0 && (
               <section>
                 <h2 className="text-xl font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2">
-                  Skills
+                  {t("cv.sections.skills")}
                 </h2>
                 <div className="space-y-3">
                   {skills.map((skill) => (
@@ -189,7 +192,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
               cvData.languages.length > 0 && (
                 <section>
                   <h2 className="text-xl font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2">
-                    Languages
+                    {t("cv.sections.languages")}
                   </h2>
                   <ul className="space-y-2">
                     {cvData.languages.map((l) => (
@@ -212,7 +215,7 @@ export default function VerdeTemplate({ cvData }: { cvData: CvData }) {
               cvData.interests.length > 0 && (
                 <section>
                   <h2 className="text-xl font-bold text-emerald-800 mb-4 border-b border-emerald-100 pb-2">
-                    Interests
+                    {t("cv.sections.interests")}
                   </h2>
                   <div className="flex flex-wrap gap-2">
                     {cvData.interests.map((int) => (

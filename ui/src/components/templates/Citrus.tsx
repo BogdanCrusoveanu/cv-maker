@@ -1,7 +1,16 @@
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function Citrus({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (date: string) => {
+    if (!date) return "";
+    return date.toLowerCase() === "present" || date.toLowerCase() === "ongoing"
+      ? t("cv.present")
+      : date;
+  };
 
   // Sidebar sections
   const renderSidebarSection = (key: string) => {
@@ -10,7 +19,8 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
         return (
           <div key="contact">
             <h2 className="font-bold text-lg mb-4 flex items-center gap-2 uppercase tracking-wide">
-              <span className="w-2 h-2 bg-gray-800 rounded-full"></span> Contact
+              <span className="w-2 h-2 bg-gray-800 rounded-full"></span>{" "}
+              {t("cv.labels.contact")}
             </h2>
             <div className="space-y-3 text-sm font-medium">
               {personalInfo.location && <p>{personalInfo.location}</p>}
@@ -83,7 +93,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
             <div key="skills">
               <h2 className="font-bold text-lg mb-4 flex items-center gap-2 uppercase tracking-wide">
                 <span className="w-2 h-2 bg-gray-800 rounded-full"></span>{" "}
-                Skills
+                {t("cv.sections.skills")}
               </h2>
               <ul className="space-y-2 text-sm font-medium">
                 {skills.map((skill) => (
@@ -104,7 +114,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
             <div key="languages">
               <h2 className="font-bold text-lg mb-4 flex items-center gap-2 uppercase tracking-wide">
                 <span className="w-2 h-2 bg-gray-800 rounded-full"></span>{" "}
-                Languages
+                {t("cv.sections.languages")}
               </h2>
               <div className="space-y-3 pl-0 ml-0">
                 {cvData.languages.map((lang) => (
@@ -130,7 +140,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
             <div key="interests">
               <h2 className="font-bold text-lg mb-4 flex items-center gap-2 uppercase tracking-wide">
                 <span className="w-2 h-2 bg-gray-800 rounded-full"></span>{" "}
-                Interests
+                {t("cv.sections.interests")}
               </h2>
               <ul className="space-y-2 text-sm font-medium">
                 {cvData.interests.map((interest) => (
@@ -158,7 +168,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
             <div key="summary">
               <h2 className="text-lg font-bold uppercase mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>{" "}
-                Profile
+                {t("cv.sections.profile") || "Profile"}
               </h2>
               <p className="text-gray-600 text-sm leading-relaxed">
                 {personalInfo.summary}
@@ -173,7 +183,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
             <div key="education">
               <h2 className="text-lg font-bold uppercase mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>{" "}
-                Education
+                {t("cv.sections.education")}
               </h2>
               <div className="space-y-4">
                 {education.map((edu) => (
@@ -183,7 +193,7 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
                       {edu.degree}
                     </p>
                     <p className="text-xs text-gray-400 uppercase tracking-wide">
-                      {edu.startDate} - {edu.endDate}
+                      {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
                     </p>
                   </div>
                 ))}
@@ -198,13 +208,13 @@ export default function Citrus({ cvData }: { cvData: CvData }) {
             <div key="experience">
               <h2 className="text-lg font-bold uppercase mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>{" "}
-                Work Experience
+                {t("cv.sections.experience")}
               </h2>
               <div className="space-y-6">
                 {experience.map((exp) => (
                   <div key={exp.id} className="grid grid-cols-4 gap-4">
                     <div className="col-span-1 text-xs font-bold text-gray-400 pt-1">
-                      {exp.startDate} - {exp.endDate}
+                      {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                     </div>
                     <div className="col-span-3">
                       <h3 className="font-bold text-gray-800">{exp.title}</h3>

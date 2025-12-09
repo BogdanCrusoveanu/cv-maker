@@ -1,7 +1,41 @@
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function Ruby({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    if (dateStr.toLowerCase() === "present") return t("cv.present");
+    const [year, month] = dateStr.split("-");
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    if (!month) return year;
+    return `${months[parseInt(month) - 1]} ${year}`;
+  };
+
+  const getInitials = (name: string) => {
+    if (!name) return "JD";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   // Sidebar sections
   const renderSidebarSection = (key: string) => {
@@ -14,8 +48,9 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
           >
             {personalInfo.location && (
               <div>
-                {/* Top separator removed to avoid double lines */}
-                <h3 className="font-bold text-lg mb-2">Location</h3>
+                <h3 className="font-bold text-lg mb-2">
+                  {t("cv.labels.location") || "Location"}
+                </h3>
                 <p className="text-sm">{personalInfo.location}</p>
                 <div className="h-px bg-white/30 mt-3"></div>
               </div>
@@ -23,7 +58,9 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
 
             {personalInfo.phone && (
               <div>
-                <h3 className="font-bold text-lg mb-2">Phone</h3>
+                <h3 className="font-bold text-lg mb-2">
+                  {t("cv.labels.phone") || "Phone"}
+                </h3>
                 <p className="text-sm">
                   <a
                     href={`tel:${personalInfo.phone}`}
@@ -38,7 +75,9 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
 
             {personalInfo.email && (
               <div>
-                <h3 className="font-bold text-lg mb-2">Email</h3>
+                <h3 className="font-bold text-lg mb-2">
+                  {t("cv.labels.email") || "Email"}
+                </h3>
                 <p className="text-sm break-all">
                   <a
                     href={`mailto:${personalInfo.email}`}
@@ -53,7 +92,9 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
 
             {personalInfo.website && (
               <div>
-                <h3 className="font-bold text-lg mb-2">Website</h3>
+                <h3 className="font-bold text-lg mb-2">
+                  {t("cv.labels.website") || "Website"}
+                </h3>
                 <p className="text-sm">
                   <a
                     href={
@@ -105,7 +146,9 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
           cvData.languages &&
           cvData.languages.length > 0 && (
             <div key="languages">
-              <h3 className="font-bold text-lg mb-2">Languages</h3>
+              <h3 className="font-bold text-lg mb-2">
+                {t("cv.sections.languages")}
+              </h3>
               <ul className="text-sm space-y-[calc(0.25rem*var(--density,1))]">
                 {cvData.languages.map((lang) => (
                   <li key={lang.id}>
@@ -126,7 +169,9 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
           cvData.interests &&
           cvData.interests.length > 0 && (
             <div key="interests">
-              <h3 className="font-bold text-lg mb-2">Interests</h3>
+              <h3 className="font-bold text-lg mb-2">
+                {t("cv.sections.interests")}
+              </h3>
               <ul className="text-sm space-y-[calc(0.25rem*var(--density,1))]">
                 {cvData.interests.map((interest) => (
                   <li key={interest.id}>{interest.name}</li>
@@ -162,7 +207,7 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
             <div key="experience">
               <div className="flex items-center mb-4">
                 <h3 className="text-2xl font-bold text-gray-900 mr-4">
-                  Experience
+                  {t("cv.sections.experience")}
                 </h3>
                 <div className="flex-1 h-0.5 bg-gray-900"></div>
               </div>
@@ -200,7 +245,7 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
             <div key="education">
               <div className="flex items-center mb-4">
                 <h3 className="text-2xl font-bold text-gray-900 mr-4">
-                  Education
+                  {t("cv.sections.education")}
                 </h3>
                 <div className="flex-1 h-0.5 bg-gray-900"></div>
               </div>
@@ -235,7 +280,7 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
             <div key="skills">
               <div className="flex items-center mb-4">
                 <h3 className="text-2xl font-bold text-gray-900 mr-4">
-                  Key skills and characteristics
+                  {t("cv.sections.skills")}
                 </h3>
                 <div className="flex-1 h-0.5 bg-gray-900"></div>
               </div>
@@ -298,37 +343,6 @@ export default function Ruby({ cvData }: { cvData: CvData }) {
     "skills",
   ];
   const order = cvData.sectionOrder || Object.keys(cvData.visibility);
-
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    if (dateStr.toLowerCase() === "present") return "Present";
-    const [year, month] = dateStr.split("-");
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    return `${months[parseInt(month) - 1]} ${year}`;
-  };
-
-  const getInitials = (name: string) => {
-    if (!name) return "JD";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   return (
     <div

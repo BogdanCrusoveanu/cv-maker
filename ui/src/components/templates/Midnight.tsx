@@ -1,8 +1,18 @@
 import { Phone, MapPin, Globe, Heart, PenTool, Monitor } from "lucide-react";
 import { CvData } from "../../types/cv";
+import { useTranslation } from "react-i18next";
 
 export default function Midnight({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;
+  const { t } = useTranslation();
+
+  const formatDate = (date: string) => {
+    if (!date) return "";
+    return date.toLowerCase() === "present" || date.toLowerCase() === "ongoing"
+      ? t("cv.present")
+      : date;
+  };
+
   // Define renderers for each section type
   // Sidebar sections
   const renderSidebarSection = (key: string) => {
@@ -14,7 +24,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
               <span className="bg-yellow-400 text-gray-900 rounded-full p-1">
                 <Phone size={12} />
               </span>{" "}
-              Contact
+              {t("cv.labels.contact")}
             </h3>
             <div className="space-y-2 text-sm text-gray-300 pl-2 border-l border-gray-600">
               {personalInfo.email && (
@@ -86,7 +96,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                 <span className="bg-yellow-400 text-gray-900 rounded-full p-1">
                   <PenTool size={12} />
                 </span>{" "}
-                Skills
+                {t("cv.sections.skills")}
               </h3>
               <div className="space-y-3 pl-2">
                 {skills.map((skill) => (
@@ -118,7 +128,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                 <span className="bg-yellow-400 text-gray-900 rounded-full p-1">
                   <Globe size={12} />
                 </span>{" "}
-                Languages
+                {t("cv.sections.languages")}
               </h3>
               <div className="text-sm text-gray-300 space-y-1 !pl-0 !ml-0">
                 {cvData.languages.map((lang) => (
@@ -143,7 +153,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                 <span className="bg-yellow-400 text-gray-900 rounded-full p-1">
                   <Heart size={12} />
                 </span>{" "}
-                Interests
+                {t("cv.sections.interests")}
               </h3>
               <div className="text-sm text-gray-300 pl-2">
                 {cvData.interests.map((interest) => (
@@ -170,7 +180,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                 <span className="bg-yellow-400 p-2 rounded-lg text-gray-900">
                   <Monitor size={20} />
                 </span>{" "}
-                Profile
+                {t("cv.sections.profile") || "Profile"}
               </h2>
               <p className="text-gray-600 leading-relaxed border-l-4 border-yellow-400 pl-4">
                 {personalInfo.summary}
@@ -187,7 +197,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                 <span className="bg-yellow-400 p-2 rounded-lg text-gray-900">
                   <MapPin size={20} />
                 </span>{" "}
-                Experience
+                {t("cv.sections.experience")}
               </h2>
               <div className="space-y-8 border-l border-gray-200 ml-3 pl-8 relative">
                 {experience.map((exp) => (
@@ -199,7 +209,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                     <div className="text-sm text-gray-500 mb-2 font-medium">
                       {exp.company} | {exp.location} <br />
                       <span className="text-yellow-600">
-                        {exp.startDate} - {exp.endDate}
+                        {formatDate(exp.startDate)} - {formatDate(exp.endDate)}
                       </span>
                     </div>
                     <p className="text-gray-600 text-sm">{exp.description}</p>
@@ -218,20 +228,20 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                 <span className="bg-yellow-400 p-2 rounded-lg text-gray-900">
                   <Globe size={20} />
                 </span>{" "}
-                Education
+                {t("cv.sections.education")}
               </h2>
               <div className="space-y-6">
                 {education.map((edu) => (
                   <div
                     key={edu.id}
-                    className="bg-gray-50 p-4 rounded-lg border-l-4 border-yellow-400"
+                    className="bg-gray-5 p-4 rounded-lg border-l-4 border-yellow-400"
                   >
                     <h3 className="font-bold text-gray-900">{edu.degree}</h3>
                     <p className="text-gray-600 text-sm">
                       {edu.school} | {edu.location}
                     </p>
                     <p className="text-sm text-gray-400 mt-1">
-                      Graduated: {edu.endDate}
+                      {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
                     </p>
                   </div>
                 ))}
@@ -255,7 +265,7 @@ export default function Midnight({ cvData }: { cvData: CvData }) {
                   {section.items.map((item) => (
                     <div
                       key={item.id}
-                      className="bg-gray-50 p-4 rounded-lg border-l-4 border-yellow-400"
+                      className="bg-gray-5 p-4 rounded-lg border-l-4 border-yellow-400"
                     >
                       <div className="flex justify-between items-baseline mb-1">
                         <h3 className="font-bold text-gray-900">

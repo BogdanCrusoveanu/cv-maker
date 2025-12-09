@@ -1,7 +1,6 @@
 import { Palette, Type, Layout } from "lucide-react";
-import { Button } from "./ui/Button";
-import { Input } from "./ui/Input";
 import { CvData, CvTheme } from "../types/cv";
+import { useTranslation } from "react-i18next";
 
 interface ThemeEditorProps {
   cvData: CvData;
@@ -35,6 +34,7 @@ const FONTS = [
 ];
 
 export function ThemeEditor({ cvData, setCvData }: ThemeEditorProps) {
+  const { t } = useTranslation();
   const theme = cvData.theme || {};
 
   const updateTheme = (key: keyof CvTheme, value: any) => {
@@ -53,7 +53,7 @@ export function ThemeEditor({ cvData, setCvData }: ThemeEditorProps) {
       <section className="space-y-3">
         <h3 className="font-semibold text-gray-700 flex items-center gap-2">
           <Palette size={18} />
-          Accent Color
+          {t("editor.theme.accentColor")}
         </h3>
         <div className="flex flex-wrap gap-2">
           {PRESET_COLORS.map((color) => (
@@ -85,9 +85,9 @@ export function ThemeEditor({ cvData, setCvData }: ThemeEditorProps) {
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <span>Current:</span>
+          <span>{t("editor.theme.current")}:</span>
           <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">
-            {theme.primaryColor || "Default"}
+            {theme.primaryColor || t("editor.theme.default")}
           </span>
         </div>
       </section>
@@ -96,7 +96,7 @@ export function ThemeEditor({ cvData, setCvData }: ThemeEditorProps) {
       <section className="space-y-3">
         <h3 className="font-semibold text-gray-700 flex items-center gap-2">
           <Type size={18} />
-          Typography
+          {t("editor.theme.typography")}
         </h3>
         <div className="grid grid-cols-2 gap-2">
           {FONTS.map((font) => (
@@ -120,7 +120,7 @@ export function ThemeEditor({ cvData, setCvData }: ThemeEditorProps) {
       <section className="space-y-3">
         <h3 className="font-semibold text-gray-700 flex items-center gap-2">
           <Layout size={18} />
-          Spacing & Density
+          {t("editor.theme.spacingDensity")}
         </h3>
         <div className="flex rounded-lg border border-gray-200 p-1 bg-gray-50">
           {(["compact", "normal", "spacious"] as const).map((density) => (
@@ -133,7 +133,7 @@ export function ThemeEditor({ cvData, setCvData }: ThemeEditorProps) {
                   : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              {density}
+              {t(`editor.theme.density.${density}`)}
             </button>
           ))}
         </div>

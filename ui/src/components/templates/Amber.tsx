@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
 import { CvData } from "../../types/cv";
 
 export default function Amber({ cvData }: { cvData: CvData }) {
+  const { t } = useTranslation();
   const { personalInfo, experience, education, skills } = cvData;
 
   // Sidebar sections
@@ -308,7 +310,7 @@ export default function Amber({ cvData }: { cvData: CvData }) {
         <div className="w-4 flex-shrink-0"></div>
 
         {/* Sidebar */}
-        <div 
+        <div
           className="w-1/3 p-[calc(2rem*var(--density,1))] flex flex-col gap-[calc(2rem*var(--density,1))] pb-10 min-h-full h-full bg-[var(--primary-color)] print:bg-transparent"
           style={{ backgroundColor: "var(--primary-color)" }}
         >

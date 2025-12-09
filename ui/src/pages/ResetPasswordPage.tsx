@@ -6,12 +6,14 @@ import { AuthLayout } from "../components/auth/AuthLayout";
 import api from "../services/api";
 import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { encryptPassword } = useAuth(); // Assuming useAuth exposes encryptPassword
+  const { t } = useTranslation();
 
   const token = searchParams.get("token");
   const email = searchParams.get("email");
@@ -32,12 +34,17 @@ export default function ResetPasswordPage() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("auth.errors.passwordsDoNotMatch", "Passwords do not match"));
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(
+        t(
+          "auth.errors.passwordTooShort",
+          "Password must be at least 6 characters"
+        )
+      );
       return;
     }
 
@@ -51,7 +58,13 @@ export default function ResetPasswordPage() {
         newPassword: encryptedPassword,
       });
 
-      showToast("Password reset successfully. Please login.", "success");
+      showToast(
+        t(
+          "auth.toasts.resetSuccess",
+          "Password reset successfully. Please login."
+        ),
+        "success"
+      );
       navigate("/login");
     } catch (err: any) {
       console.error("Reset password error", err);
@@ -61,7 +74,9 @@ export default function ResetPasswordPage() {
       ) {
         navigate("/reset-link-expired");
       } else {
-        setError("An error occurred. Please try again.");
+        setError(
+          t("common.errors.generic", "An error occurred. Please try again.")
+        );
       }
     } finally {
       setIsLoading(false);
@@ -69,7 +84,10 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <AuthLayout title="Reset Password" subtitle="Enter your new password below">
+    <AuthLayout
+      title={t("auth.resetPasswordTitle")}
+      subtitle={t("auth.resetPasswordSubtitle")}
+    >
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded animate-pulse">
@@ -79,7 +97,7 @@ export default function ResetPasswordPage() {
 
         <div className="space-y-4">
           <Input
-            label="New Password"
+            label={t("auth.newPasswordLabel")}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -88,7 +106,7 @@ export default function ResetPasswordPage() {
             className="h-12"
           />
           <Input
-            label="Confirm New Password"
+            label={t("auth.confirmNewPasswordLabel")}
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -103,7 +121,9 @@ export default function ResetPasswordPage() {
           className="w-full h-12 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
           disabled={isLoading}
         >
-          {isLoading ? "Resetting Password..." : "Reset Password"}
+          {isLoading
+            ? t("auth.resettingPassword")
+            : t("auth.resetPasswordButton")}
         </Button>
       </form>
     </AuthLayout>

@@ -1,0 +1,270 @@
+{
+  "app": {
+    "dashboard": "Panou de control",
+    "createNew": "Creează CV Nou",
+    "myCvs": "CV-urile Mele",
+    "edit": "Editează",
+    "delete": "Șterge",
+    "downloadPdf": "Descarcă PDF",
+    "preview": "Previzualizare",
+    "back": "Înapoi",
+    "welcome": "Bine ai revenit",
+    "createFirst": "Creează primul tău CV pentru a începe!",
+    "dashboardSubtitle": "Gestionează și editează CV-urile tale profesionale",
+    "startFromScratch": "Începe de la zero cu un șablon profesional",
+    "updated": "Actualizat",
+    "logout": "Deconectare",
+    "changePassword": "Schimbă parola",
+    "deleteAccount": "Șterge contul",
+    "errorLoading": "Eroare la încărcarea CV-urilor",
+    "retry": "Reîncearcă",
+    "noSummary": "Fără rezumat",
+    "resumeCount_one": "{{count}} Curriculum Vitae",
+    "resumeCount_other": "{{count}} Curriculum Vitae-uri",
+    "share": "Partajează",
+    "dialogs": {
+      "deleteAccountTitle": "Șterge contul",
+      "deleteAccountMessage": "Ești sigur că vrei să ștergi contul? Toate CV-urile și datele tale vor fi pierdute definitiv. Această acțiune nu poate fi anulată.",
+      "deleteCvTitle": "Șterge CV",
+      "deleteCvMessage": "Ești sigur că vrei să ștergi acest CV? Această acțiune nu poate fi anulată."
+    },
+    "toasts": {
+      "accountDeleted": "Cont șters cu succes",
+      "accountDeleteFailed": "A eșuat ștergerea contului",
+      "cvDeleted": "CV șters cu succes",
+      "cvDeleteFailed": "A eșuat ștergerea CV-ului",
+      "saveSuccess": "CV Salvat!",
+      "saveError": "Salvarea CV-ului a eșuat",
+      "exportInfo": "Se începe descărcarea...",
+      "shareSuccess": "CV partajat cu succes!",
+      "shareError": "Partajarea CV-ului a eșuat",
+      "unshareSuccess": "Partajarea a fost oprită cu succes",
+      "unshareError": "Oprirea partajării a eșuat",
+      "copySuccess": "Link copiat în clipboard!"
+    }
+  },
+  "auth": {
+    "loginTitle": "Autentifică-te în contul tău",
+    "banner": {
+      "title": "Construiește-ți viitorul profesional cu încredere.",
+      "subtitle": "Creează CV-uri impresionante, compatibile ATS în câteva minute cu șabloanele noastre profesionale și constructorul intuitiv.",
+      "features": {
+        "templates": "Șabloane Profesionale",
+        "export": "Export PDF Instantaneu",
+        "secure": "Sigur și Privat",
+        "ats": "Optimizat ATS"
+      },
+      "copyright": "© {{year}} CV Maker. Toate drepturile rezervate."
+    },
+    "registerTitle": "Creează-ți contul",
+    "registerSubtitle": "Alătură-te miilor de profesioniști care își avansează cariera",
+    "emailLabel": "Adresă de email",
+    "emailPlaceholder": "tu@exemplu.ro",
+    "fullNameLabel": "Nume Complet",
+    "namePlaceholder": "Ion Popescu",
+    "passwordLabel": "Parolă",
+    "passwordPlaceholder": "Creează o parolă puternică",
+    "passwordHint": "Trebuie să aibă cel puțin 8 caractere cu majuscule, minuscule, numere și caractere speciale.",
+    "confirmPasswordLabel": "Confirmă Parola",
+    "invalidCredentials": "Email sau parolă invalidă",
+    "invalidEmail": "Te rugăm să introduci o adresă de email validă",
+    "registerFailed": "Înregistrarea a eșuat. Te rugăm să încerci din nou.",
+    "creatingAccount": "Se creează contul...",
+    "createAccountButton": "Creează Cont",
+    "signInButton": "Autentificare",
+    "signUpButton": "Înregistrare",
+    "forgotPassword": "Ai uitat parola?",
+    "noAccount": "Nu ai un cont?",
+    "hasAccount": "Ai deja un cont?",
+    "registerLink": "Înregistrează-te",
+    "loginLink": "Autentifică-te",
+    "forgotPasswordTitle": "Ai uitat parola?",
+    "forgotPasswordSubtitle": "Introdu adresa ta de email și îți vom trimite un link pentru a reseta parola",
+    "checkEmailTitle": "Verifică email-ul",
+    "checkEmailSubtitle": "Am trimis instrucțiuni de resetare a parolei la {{email}}",
+    "emailSentMessage": "Dacă există un cont pentru {{email}}, vei primi un email cu instrucțiuni despre cum să îți resetezi parola.",
+    "demoSimulation": "DOAR DEMO (Simulare Email):",
+    "clickToReset": "Click aici pentru a reseta parola",
+    "didNotReceiveEmail": "Nu ai primit email-ul? Verifică folderul de spam sau",
+    "tryAnotherEmail": "încearcă o altă adresă de email",
+    "backToSignIn": "Înapoi la Autentificare",
+    "sendResetLink": "Trimite Link Resetare",
+    "sendingLink": "Se trimite link-ul...",
+    "resetPasswordTitle": "Resetare Parolă",
+    "resetPasswordSubtitle": "Introdu noua parolă mai jos",
+    "newPasswordLabel": "Noua Parolă",
+    "confirmNewPasswordLabel": "Confirmă Noua Parolă",
+    "resetPasswordButton": "Resetează Parola",
+    "resettingPassword": "Se resetează..."
+  },
+  "editor": {
+    "tabs": {
+      "content": "Conținut",
+      "design": "Design",
+      "standardTemplates": "Șabloane Standard",
+      "customizableTemplates": "Șabloane Personalizabile"
+    },
+    "sections": {
+      "visibilityOrder": "Vizibilitate și Ordine"
+    },
+    "personalInfo": {
+      "title": "Informații Personale",
+      "photoLabel": "Poză de Profil",
+      "uploadPhoto": "Încarcă Poză",
+      "removePhoto": "Șterge Poză",
+      "fullNamePlaceholder": "Nume Complet",
+      "titlePlaceholder": "Titlu Profesional",
+      "emailPlaceholder": "Email",
+      "phonePlaceholder": "Telefon",
+      "locationPlaceholder": "Locație",
+      "websitePlaceholder": "Website",
+      "summaryPlaceholder": "Rezumat Profesional"
+    },
+    "customFields": {
+      "title": "Câmpuri Personalizate",
+      "addField": "Adaugă Câmp",
+      "labelPlaceholder": "Etichetă (ex. LinkedIn)",
+      "valuePlaceholder": "Valoare"
+    },
+    "experience": {
+      "title": "Experiență",
+      "add": "Adaugă Experiență",
+      "jobTitlePlaceholder": "Titlul Jobului",
+      "companyPlaceholder": "Companie",
+      "locationPlaceholder": "Locație",
+      "startDatePlaceholder": "Data Început",
+      "endDatePlaceholder": "Data Sfârșit",
+      "ongoing": "În prezent",
+      "descriptionPlaceholder": "Descrierea Jobului"
+    },
+    "education": {
+      "title": "Educație",
+      "add": "Adaugă Educație",
+      "degreePlaceholder": "Diplomă",
+      "schoolPlaceholder": "Școală/Universitate",
+      "locationPlaceholder": "Locație",
+      "gpaPlaceholder": "Medie (opțional)"
+    },
+    "skills": {
+      "title": "Abilități",
+      "add": "Adaugă Abilitate",
+      "namePlaceholder": "Nume Abilitate",
+      "level": "Nivel"
+    },
+    "interests": {
+      "title": "Interese",
+      "add": "Adaugă Interes",
+      "namePlaceholder": "Interes"
+    },
+    "languages": {
+      "title": "Limbi Străine",
+      "add": "Adaugă Limbă",
+      "namePlaceholder": "Limbă",
+      "proficiencyPlaceholder": "Competență"
+    },
+    "customSections": {
+      "title": "Secțiuni Personalizate",
+      "add": "Adaugă Secțiune",
+      "addItem": "Adaugă Element",
+      "sectionTitlePlaceholder": "Titlu Secțiune",
+      "itemTitlePlaceholder": "Titlu / Rol",
+      "subtitlePlaceholder": "Subtitlu / Companie",
+      "datePlaceholder": "Dată / Durată",
+      "descriptionPlaceholder": "Descriere"
+    },
+    "buttons": {
+      "save": "Salvează",
+      "export": "Exportă",
+      "share": "Partajează",
+      "logout": "Deconectare",
+      "back": "Înapoi"
+    },
+    "mobile": {
+      "editor": "Editor",
+      "preview": "Previzualizare"
+    },
+    "export": {
+      "generating": "Se generează PDF...",
+      "waitMessage": "Poate dura câteva secunde"
+    },
+    "theme": {
+      "accentColor": "Culoare Accent",
+      "current": "Curent",
+      "default": "Implicit",
+      "typography": "Tipografie",
+      "spacingDensity": "Spațiere și Densitate",
+      "density": {
+        "compact": "Compact",
+        "normal": "Normal",
+        "spacious": "Spațios"
+      }
+    },
+    "auth": {
+      "errors": {
+        "invalidEncryption": "Criptare parolă invalidă",
+        "userExists": "Utilizatorul există deja",
+        "invalidCredentials": "Date de autentificare invalide",
+        "noRefreshToken": "Fără token de reîmprospătare",
+        "sessionExpired": "Sesiunea a expirat",
+        "invalidToken": "Token invalid",
+        "passwordChangeFailed": "Schimbarea parolei a eșuat. Verifică parola actuală.",
+        "userNotFound": "Utilizatorul nu a fost găsit",
+        "invalidResetToken": "Token invalid sau expirat",
+        "emailNotFound": "Email nu a fost găsit",
+        "passwordsDoNotMatch": "Parolele nu corespund",
+        "passwordTooShort": "Parola trebuie să aibă cel puțin 6 caractere"
+      },
+      "toasts": {
+        "resetSuccess": "Parola a fost resetată cu succes. Te rugăm să te autentifici."
+      }
+    },
+    "cv": {
+      "errors": {
+        "notFound": "CV-ul nu a fost găsit",
+        "saveFailed": "Salvarea CV-ului a eșuat",
+        "pdfGenerationFailed": "Generarea PDF-ului a eșuat",
+        "noFile": "Niciun fișier încărcat"
+      }
+    },
+    "common": {
+      "errors": {
+        "unexpected": "A apărut o eroare neașteptată",
+        "generic": "Ceva nu a funcționat corect"
+      }
+    }
+  },
+  "shareDialog": {
+    "title": "Partajează CV-ul",
+    "descriptionPublic": "Oricine are acest link poate vizualiza CV-ul tău.",
+    "descriptionPrivate": "Creează un link public pentru a partaja CV-ul cu recrutori sau prieteni.",
+    "copy": "Copiază",
+    "stopSharing": "Oprește Partajarea",
+    "unsharing": "Se oprește partajarea...",
+    "createLink": "Creează Link Public",
+    "creatingLink": "Se creează link-ul..."
+  },
+  "cv": {
+    "present": "Prezent",
+    "sections": {
+      "personalInfo": "Informații Personale",
+      "summary": "Rezumat",
+      "experience": "Experiență",
+      "education": "Educație",
+      "skills": "Abilități",
+      "languages": "Limbi Străine",
+      "interests": "Interese",
+      "custom": "Secțiune Personalizată",
+      "customSections": "Secțiuni Personalizate",
+      "profile": "Profil"
+    },
+    "labels": {
+      "contact": "Contact",
+      "email": "Email",
+      "phone": "Telefon",
+      "location": "Locație",
+      "website": "Website",
+      "present": "Prezent",
+      "ongoing": "În curs"
+    }
+  }
+}
