@@ -32,7 +32,7 @@ export function useUpdateCoverLetter() {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: CoverLetterData }) =>
       coverLetterApi.update(id, data),
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["coverLetters"] });
       queryClient.invalidateQueries({
         queryKey: ["coverLetter", variables.id],
@@ -56,7 +56,7 @@ export function useRenameCoverLetter() {
   return useMutation({
     mutationFn: ({ id, title }: { id: number; title: string }) =>
       coverLetterApi.rename(id, title),
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["coverLetters"] });
       queryClient.invalidateQueries({
         queryKey: ["coverLetter", variables.id],
