@@ -1,6 +1,7 @@
 
 using CvMaker.Api.Data;
 using CvMaker.Api.Models;
+using CvMaker.Api.DTOs;
 using CvMaker.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -89,6 +90,45 @@ public class CoverLetterController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("{id}/share")]
+    public async Task<ActionResult<object>> ShareCoverLetter(int id)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        try
+        {
+            var token = await _service.ShareCoverLetterAsync(id, userId);
+            return Ok(new { token });
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost("{id}/unshare")]
+    public async Task<IActionResult> UnshareCoverLetter(int id)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        try
+        {
+            await _service.UnshareCoverLetterAsync(id, userId);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpGet("shared/{token}")]
+    public async Task<ActionResult<CoverLetter>> GetSharedCoverLetter(string token)
+    {
+        var cl = await _service.GetSharedCoverLetterAsync(token);
+        if (cl == null) return NotFound();
+        return cl;
+    }
+
     [AllowAnonymous]
     [HttpGet("{id}/data")]
     public async Task<IActionResult> GetCoverLetterDataForPdf(int id)
@@ -126,5 +166,40 @@ public class CoverLetterController : ControllerBase
             Console.WriteLine($"Error generating PDF: {ex}"); // Keep simplified error log
             return StatusCode(500, "Failed to generate PDF");
         }
+    }
+
+    [AllowAnonymous]
+    [HttpGet("shared/{token}/pdf")]
+    public async Task<IActionResult> DownloadSharedPdf(string token)
+    {
+        var frontendUrl = _configuration["AppSettings:FrontendUrl"] ?? "http://localhost:5173";
+
+        try
+        {
+            var result = await _service.GenerateSharedPdfForDownloadAsync(token, frontendUrl);
+            if (result == null) return NotFound();
+
+            Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{result.Value.FileName}\"");
+            return File(result.Value.FileBytes, "application/pdf", result.Value.FileName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error generating shared PDF: {ex}");
+            return StatusCode(500, "Failed to generate PDF");
+        }
+    }
+
+    [HttpPatch("{id}/title")]
+    public async Task<IActionResult> RenameCoverLetter(int id, [FromBody] RenameCvDto dto)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        var success = await _service.RenameCoverLetterAsync(id, userId, dto.Title);
+
+        if (!success)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }

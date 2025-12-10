@@ -14,6 +14,9 @@
     "startFromScratch": "Începe de la zero cu un șablon profesional",
     "updated": "Actualizat",
     "logout": "Deconectare",
+    "cancel": "Anulează",
+    "save": "Salvează",
+    "rename": "Redenumește",
     "changePassword": "Schimbă parola",
     "deleteAccount": "Șterge contul",
     "errorLoading": "Eroare la încărcarea CV-urilor",
@@ -49,7 +52,8 @@
       "recipientTitle": "ex. Manager Recrutare",
       "address": "Str. Tehnologiei nr. 123",
       "cityState": "București, Sector 1",
-      "body": "Stimate Manager de Recrutare..."
+      "body": "Stimate Manager de Recrutare...",
+      "cvTitle": "Introduceți titlul CV-ului"
     },
     "comingSoon": "În curând...",
     "share": "Partajează",
@@ -57,7 +61,14 @@
       "deleteAccountTitle": "Șterge contul",
       "deleteAccountMessage": "Ești sigur că vrei să ștergi contul? Toate CV-urile și datele tale vor fi pierdute definitiv. Această acțiune nu poate fi anulată.",
       "deleteCvTitle": "Șterge CV",
-      "deleteCvMessage": "Ești sigur că vrei să ștergi acest CV? Această acțiune nu poate fi anulată."
+      "deleteCvMessage": "Ești sigur că vrei să ștergi acest CV? Această acțiune nu poate fi anulată.",
+      "renameCvTitle": "Redenumește CV"
+    },
+    "labels": {
+      "title": "Titlu"
+    },
+    "placeholders": {
+      "cvTitle": "Introduceți titlul CV-ului"
     },
     "toasts": {
       "accountDeleted": "Cont șters cu succes",
@@ -71,7 +82,9 @@
       "shareError": "Partajarea CV-ului a eșuat",
       "unshareSuccess": "Partajarea a fost oprită cu succes",
       "unshareError": "Oprirea partajării a eșuat",
-      "copySuccess": "Link copiat în clipboard!"
+      "copySuccess": "Link copiat în clipboard!",
+      "renameSuccess": "Redenumit cu succes",
+      "renameError": "Redenumirea a eșuat"
     }
   },
   "auth": {
@@ -296,6 +309,23 @@
       "website": "Website",
       "present": "Prezent",
       "ongoing": "În curs"
+    }
+  },
+  "sharedPage": {
+    "downloadPdf": "Descarcă PDF",
+    "by": "de {{name}}",
+    "generating": "Se generează PDF-ul...",
+    "waitMessage": "Acest lucru poate dura câteva secunde",
+    "cvNotFound": "CV-ul nu a fost găsit",
+    "cvNotFoundMessage": "CV-ul pe care îl căutați nu există sau nu mai este partajat.",
+    "coverLetterNotFound": "Scrisoarea de intenție nu a fost găsită",
+    "coverLetterNotFoundMessage": "Scrisoarea de intenție pe care o căutați nu există sau nu mai este partajată.",
+    "marketing": {
+      "title": "Construiește-ți propriul CV",
+      "subtitle": "Îți place acest CV? Creează-ți propriul CV profesional în câteva minute, gratuit.",
+      "subtitleCL": "Îți place această Scrisoare de Intenție? Creează-ți propriul CV profesional în câteva minute, gratuit.",
+      "button": "Începe acum",
+      "dismiss": "Închide"
     }
   }
 }

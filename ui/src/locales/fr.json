@@ -14,6 +14,9 @@
     "startFromScratch": "Commencez à zéro avec un modèle professionnel",
     "updated": "Mis à jour",
     "logout": "Déconnexion",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "rename": "Renommer",
     "changePassword": "Changer le mot de passe",
     "deleteAccount": "Supprimer le compte",
     "errorLoading": "Erreur lors du chargement des CV",
@@ -59,7 +62,14 @@
       "deleteCvTitle": "Supprimer le CV",
       "deleteCvMessage": "Êtes-vous sûr de vouloir supprimer ce CV ? Cette action est irréversible.",
       "deleteCoverLetterTitle": "Supprimer la lettre",
-      "deleteCoverLetterMessage": "Êtes-vous sûr de vouloir supprimer cette lettre de motivation ? Cette action est irréversible."
+      "deleteCoverLetterMessage": "Êtes-vous sûr de vouloir supprimer cette lettre de motivation ? Cette action est irréversible.",
+      "renameCvTitle": "Renommer le CV"
+    },
+    "labels": {
+      "title": "Titre"
+    },
+    "placeholders": {
+      "cvTitle": "Entrez le titre du CV"
     },
     "toasts": {
       "accountDeleted": "Compte supprimé avec succès",
@@ -75,7 +85,9 @@
       "shareError": "Échec du partage du CV",
       "unshareSuccess": "Arrêt du partage du CV réussi",
       "unshareError": "Échec de l'arrêt du partage du CV",
-      "copySuccess": "Lien copié dans le presse-papiers !"
+      "copySuccess": "Lien copié dans le presse-papiers !",
+      "renameSuccess": "Renommé avec succès",
+      "renameError": "Échec du renommage"
     }
   },
   "auth": {
@@ -300,6 +312,23 @@
       "website": "Site web",
       "present": "Présent",
       "ongoing": "En cours"
+    }
+  },
+  "sharedPage": {
+    "downloadPdf": "Download PDF",
+    "by": "by {{name}}",
+    "generating": "Generating PDF...",
+    "waitMessage": "This may take a few seconds",
+    "cvNotFound": "CV Not Found",
+    "cvNotFoundMessage": "The CV you are looking for does not exist or is no longer shared.",
+    "coverLetterNotFound": "Cover Letter Not Found",
+    "coverLetterNotFoundMessage": "The Cover Letter you are looking for does not exist or is no longer shared.",
+    "marketing": {
+      "title": "Build your own CV",
+      "subtitle": "Like this CV? Create your own professional resume in minutes for free.",
+      "subtitleCL": "Like this Cover Letter? Create your own professional resume in minutes for free.",
+      "button": "Get Started",
+      "dismiss": "Dismiss"
     }
   }
 }

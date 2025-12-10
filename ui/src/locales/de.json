@@ -14,6 +14,9 @@
     "startFromScratch": "Beginnen Sie von Grund auf mit einer professionellen Vorlage",
     "updated": "Aktualisiert",
     "logout": "Abmelden",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "rename": "Umbenennen",
     "changePassword": "Passwort ändern",
     "deleteAccount": "Konto löschen",
     "errorLoading": "Fehler beim Laden der Lebensläufe",
@@ -57,13 +60,22 @@
       "deleteAccountTitle": "Konto löschen",
       "deleteAccountMessage": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Alle Ihre Lebensläufe und Daten gehen dauerhaft verloren. Diese Aktion kann nicht rückgängig gemacht werden.",
       "deleteCvTitle": "Lebenslauf löschen",
-      "deleteCvMessage": "Sind Sie sicher, dass Sie diesen Lebenslauf löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+      "deleteCvMessage": "Sind Sie sicher, dass Sie diesen Lebenslauf löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "renameCvTitle": "Lebenslauf umbenennen"
+    },
+    "labels": {
+      "title": "Titel"
+    },
+    "placeholders": {
+      "cvTitle": "Lebenslauftitel eingeben"
     },
     "toasts": {
       "accountDeleted": "Konto erfolgreich gelöscht",
       "accountDeleteFailed": "Konto konnte nicht gelöscht werden",
       "cvDeleted": "Lebenslauf erfolgreich gelöscht",
-      "cvDeleteFailed": "Lebenslauf konnte nicht gelöscht werden"
+      "cvDeleteFailed": "Lebenslauf konnte nicht gelöscht werden",
+      "renameSuccess": "Erfolgreich umbenannt",
+      "renameError": "Umbenennen fehlgeschlagen"
     }
   },
   "auth": {
@@ -288,6 +300,23 @@
       "website": "Webseite",
       "present": "Gegenwart",
       "ongoing": "Laufend"
+    }
+  },
+  "sharedPage": {
+    "downloadPdf": "Download PDF",
+    "by": "by {{name}}",
+    "generating": "Generating PDF...",
+    "waitMessage": "This may take a few seconds",
+    "cvNotFound": "CV Not Found",
+    "cvNotFoundMessage": "The CV you are looking for does not exist or is no longer shared.",
+    "coverLetterNotFound": "Cover Letter Not Found",
+    "coverLetterNotFoundMessage": "The Cover Letter you are looking for does not exist or is no longer shared.",
+    "marketing": {
+      "title": "Build your own CV",
+      "subtitle": "Like this CV? Create your own professional resume in minutes for free.",
+      "subtitleCL": "Like this Cover Letter? Create your own professional resume in minutes for free.",
+      "button": "Get Started",
+      "dismiss": "Dismiss"
     }
   }
 }

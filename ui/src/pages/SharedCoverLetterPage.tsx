@@ -1,56 +1,43 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Download, UserPlus } from "lucide-react";
-import api from "../services/api";
-import Preview from "../components/Preview";
-import { Button } from "../components/ui/Button";
-import { CvData } from "../types/cv";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import CoverLetterPreview from "../components/CoverLetterPreview";
+import { coverLetterApi } from "../services/coverLetterApi";
+import { CoverLetterData } from "../types/coverLetter";
+import { UserPlus, Download } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "../components/ui/Button";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
-export default function SharedCvPage() {
+export default function SharedCoverLetterPage() {
   const { token } = useParams<{ token: string }>();
-  const [cv, setCv] = useState<CvData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [data, setData] = useState<CoverLetterData | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   useEffect(() => {
-    const fetchSharedCv = async () => {
+    const fetchSharedCoverLetter = async () => {
       try {
         if (!token) return;
-        const response = await api.getSharedCv(token);
-        // The API returns { title, data, updatedAt }. data is a JSON string.
-        const parsedData = JSON.parse(response.data.data);
-        setCv({
-          ...parsedData,
-          title: response.data.title,
-          updatedAt: response.data.updatedAt,
-        });
+        const result = await coverLetterApi.getShared(token);
+        setData(result);
       } catch (err) {
         console.error(err);
-        setError(
-          t(
-            "sharedPage.cvNotFoundMessage",
-            "The CV you are looking for does not exist or is no longer shared."
-          )
-        );
-      } finally {
-        setLoading(false);
+        setError(t("app.sharedCvNotFound")); // Reusing generic "not found" or similar key
       }
     };
 
-    fetchSharedCv();
-  }, [token]);
+    fetchSharedCoverLetter();
+  }, [token, t]);
 
   const handleDownload = async () => {
-    if (!cv) return;
+    if (!data) return;
 
     setIsGeneratingPdf(true);
     try {
       const response = await fetch(
-        `http://localhost:5140/api/cv/shared/${token}/pdf`
+        `http://localhost:5140/api/cover-letter/shared/${token}/pdf`
       );
 
       if (!response.ok) {
@@ -61,7 +48,7 @@ export default function SharedCvPage() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${cv.personalInfo?.fullName || "CV"}.pdf`;
+      a.download = `${JSON.parse(data.data).fullName || "CoverLetter"}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -74,32 +61,29 @@ export default function SharedCvPage() {
     }
   };
 
-  if (loading) {
+  if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+            {t("sharedPage.coverLetterNotFound", "Cover Letter Not Found")}
+          </h1>
+          <p className="text-gray-600">
+            {error ||
+              t(
+                "sharedPage.coverLetterNotFoundMessage",
+                "The Cover Letter you are looking for does not exist or is no longer shared."
+              )}
+          </p>
+        </div>
       </div>
     );
   }
 
-  if (error || !cv) {
+  if (!data) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-        <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            {t("sharedPage.cvNotFound", "CV Not Found")}
-          </h1>
-          <p className="text-gray-600 mb-6">
-            {error ||
-              t(
-                "sharedPage.cvNotFoundMessage",
-                "The CV you are looking for does not exist or is no longer shared."
-              )}
-          </p>
-          <Link to="/" className="text-blue-600 hover:underline">
-            {t("app.back", "Go to Home")}
-          </Link>
-        </div>
+      <div className="h-screen flex items-center justify-center bg-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -112,13 +96,13 @@ export default function SharedCvPage() {
           <div className="flex items-center gap-2">
             <h1
               className="text-xl font-bold text-gray-800 truncate max-w-xs"
-              title={cv.title}
+              title={data.title}
             >
-              {cv.title}
+              {data.title}
             </h1>
             <span className="text-sm text-gray-500 hidden sm:inline">
               {t("sharedPage.by", {
-                name: cv.personalInfo?.fullName || "Unknown",
+                name: JSON.parse(data.data).fullName || "Unknown",
               })}
             </span>
           </div>
@@ -131,10 +115,9 @@ export default function SharedCvPage() {
         </div>
       </div>
 
-      {/* CV Preview */}
       <div className="flex-grow p-4 md:p-8 overflow-auto print:p-0 print:overflow-visible">
         <div className="max-w-[210mm] mx-auto bg-white shadow-2xl print:shadow-none print:w-full">
-          <Preview cvData={cv} template={cv.template || "modern"} />
+          <CoverLetterPreview data={data} />
         </div>
       </div>
 
@@ -152,8 +135,8 @@ export default function SharedCvPage() {
               </h3>
               <p className="text-sm text-gray-600 mt-1">
                 {t(
-                  "sharedPage.marketing.subtitle",
-                  "Like this CV? Create your own professional resume in minutes for free."
+                  "sharedPage.marketing.subtitleCL",
+                  "Like this Cover Letter? Create your own professional resume in minutes for free."
                 )}
               </p>
             </div>

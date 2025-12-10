@@ -50,3 +50,17 @@ export function useDeleteCoverLetter() {
     },
   });
 }
+
+export function useRenameCoverLetter() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, title }: { id: number; title: string }) =>
+      coverLetterApi.rename(id, title),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["coverLetters"] });
+      queryClient.invalidateQueries({
+        queryKey: ["coverLetter", variables.id],
+      });
+    },
+  });
+}

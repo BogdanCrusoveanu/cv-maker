@@ -51,8 +51,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     retry: false,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
-    // Only run if the logged_in cookie exists
-    enabled: document.cookie.includes("logged_in=true"),
+    // Only run if the logged_in cookie exists and we are not on a shared page
+    enabled:
+      document.cookie.includes("logged_in=true") &&
+      !window.location.pathname.includes("/shared/"),
   });
 
   const loading = publicKeyLoading || userLoading;

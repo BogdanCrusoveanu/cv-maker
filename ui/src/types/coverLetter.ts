@@ -6,7 +6,8 @@ export interface CoverLetterData {
   company: string;
   data: string; // JSON string of CoverLetterContent
   template: string;
-  cvId?: number;
+  cvId?: number | null;
+  publicToken?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

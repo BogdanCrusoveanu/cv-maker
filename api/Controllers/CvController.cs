@@ -77,6 +77,25 @@ public class CvController : ControllerBase
     }
 
     /// <summary>
+    /// Renames a CV.
+    /// </summary>
+    /// <param name="id">The CV ID.</param>
+    /// <param name="dto">DTO containing the new title.</param>
+    /// <returns>Success status.</returns>
+    [HttpPatch("{id}/title")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RenameCv(int id, [FromBody] RenameCvDto dto)
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        var success = await _cvService.RenameCvAsync(id, userId, dto.Title);
+        
+        if (!success) return Problem(detail: "cv.errors.notFound", statusCode: 404);
+
+        return Ok();
+    }
+
+    /// <summary>
     /// Generates a public share token for a CV.
     /// </summary>
     /// <param name="id">The ID of the CV to share.</param>

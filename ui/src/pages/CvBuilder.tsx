@@ -17,7 +17,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCv, useSaveCv } from "../hooks/useCv";
 import { useToast } from "../context/ToastContext";
 import { CvData } from "../types/cv";
-import { ShareCvDialog } from "../components/ShareCvDialog";
+import { ShareDialog } from "../components/ShareDialog";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import api from "../services/api";
 
@@ -36,6 +36,8 @@ export default function CvBuilder() {
   const [cvId, setCvId] = useState<number | undefined>(
     id ? parseInt(id) : undefined
   );
+  // Add dedicated title state
+  const [cvTitle, setCvTitle] = useState("My CV");
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [mobileTab, setMobileTab] = useState<"editor" | "preview">("editor");
@@ -284,6 +286,10 @@ export default function CvBuilder() {
         try {
           const parsedData = JSON.parse(cvDataFromApi.data);
           setCvData(parsedData);
+          if (parsedData.title) setCvTitle(parsedData.title);
+          // Fallback if title is in response but not in data JSON (which api response usually handles)
+          if (cvDataFromApi.title) setCvTitle(cvDataFromApi.title);
+
           if (parsedData.template) {
             setCurrentTemplate(parsedData.template);
           }
@@ -312,7 +318,7 @@ export default function CvBuilder() {
     const cvToSave: CvData = {
       ...cvData,
       id: cvId,
-      title: cvData.personalInfo.fullName + "'s CV",
+      title: cvTitle, // Use the editable title
       template: currentTemplate,
     };
 
@@ -392,7 +398,14 @@ export default function CvBuilder() {
               >
                 <span className="hidden sm:inline">{t("app.back")}</span>
               </Button>
-              <h1 className="text-xl lg:text-3xl font-bold">CV Builder</h1>
+
+              <input
+                type="text"
+                value={cvTitle}
+                onChange={(e) => setCvTitle(e.target.value)}
+                className="text-xl lg:text-3xl font-bold bg-transparent text-white border-b border-transparent hover:border-white/50 focus:border-white outline-none w-full max-w-md px-1"
+                placeholder="CV Title"
+              />
             </div>
             <div className="flex gap-2 items-center">
               <LanguageSwitcher />
@@ -565,12 +578,13 @@ export default function CvBuilder() {
         </button>
       </div>
 
-      <ShareCvDialog
+      <ShareDialog
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
-        cvId={cvId || 0}
+        id={cvId || 0}
         initialPublicToken={cvDataFromApi?.publicToken}
         onShareChange={() => {}}
+        type="cv"
       />
 
       {/* PDF Generation Loading Overlay */}

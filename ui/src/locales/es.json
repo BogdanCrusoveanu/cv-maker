@@ -14,6 +14,9 @@
     "startFromScratch": "Empieza desde cero con una plantilla profesional",
     "updated": "Actualizado",
     "logout": "Cerrar sesión",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "rename": "Renombrar",
     "changePassword": "Cambiar contraseña",
     "deleteAccount": "Eliminar cuenta",
     "errorLoading": "Error al cargar CVs",
@@ -57,7 +60,14 @@
       "deleteAccountTitle": "Eliminar cuenta",
       "deleteAccountMessage": "¿Estás seguro de que quieres eliminar tu cuenta? Todos tus CVs y datos se perderán permanentemente. Esta acción no se puede deshacer.",
       "deleteCvTitle": "Eliminar CV",
-      "deleteCvMessage": "¿Estás seguro de que quieres eliminar este CV? Esta acción no se puede deshacer."
+      "deleteCvMessage": "¿Estás seguro de que quieres eliminar este CV? Esta acción no se puede deshacer.",
+      "renameCvTitle": "Renombrar CV"
+    },
+    "labels": {
+      "title": "Título"
+    },
+    "placeholders": {
+      "cvTitle": "Introduce el título del CV"
     },
     "toasts": {
       "accountDeleted": "Cuenta eliminada con éxito",
@@ -71,7 +81,9 @@
       "shareError": "Error al compartir el CV",
       "unshareSuccess": "CV dejado de compartir con éxito",
       "unshareError": "Error al dejar de compartir el CV",
-      "copySuccess": "¡Enlace copiado al portapapeles!"
+      "copySuccess": "¡Enlace copiado al portapapeles!",
+      "renameSuccess": "Renombrado con éxito",
+      "renameError": "Error al renombrar"
     }
   },
   "auth": {
@@ -296,6 +308,23 @@
       "website": "Sitio web",
       "present": "Presente",
       "ongoing": "En curso"
+    }
+  },
+  "sharedPage": {
+    "downloadPdf": "Download PDF",
+    "by": "by {{name}}",
+    "generating": "Generating PDF...",
+    "waitMessage": "This may take a few seconds",
+    "cvNotFound": "CV Not Found",
+    "cvNotFoundMessage": "The CV you are looking for does not exist or is no longer shared.",
+    "coverLetterNotFound": "Cover Letter Not Found",
+    "coverLetterNotFoundMessage": "The Cover Letter you are looking for does not exist or is no longer shared.",
+    "marketing": {
+      "title": "Build your own CV",
+      "subtitle": "Like this CV? Create your own professional resume in minutes for free.",
+      "subtitleCL": "Like this Cover Letter? Create your own professional resume in minutes for free.",
+      "button": "Get Started",
+      "dismiss": "Dismiss"
     }
   }
 }

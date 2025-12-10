@@ -26,10 +26,32 @@ export const coverLetterApi = {
     await api.delete(`/cover-letter/${id}`);
   },
 
+  share: async (id: number) => {
+    const response = await api.post<{ token: string }>(
+      `/cover-letter/${id}/share`
+    );
+    return response.data;
+  },
+
+  unshare: async (id: number) => {
+    await api.post(`/cover-letter/${id}/unshare`);
+  },
+
+  getShared: async (token: string) => {
+    const response = await api.get<CoverLetterData>(
+      `/cover-letter/shared/${token}`
+    );
+    return response.data;
+  },
+
   downloadPdf: async (id: number) => {
     const response = await api.get(`/cover-letter/${id}/pdf`, {
       responseType: "blob",
     });
     return response.data;
+  },
+
+  rename: async (id: number, title: string) => {
+    await api.patch(`/cover-letter/${id}/title`, { title });
   },
 };

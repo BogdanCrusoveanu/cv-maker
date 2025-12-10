@@ -16,6 +16,7 @@ public class CoverLetter
     
     public string Template { get; set; } = "midnight";
     public int? CvId { get; set; } // Optional: link to a source CV for syncing personal info
+    public string? PublicToken { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

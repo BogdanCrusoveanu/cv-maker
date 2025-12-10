@@ -20,6 +20,8 @@ import { useDialog } from "../context/DialogContext";
 import { ChangePasswordDialog } from "./auth/ChangePasswordDialog";
 import { Navbar } from "./layout/Navbar";
 import CoverLetterPreview from "./CoverLetterPreview";
+import { ShareDialog } from "./ShareDialog";
+import { Share2 } from "lucide-react";
 
 export default function CoverLetterEditor() {
   const { id } = useParams();
@@ -32,6 +34,7 @@ export default function CoverLetterEditor() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
 
   const [formData, setFormData] = useState<CoverLetterData>({
     title: "New Cover Letter",
@@ -111,11 +114,15 @@ export default function CoverLetterEditor() {
   const handleSave = async () => {
     try {
       setIsLoading(true);
+      // Ensure data string is up to date with content
+      const updatedData = JSON.stringify(content);
+      const dataToSave = { ...formData, data: updatedData };
+
       if (id) {
-        await coverLetterApi.update(parseInt(id), formData);
+        await coverLetterApi.update(parseInt(id), dataToSave);
         showToast(t("app.toasts.saveSuccess"), "success");
       } else {
-        const newCl = await coverLetterApi.create(formData);
+        const newCl = await coverLetterApi.create(dataToSave);
         navigate(`/cover-letter/${newCl.id}`);
         showToast(t("app.toasts.saveSuccess"), "success");
       }
@@ -218,10 +225,16 @@ export default function CoverLetterEditor() {
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-gray-900 leading-tight">
-              {formData.title || t("app.createCoverLetter")}
-            </h1>
-            <p className="text-gray-500 text-xs mt-0.5">
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              className="text-xl font-bold text-gray-900 leading-tight bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 outline-none transition-all px-1 -ml-1 w-full"
+              placeholder={t("app.placeholders.cvTitle", "Cover Letter Title")}
+            />
+            <p className="text-gray-500 text-xs mt-0.5 ml-1">
               {t("app.targetJobTitle")}: {formData.jobTitle || "Not set"}
             </p>
           </div>
@@ -253,15 +266,25 @@ export default function CoverLetterEditor() {
             />
           </div>
           {id && (
-            <Button
-              onClick={handleDownloadPdf}
-              disabled={isDownloading || isLoading}
-              variant="ghost"
-              className="gap-2 border border-gray-300"
-            >
-              <Download size={18} />
-              {isDownloading ? "Generating..." : t("app.downloadPdf")}
-            </Button>
+            <>
+              <Button
+                onClick={() => setIsShareDialogOpen(true)}
+                variant="custom"
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 text-sm rounded flex items-center gap-2"
+                icon={Share2}
+              >
+                {t("editor.buttons.share")}
+              </Button>
+              <Button
+                onClick={handleDownloadPdf}
+                disabled={isDownloading || isLoading}
+                variant="ghost"
+                className="gap-2 border border-gray-300"
+              >
+                <Download size={18} />
+                {isDownloading ? "Generating..." : t("app.downloadPdf")}
+              </Button>
+            </>
           )}
           <Button onClick={handleSave} disabled={isLoading} className="gap-2">
             <Save size={18} />
@@ -459,6 +482,17 @@ export default function CoverLetterEditor() {
           </div>
         </div>
       </div>
+
+      <ShareDialog
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        id={parseInt(id || "0")}
+        initialPublicToken={formData.publicToken}
+        onShareChange={(token) =>
+          setFormData({ ...formData, publicToken: token })
+        }
+        type="coverLetter"
+      />
     </div>
   );
 }

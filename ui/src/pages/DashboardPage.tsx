@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ShareCvDialog } from "../components/ShareCvDialog";
+import { ShareDialog } from "../components/ShareDialog";
 import { FileText, Edit, Trash2, Clock, Share2 } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { useCvs, useDeleteCv } from "../hooks/useCv";
@@ -13,6 +13,7 @@ import { CvPreview } from "../components/CvPreview";
 import { useTranslation } from "react-i18next";
 import { useCoverLetters, useDeleteCoverLetter } from "../hooks/useCoverLetter";
 import CoverLetterPreview from "../components/CoverLetterPreview";
+import { RenameDialog } from "../components/RenameDialog";
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -34,6 +35,16 @@ export default function DashboardPage() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [shareCvId, setShareCvId] = useState<number | null>(null);
   const [shareToken, setShareToken] = useState<string | null>(null);
+
+  const [isShareClDialogOpen, setIsShareClDialogOpen] = useState(false);
+  const [shareClId, setShareClId] = useState<number | null>(null);
+  const [shareClToken, setShareClToken] = useState<string | null>(null);
+
+  const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+  const [renameCvId, setRenameCvId] = useState<number | null>(null);
+  const [renameCvTitle, setRenameCvTitle] = useState("");
+  const [renameType, setRenameType] = useState<"cv" | "coverLetter">("cv");
+
   const [activeTab, setActiveTab] = useState<"cvs" | "coverLetters">("cvs");
 
   const handleDeleteAccount = async () => {
@@ -244,6 +255,20 @@ export default function DashboardPage() {
                       >
                         <Share2 size={18} />
                       </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRenameCvId(cv.id);
+                          setRenameCvTitle(cv.title);
+                          setRenameType("cv");
+                          setIsRenameDialogOpen(true);
+                        }}
+                        className="p-2 bg-white rounded-full shadow-md hover:bg-yellow-50 text-yellow-600 transition-colors"
+                        title={t("app.rename", "Rename")}
+                      >
+                        <FileText size={18} />
+                      </button>
                       <button
                         onClick={(e) => handleDelete(cv.id, e)}
                         className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 text-red-600 transition-colors"
@@ -333,6 +358,31 @@ export default function DashboardPage() {
                         <Edit size={18} />
                       </button>
                       <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShareClId(cl.id!); // Assuming id exists
+                          setShareClToken(cl.publicToken || null);
+                          setIsShareClDialogOpen(true);
+                        }}
+                        className="p-2 bg-white rounded-full shadow-md hover:bg-green-50 text-green-600 transition-colors"
+                        title={t("app.share")}
+                      >
+                        <Share2 size={18} />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRenameCvId(cl.id!);
+                          setRenameCvTitle(cl.title);
+                          setRenameType("coverLetter");
+                          setIsRenameDialogOpen(true);
+                        }}
+                        className="p-2 bg-white rounded-full shadow-md hover:bg-yellow-50 text-yellow-600 transition-colors"
+                        title={t("app.rename", "Rename")}
+                      >
+                        <FileText size={18} />
+                      </button>
+                      <button
                         onClick={(e) => handleDeleteCoverLetter(cl.id!, e)}
                         className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 text-red-600 transition-colors"
                         title={t("app.delete")}
@@ -371,15 +421,30 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <ShareCvDialog
+      <ShareDialog
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
-        cvId={shareCvId || 0}
+        id={shareCvId || 0}
         initialPublicToken={shareToken}
-        onShareChange={() => {
-          // Optimistically update the local state if needed, or invalidate query
-          // For now, simple reload or refetch would be best, but we'll just close
-        }}
+        onShareChange={() => {}}
+        type="cv"
+      />
+
+      <ShareDialog
+        isOpen={isShareClDialogOpen}
+        onClose={() => setIsShareClDialogOpen(false)}
+        id={shareClId || 0}
+        initialPublicToken={shareClToken}
+        onShareChange={() => {}}
+        type="coverLetter"
+      />
+
+      <RenameDialog
+        isOpen={isRenameDialogOpen}
+        onClose={() => setIsRenameDialogOpen(false)}
+        id={renameCvId || 0}
+        currentTitle={renameCvTitle}
+        type={renameType}
       />
     </div>
   );

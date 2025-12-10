@@ -75,6 +75,34 @@ public class CoverLetterService
         return true;
     }
 
+    public async Task<string> ShareCoverLetterAsync(int id, int userId)
+    {
+        var cl = await GetCoverLetterCheckedAsync(id, userId);
+        if (cl == null) throw new KeyNotFoundException("Cover letter not found");
+
+        if (string.IsNullOrEmpty(cl.PublicToken))
+        {
+            cl.PublicToken = Guid.NewGuid().ToString();
+            await _context.SaveChangesAsync();
+        }
+
+        return cl.PublicToken;
+    }
+
+    public async Task UnshareCoverLetterAsync(int id, int userId)
+    {
+        var cl = await GetCoverLetterCheckedAsync(id, userId);
+        if (cl == null) throw new KeyNotFoundException("Cover letter not found");
+
+        cl.PublicToken = null;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<CoverLetter?> GetSharedCoverLetterAsync(string token)
+    {
+        return await _context.CoverLetters.FirstOrDefaultAsync(c => c.PublicToken == token);
+    }
+
     /// <summary>
     /// Generates a PDF for the specified cover letter using a headless browser.
     /// </summary>
@@ -101,4 +129,29 @@ public class CoverLetterService
         
         return string.IsNullOrWhiteSpace(sanitized) ? "CoverLetter.pdf" : $"{sanitized}.pdf";
     }
+
+    public async Task<(byte[] FileBytes, string FileName)?> GenerateSharedPdfForDownloadAsync(string token, string baseUrl)
+    {
+        var cl = await GetSharedCoverLetterAsync(token);
+        if (cl == null) return null;
+
+        // Use the print route - make sure CoverLetterPrintPage uses the anonymous /data endpoint
+        var pdfUrl = $"{baseUrl}/cover-letter/{cl.Id}/print";
+        var pdfBytes = await _pdfService.GeneratePdfFromUrlAsync(pdfUrl);
+        var filename = SanitizeFilename(cl.Title);
+
+        return (pdfBytes, filename);
+    }
+
+    public async Task<bool> RenameCoverLetterAsync(int id, int userId, string newTitle)
+    {
+        var existing = await _context.CoverLetters.FindAsync(id);
+        if (existing == null || existing.UserId != userId) return false;
+
+        existing.Title = newTitle;
+        existing.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
 }

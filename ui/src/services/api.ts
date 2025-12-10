@@ -26,7 +26,8 @@ axiosInstance.interceptors.response.use(
       error.response.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url.includes("/auth/login") &&
-      !originalRequest.url.includes("/auth/refresh")
+      !originalRequest.url.includes("/auth/refresh") &&
+      !originalRequest.url.includes("/shared/")
     ) {
       originalRequest._retry = true;
       try {
@@ -63,6 +64,7 @@ const api = {
   get: axiosInstance.get,
   post: axiosInstance.post,
   put: axiosInstance.put,
+  patch: axiosInstance.patch,
   delete: axiosInstance.delete,
   defaults: axiosInstance.defaults,
   interceptors: axiosInstance.interceptors,

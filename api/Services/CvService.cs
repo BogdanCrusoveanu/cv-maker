@@ -66,6 +66,17 @@ public class CvService
         return true;
     }
 
+    public async Task<bool> RenameCvAsync(int id, int userId, string newTitle)
+    {
+        var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        if (cv == null) return false;
+
+        cv.Title = newTitle;
+        cv.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
     public async Task<string?> ShareCvAsync(int id, int userId)
     {
         var cv = await _context.Cvs.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
