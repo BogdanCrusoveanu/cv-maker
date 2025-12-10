@@ -95,7 +95,7 @@ function SortableItem({ id, children }: SortableItemProps) {
   );
 }
 
-export default function Editor({
+export default function CvEditor({
   cvData,
   setCvData,
   currentTemplate,

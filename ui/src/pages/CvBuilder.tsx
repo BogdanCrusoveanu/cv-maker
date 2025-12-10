@@ -11,7 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "../components/ui/Button";
-import Editor from "../components/Editor";
+import CvEditor from "../components/CvEditor";
 import Preview from "../components/Preview";
 import { useAuth } from "../context/AuthContext";
 import { useCv, useSaveCv } from "../hooks/useCv";
@@ -94,19 +94,19 @@ export default function CvBuilder() {
   const TEMPLATES = [
     {
       id: "modern",
-      name: "Red Accent",
+      name: "Modern",
       color: "text-red-600",
       bg: "bg-red-500",
     },
     {
       id: "classic",
-      name: "Purple Wave",
+      name: "Classic",
       color: "text-purple-600",
       bg: "bg-purple-500",
     },
     {
       id: "minimal",
-      name: "Yellow Bold",
+      name: "Minimal",
       color: "text-yellow-600",
       bg: "bg-yellow-500",
     },
@@ -503,7 +503,7 @@ export default function CvBuilder() {
         </div>
 
         <div className="flex-1 overflow-y-auto pb-20 lg:pb-0">
-          <Editor
+          <CvEditor
             cvData={cvData}
             setCvData={setCvData}
             currentTemplate={currentTemplate}

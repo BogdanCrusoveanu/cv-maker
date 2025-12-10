@@ -1,5 +1,5 @@
-import { CvData } from "../../types/cv";
 import { useTranslation } from "react-i18next";
+import { CvData } from "../../../types/cv";
 
 export default function AcademicTemplate({ cvData }: { cvData: CvData }) {
   const { personalInfo, experience, education, skills } = cvData;

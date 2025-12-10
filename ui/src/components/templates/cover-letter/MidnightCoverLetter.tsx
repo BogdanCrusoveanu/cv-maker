@@ -1,5 +1,5 @@
 import { Phone, MapPin, Globe } from "lucide-react";
-import { CoverLetterData } from "../../types/coverLetter";
+import { CoverLetterData } from "../../../types/coverLetter";
 // import { useTranslation } from "react-i18next";
 
 export default function MidnightCoverLetter({

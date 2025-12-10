@@ -1,5 +1,5 @@
 import { MapPin, Phone, Mail, Globe } from "lucide-react";
-import { CoverLetterData } from "../../types/coverLetter";
+import { CoverLetterData } from "../../../types/coverLetter";
 
 export default function ClassicCoverLetter({
   data,

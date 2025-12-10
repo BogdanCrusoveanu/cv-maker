@@ -1,5 +1,5 @@
 import { Mail, Phone, Globe, MapPin } from "lucide-react";
-import { CoverLetterData } from "../../types/coverLetter";
+import { CoverLetterData } from "../../../types/coverLetter";
 
 export default function SlateCoverLetter({ data }: { data: CoverLetterData }) {
   const content = JSON.parse(data.data || "{}");

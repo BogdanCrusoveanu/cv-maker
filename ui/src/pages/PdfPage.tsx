@@ -1,26 +1,28 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CvData, CvTheme } from "../types/cv";
-import SlateTemplate from "../components/templates/Slate";
-import ModernTemplate from "../components/templates/Modern";
-import ClassicTemplate from "../components/templates/Classic";
-import MinimalTemplate from "../components/templates/Minimal";
-import NoirTemplate from "../components/templates/Noir";
-import AzureTemplate from "../components/templates/Azure";
-import CitrusTemplate from "../components/templates/Citrus";
-import MidnightTemplate from "../components/templates/Midnight";
-import AuroraTemplate from "../components/templates/Aurora";
-import AcademicTemplate from "../components/templates/Academic";
-import PolygonalTemplate from "../components/templates/Polygonal";
-import VerdeTemplate from "../components/templates/Verde";
-import OrbitTemplate from "../components/templates/Orbit";
+
+// Standard templates
+import SlateTemplate from "../components/templates/cv/Slate";
+import ModernTemplate from "../components/templates/cv/Modern";
+import ClassicTemplate from "../components/templates/cv/Classic";
+import MinimalTemplate from "../components/templates/cv/Minimal";
+import NoirTemplate from "../components/templates/cv/Noir";
+import AzureTemplate from "../components/templates/cv/Azure";
+import CitrusTemplate from "../components/templates/cv/Citrus";
+import MidnightTemplate from "../components/templates/cv/Midnight";
+import AuroraTemplate from "../components/templates/cv/Aurora";
+import AcademicTemplate from "../components/templates/cv/Academic";
+import PolygonalTemplate from "../components/templates/cv/Polygonal";
+import VerdeTemplate from "../components/templates/cv/Verde";
+import OrbitTemplate from "../components/templates/cv/Orbit";
 
 // Custom Templates
-import RubyTemplate from "../components/templates/Ruby";
-import AmberTemplate from "../components/templates/Amber";
-import IronTemplate from "../components/templates/Iron";
-import LagoonTemplate from "../components/templates/Lagoon";
-import LimeTemplate from "../components/templates/Lime";
+import RubyTemplate from "../components/templates/cv/Ruby";
+import AmberTemplate from "../components/templates/cv/Amber";
+import IronTemplate from "../components/templates/cv/Iron";
+import LagoonTemplate from "../components/templates/cv/Lagoon";
+import LimeTemplate from "../components/templates/cv/Lime";
 
 // Default empty state to prevent crashes
 const emptyCv: CvData = {
@@ -202,10 +204,6 @@ export default function PdfPage() {
     }
   };
 
-  if (loading) {
-    // ...
-  }
-
   if (error || !cvData) {
     return (
       <div className="flex items-center justify-center h-screen flex-col bg-white">
@@ -227,13 +225,7 @@ export default function PdfPage() {
         height: minHeight, // Ensure exact height for background stretching in PDF
       }}
     >
-      {/* 
-          Inner wrapper with id for observation. 
-          Styles are inherited or applied here? 
-          The templates expect to be directly in a container that has min-h-full?
-          If we put min-h-full on inner, it looks at outer.
-          Outer has explicit min-height.
-       */}
+      {/* Inner wrapper to measure content height for pagination logic */}
       <div
         id="pdf-content-inner"
         className="w-full h-full relative"
@@ -242,10 +234,6 @@ export default function PdfPage() {
           display: "grid",
         }}
       >
-        {/* DEBUG MARKER */}
-        {/* <div className="fixed top-0 left-0 bg-red-500 text-white p-2 z-[9999] opacity-50 pointer-events-none print:hidden">
-            Rendered OK: {cvData.template} (ID: {id})
-        </div> */}
         {renderTemplate()}
       </div>
     </div>

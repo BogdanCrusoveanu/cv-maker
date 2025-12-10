@@ -232,9 +232,9 @@ export default function CoverLetterEditor() {
             <Select
               options={[
                 { value: "midnight", label: "Midnight" },
-                { value: "modern", label: "Red Accent (Modern)" },
-                { value: "classic", label: "Purple Wave (Classic)" },
-                { value: "minimal", label: "Yellow Bold (Minimal)" },
+                { value: "modern", label: "Modern" },
+                { value: "classic", label: "Classic" },
+                { value: "minimal", label: "Minimal" },
                 { value: "noir", label: "Noir" },
                 { value: "slate", label: "Slate" },
                 { value: "azure", label: "Azure" },

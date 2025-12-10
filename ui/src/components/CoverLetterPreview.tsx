@@ -1,17 +1,17 @@
 import { CoverLetterData } from "../types/coverLetter";
-import MidnightCoverLetter from "./cover-letters/MidnightCoverLetter";
-import ModernCoverLetter from "./cover-letters/ModernCoverLetter";
-import ClassicCoverLetter from "./cover-letters/ClassicCoverLetter";
-import SlateCoverLetter from "./cover-letters/SlateCoverLetter";
-import AzureCoverLetter from "./cover-letters/AzureCoverLetter";
-import NoirCoverLetter from "./cover-letters/NoirCoverLetter";
-import MinimalCoverLetter from "./cover-letters/MinimalCoverLetter";
-import CitrusCoverLetter from "./cover-letters/CitrusCoverLetter";
-import AuroraCoverLetter from "./cover-letters/AuroraCoverLetter";
-import AcademicCoverLetter from "./cover-letters/AcademicCoverLetter";
-import PolygonalCoverLetter from "./cover-letters/PolygonalCoverLetter";
-import VerdeCoverLetter from "./cover-letters/VerdeCoverLetter";
-import OrbitCoverLetter from "./cover-letters/OrbitCoverLetter";
+import MidnightCoverLetter from "./templates/cover-letter/MidnightCoverLetter";
+import ModernCoverLetter from "./templates/cover-letter/ModernCoverLetter";
+import ClassicCoverLetter from "./templates/cover-letter/ClassicCoverLetter";
+import SlateCoverLetter from "./templates/cover-letter/SlateCoverLetter";
+import AzureCoverLetter from "./templates/cover-letter/AzureCoverLetter";
+import NoirCoverLetter from "./templates/cover-letter/NoirCoverLetter";
+import MinimalCoverLetter from "./templates/cover-letter/MinimalCoverLetter";
+import CitrusCoverLetter from "./templates/cover-letter/CitrusCoverLetter";
+import AuroraCoverLetter from "./templates/cover-letter/AuroraCoverLetter";
+import AcademicCoverLetter from "./templates/cover-letter/AcademicCoverLetter";
+import PolygonalCoverLetter from "./templates/cover-letter/PolygonalCoverLetter";
+import VerdeCoverLetter from "./templates/cover-letter/VerdeCoverLetter";
+import OrbitCoverLetter from "./templates/cover-letter/OrbitCoverLetter";
 
 export default function CoverLetterPreview({
   data,
