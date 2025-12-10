@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import CoverLetterPreview from "../components/CoverLetterPreview";
 import { coverLetterApi } from "../services/coverLetterApi";
 import { CoverLetterData } from "../types/coverLetter";
-import { UserPlus, Download } from "lucide-react";
+import { Download, UserPlus } from "lucide-react";
+import { config } from "../config";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
@@ -37,7 +38,7 @@ export default function SharedCoverLetterPage() {
     setIsGeneratingPdf(true);
     try {
       const response = await fetch(
-        `http://localhost:5140/api/cover-letter/shared/${token}/pdf`
+        `${config.apiUrl}/cover-letter/shared/${token}/pdf`
       );
 
       if (!response.ok) {

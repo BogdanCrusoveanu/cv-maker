@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { config } from "../config";
 import { CoverLetterData } from "../types/coverLetter";
 import CoverLetterPreview from "../components/CoverLetterPreview";
 
@@ -10,7 +11,7 @@ export default function CoverLetterPrintPage() {
   useEffect(() => {
     if (id) {
       // Fetch from the public /data endpoint
-      fetch(`http://localhost:5140/api/cover-letter/${id}/data`)
+      fetch(`${config.apiUrl}/cover-letter/${id}/data`)
         .then((res) => {
           if (!res.ok) throw new Error("Failed to load");
           return res.json();

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { config } from "../config";
 import { CvData, CvTheme } from "../types/cv";
 
 // Standard templates
@@ -87,7 +88,7 @@ export default function PdfPage() {
     const fetchCv = async () => {
       try {
         // Direct fetch to backend to avoid proxy issues. CORS is enabled in Program.cs.
-        const response = await fetch(`http://localhost:5140/api/cv/${id}/data`);
+        const response = await fetch(`${config.apiUrl}/cv/${id}/data`);
         if (!response.ok) {
           throw new Error(
             `Failed to fetch CV: ${response.status} ${response.statusText}`

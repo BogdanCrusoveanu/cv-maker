@@ -19,7 +19,7 @@ import { useToast } from "../context/ToastContext";
 import { CvData } from "../types/cv";
 import { ShareDialog } from "../components/ShareDialog";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
-import api from "../services/api";
+import { config } from "../config";
 
 export default function CvBuilder() {
   const { id } = useParams();
@@ -361,7 +361,7 @@ export default function CvBuilder() {
     // Direct download approach: let the browser handle it via navigation.
     // This allows the browser to respect the server's Content-Disposition header perfectly.
     // Cookies are automatically sent for authentication.
-    const baseURL = api.defaults.baseURL || "http://localhost:5140/api";
+    const baseURL = config.apiUrl;
     const downloadUrl = `${baseURL}/cv/${cvId}/pdf`;
 
     // Create a temporary link and click it

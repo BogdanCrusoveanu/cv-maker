@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Download, UserPlus } from "lucide-react";
+import { config } from "../config";
 import api from "../services/api";
 import Preview from "../components/Preview";
 import { Button } from "../components/ui/Button";
@@ -49,9 +50,7 @@ export default function SharedCvPage() {
 
     setIsGeneratingPdf(true);
     try {
-      const response = await fetch(
-        `http://localhost:5140/api/cv/shared/${token}/pdf`
-      );
+      const response = await fetch(`${config.apiUrl}/cv/shared/${token}/pdf`);
 
       if (!response.ok) {
         throw new Error("Failed to generate PDF");

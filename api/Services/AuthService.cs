@@ -214,4 +214,62 @@ public class AuthService
         if (BCrypt.Net.BCrypt.Verify(password, hash)) return true;
         return false;
     }
+    public async Task<(string AccessToken, string RefreshToken, string Name, string Email)?> ExternalLoginAsync(string email, string name, string provider, string providerId, string? avatarUrl)
+    {
+        // Try to find user by Provider ID first (more reliable if email changes)
+        User? user = null;
+        if (provider == "google") user = await _context.Users.FirstOrDefaultAsync(u => u.GoogleId == providerId);
+        else if (provider == "linkedin") user = await _context.Users.FirstOrDefaultAsync(u => u.LinkedInId == providerId);
+        else if (provider == "github") user = await _context.Users.FirstOrDefaultAsync(u => u.GitHubId == providerId);
+
+        // If not found by ID, find by Email
+        if (user == null)
+        {
+            user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null)
+            {
+                // Link existing user
+                if (provider == "google") user.GoogleId = providerId;
+                else if (provider == "linkedin") user.LinkedInId = providerId;
+                else if (provider == "github") user.GitHubId = providerId;
+            }
+        }
+
+        // If still not found, create new user
+        if (user == null)
+        {
+            user = new User
+            {
+                Email = email,
+                Name = name,
+                PasswordHash = "", // No password for purely external users
+                AvatarUrl = avatarUrl
+            };
+
+            if (provider == "google") user.GoogleId = providerId;
+            else if (provider == "linkedin") user.LinkedInId = providerId;
+            else if (provider == "github") user.GitHubId = providerId;
+
+            _context.Users.Add(user);
+        }
+        else
+        {
+            // Update info if needed
+            if (string.IsNullOrEmpty(user.AvatarUrl) && !string.IsNullOrEmpty(avatarUrl) && user.ProfilePicture == null)
+            {
+                user.AvatarUrl = avatarUrl;
+            }
+        }
+        
+        await _context.SaveChangesAsync();
+
+        var accessToken = GenerateJwtToken(user);
+        var refreshToken = GenerateRefreshToken();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+        await _context.SaveChangesAsync();
+
+        return (accessToken, refreshToken, user.Name, user.Email);
+    }
 }

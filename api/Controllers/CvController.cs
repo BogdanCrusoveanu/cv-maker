@@ -191,7 +191,7 @@ public class CvController : ControllerBase
             Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{result.Value.FileName}\"");
             return File(result.Value.FileBytes, "application/pdf", result.Value.FileName);
         }
-        catch (Exception ex)
+        catch
         {
             return Problem(detail: "cv.errors.pdfGenerationFailed", statusCode: 500);
         }
@@ -219,7 +219,7 @@ public class CvController : ControllerBase
             Response.Headers.Append("Content-Disposition", $"attachment; filename=\"{result.Value.FileName}\"");
             return File(result.Value.FileBytes, "application/pdf", result.Value.FileName);
         }
-        catch (Exception ex)
+        catch
         {
             return Problem(detail: "cv.errors.pdfGenerationFailed", statusCode: 500);
         }

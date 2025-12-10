@@ -5,6 +5,7 @@ import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { AuthLayout } from "../components/auth/AuthLayout";
 import { useTranslation } from "react-i18next";
+import { SocialLoginButtons } from "../components/auth/SocialLoginButtons";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -37,6 +38,19 @@ export default function LoginPage() {
             {error}
           </div>
         )}
+
+        <SocialLoginButtons />
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">
+              {t("auth.orContinueWithEmail", "Or continue with email")}
+            </span>
+          </div>
+        </div>
 
         <div className="space-y-4">
           <Input

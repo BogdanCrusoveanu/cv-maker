@@ -1,6 +1,8 @@
 import axios from "axios";
 import i18next from "../i18n";
 
+import { config } from "../config";
+
 let showToast: (message: string, type: "success" | "error" | "info") => void;
 
 export const setupInterceptors = (toastFn: typeof showToast) => {
@@ -8,7 +10,7 @@ export const setupInterceptors = (toastFn: typeof showToast) => {
 };
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5140/api", // Default .NET API port, might need adjustment
+  baseURL: config.apiUrl,
   withCredentials: true, // Send cookies with requests
 });
 

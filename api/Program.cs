@@ -17,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<CvService>();
 builder.Services.AddScoped<CoverLetterService>();
+builder.Services.AddScoped<OAuthService>();
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<PdfService>();
 builder.Services.AddSingleton<RsaKeyService>();
 

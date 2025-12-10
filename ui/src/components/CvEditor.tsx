@@ -10,6 +10,7 @@ import {
   Link,
   GripVertical,
 } from "lucide-react";
+import { config } from "../config";
 import { ThemeEditor } from "./ThemeEditor";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -443,7 +444,7 @@ export default function CvEditor({
           await api.uploadPhoto(cvData.id, formData);
 
           // Update photo URL with timestamp to force refresh
-          const photoUrl = `http://localhost:5140/api/cv/${
+          const photoUrl = `${config.apiUrl}/cv/${
             cvData.id
           }/photo?t=${new Date().getTime()}`;
           handlePersonalInfoChange("photo", photoUrl);

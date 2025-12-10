@@ -16,11 +16,13 @@ public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
     private readonly RsaKeyService _rsaKeyService;
+    private readonly IConfiguration _configuration;
 
-    public AuthController(AuthService authService, RsaKeyService rsaKeyService)
+    public AuthController(AuthService authService, RsaKeyService rsaKeyService, IConfiguration configuration)
     {
         _authService = authService;
         _rsaKeyService = rsaKeyService;
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -239,5 +241,79 @@ public class AuthController : ControllerBase
         if (!success) return Problem(detail: "auth.errors.invalidResetToken", statusCode: 400);
 
         return Ok(new { message = "Password reset successfully" });
+    }
+    /// <summary>
+    /// Initiates external login by redirecting to the provider's OAuth page.
+    /// </summary>
+    /// <param name="provider">The provider name (google, linkedin, or github).</param>
+    /// <returns>Redirects to the provider.</returns>
+    [HttpGet("external-login/{provider}")]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    public IActionResult ExternalLogin(string provider)
+    {
+        string? redirectUrl = null;
+        var encodedRedirectUri = System.Web.HttpUtility.UrlEncode($"http://localhost:5140/api/auth/external-callback/{provider}");
+
+        switch (provider.ToLower())
+        {
+            case "google":
+                var gClientId = _configuration["Authentication:Google:ClientId"];
+                redirectUrl = $"https://accounts.google.com/o/oauth2/v2/auth?client_id={gClientId}&redirect_uri={encodedRedirectUri}&response_type=code&scope=openid%20email%20profile";
+                break;
+            case "linkedin":
+                var lClientId = _configuration["Authentication:LinkedIn:ClientId"];
+                // LinkedIn requires state, normally we generate one, but for simple MVP using static
+                redirectUrl = $"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id={lClientId}&redirect_uri={encodedRedirectUri}&state=foobar&scope=openid%20profile%20email";
+                break;
+            case "github":
+                var ghClientId = _configuration["Authentication:GitHub:ClientId"];
+                redirectUrl = $"https://github.com/login/oauth/authorize?client_id={ghClientId}&redirect_uri={encodedRedirectUri}&scope=user:email";
+                break;
+            default:
+                return BadRequest("Invalid provider");
+        }
+
+        return Redirect(redirectUrl);
+    }
+
+    /// <summary>
+    /// Handles the callback from the external provider.
+    /// </summary>
+    /// <param name="provider">The provider name.</param>
+    /// <param name="code">The authorization code.</param>
+    /// <returns>Redirects to the frontend with cookies set.</returns>
+    [HttpGet("external-callback/{provider}")]
+    public async Task<IActionResult> ExternalCallback(string provider, [FromQuery] string code)
+    {
+        OAuthService? oauthService = HttpContext.RequestServices.GetService<OAuthService>();
+        if (oauthService == null) return Problem("OAuth service not available", statusCode: 500);
+
+        OAuthUserInfo? userInfo = null;
+
+        switch (provider.ToLower())
+        {
+            case "google":
+                userInfo = await oauthService.GetGoogleUserAsync(code);
+                break;
+            case "linkedin":
+                userInfo = await oauthService.GetLinkedInUserAsync(code);
+                break;
+            case "github":
+                userInfo = await oauthService.GetGitHubUserAsync(code);
+                break;
+            default:
+                return BadRequest("Invalid provider");
+        }
+
+        if (userInfo == null)
+            return Redirect("http://localhost:5173/login?error=ExternalAuthFailed");
+
+        var result = await _authService.ExternalLoginAsync(userInfo.Email, userInfo.Name, provider.ToLower(), userInfo.Id, userInfo.AvatarUrl);
+        if (result == null)
+            return Redirect("http://localhost:5173/login?error=ExternalLoginFailed");
+
+        SetTokenCookies(result.Value.AccessToken, result.Value.RefreshToken);
+
+        return Redirect("http://localhost:5173/dashboard");
     }
 }
